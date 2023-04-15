@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS `users`
+(
+    `id`         BIGINT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT COMMENT 'Уникальный идентификатор пользователя',
+    `crmid` BIGINT NOT NULL COMMENT 'Mapping with crm',
+    `first_name`       VARCHAR(255)    NOT NULL COMMENT 'Имя пользователя для отображения на сайте',
+    `last_name`       VARCHAR(255)    NOT NULL COMMENT 'Фамилия пользователя для отображения на сайте',
+    `description` LONGTEXT NULL COMMENT 'Contact description',
+    `account_id` INT NOT NULL COMMENT 'Map to accounts module',
+    `account_name` VARCHAR(190) NOT NULL COMMENT 'Name of company',
+    `title` VARCHAR(190) NULL COMMENT 'Title of contact',
+    `department` VARCHAR(190) NULL COMMENT 'Department of contact',
+    `email`      VARCHAR(255)    UNIQUE NOT NULL COMMENT 'Уникальный адрес электронной почты пользователя',
+    `password`   CHAR(255)       NOT NULL COMMENT 'Хранится хэш пароля длиной 60 символов',
+    `created_at` DATETIME        NOT NULL DEFAULT NOW() COMMENT 'Дата создания',
+    `updated_at` DATETIME        NOT NULL DEFAULT NOW() COMMENT 'Дата обновления',
+    `is_active`  bool      NOT NULL DEFAULT false COMMENT 'Активирован ли пользователь или нет',
+    `mailingcity` VarChar( 40 ) NULL DEFAULT NULL,
+    `mailingstreet` VarChar( 250 ) NULL DEFAULT NULL,
+    `mailingcountry` VarChar( 40 )  NULL DEFAULT NULL,
+    `othercountry` VarChar( 30 )  NULL DEFAULT NULL,
+    `mailingstate` VarChar( 30 )  NULL DEFAULT NULL,
+    `mailingpobox` VarChar( 30 )  NULL DEFAULT NULL,
+    `othercity` VarChar( 40 )  NULL DEFAULT NULL,
+    `otherstate` VarChar( 50 )  NULL DEFAULT NULL,
+    `mailingzip` VarChar( 30 )  NULL DEFAULT NULL,
+    `otherzip` VarChar( 30 )  NULL DEFAULT NULL,
+    `otherstreet` VarChar( 250 )  NULL DEFAULT NULL,
+    `otherpobox` VarChar( 30 )  NULL DEFAULT NULL,
+    `image` VARCHAR(190) NULL DEFAULT NULL,
+    `version`    INT             NOT NULL DEFAULT 1 COMMENT 'Версия записи, каждое обновление увеличивает индекс на 1'
+);
+

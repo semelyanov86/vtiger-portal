@@ -1,0 +1,1 @@
+export PORTAL_DB_DSN=root:@/portal?parseTime=true

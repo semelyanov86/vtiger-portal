@@ -1,0 +1,38 @@
+env: local
+http:
+  host: localhost
+  port: 4050
+  maxHeaderBytes: 1
+  readTimeout: 10s
+  writeTimeout: 10s
+
+cache:
+  ttl: 60s
+
+db:
+  host: ""
+  login: "root"
+  password: ""
+  dbname: "portal"
+  maxOpenConns: 25
+  maxIdleConns: 25
+  maxIdleTime: "15m"
+smtp:
+  host: "192.168.10.10"
+  port: 1025
+  username: ""
+  password: ""
+  sender: "Portal Admin <admin@sergeyem.ru>"
+limiter:
+  rps: 2
+  burst: 4
+  enabled: true
+cors:
+  trustedOrigins: ["127.0.0.1"]
+email:
+  templates:
+    registrationEmail: "./templates/registration_email.html"
+    ticketSuccessful: "./templates/ticket_successful.html"
+  subjects:
+    registrationEmail: "Спасибо за регистрацию, %s!"
+    ticketSuccessful: "Тикет размещён успешно!"

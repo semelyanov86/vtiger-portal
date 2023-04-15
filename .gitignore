@@ -4,4 +4,6 @@
 .DS_Store
 
 .env
+.envrc
 cover.out
+configs/prod.yaml

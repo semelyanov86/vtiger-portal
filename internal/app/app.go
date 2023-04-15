@@ -32,6 +32,17 @@ func Run(configPath string) {
 	_ = cache.NewMemoryCache()
 	_ = smtp.NewMailer(cfg.Smtp.Host, cfg.Smtp.Port, cfg.Smtp.Username, cfg.Smtp.Password, cfg.Smtp.Sender)
 
+	// HTTP Server
+	/*srv := server.NewServer(cfg, handlers.Init(cfg))
+
+	go func() {
+		if err := srv.Run(); !errors.Is(err, http.ErrServerClosed) {
+			logger.Errorf("error occurred while running http server: %s\n", err.Error())
+		}
+	}()
+
+	logger.Info(logger.GenerateErrorMessageFromString("Server started"))*/
+
 }
 
 func openDB(cfg *config.Config) (*sql.DB, error) {

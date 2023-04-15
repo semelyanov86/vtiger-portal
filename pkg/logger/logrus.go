@@ -14,7 +14,7 @@ func Debugf(format string, msg LogMessage) {
 }
 
 func Info(msg LogMessage) {
-	logrus.Info(msg)
+	logrus.Info(msg.Msg)
 }
 
 func Infof(format string, msg LogMessage) {

@@ -1,0 +1,33 @@
+# Vtiger Customer Portal [Backend GO Application] ![GO][go-badge]
+
+[go-badge]: https://img.shields.io/github/go-mod/go-version/p12s/furniture-store?style=plastic
+[go-url]: https://github.com/p12s/furniture-store/blob/master/go.mod
+
+Learn More about Vtiger [here](https://vtiger.com)
+
+## Build & Run (Locally)
+### Prerequisites
+- go 1.20
+- [staticcheck](https://staticcheck.io) (<i>optional</i>, for code static checking)
+- [swag](https://github.com/swaggo/swag) (<i>optional</i>, used to re-generate swagger documentation)
+
+To fill database, first install migrate tool:
+```bash
+curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-amd64.tar.gz | tar xvz
+mv migrate.linux-amd64 $GOPATH/bin/migrate
+```
+
+Before you continue, please check that it’s available and working on your machine by trying to execute the migrate binary with the -version flag. It should output the current version number similar to this:
+```bash
+$ migrate -version
+4.14.1
+```
+
+To run migration, execute following command:
+```bash
+make migrate
+```
+
+Copy file .envrc.example to .envrc
+
+Use `make run` to build&run project, `make lint` to check code with linter.

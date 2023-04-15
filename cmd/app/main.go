@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/semelyanov86/vtiger-portal/internal/app"
 	"log"
 	"os"
 )
@@ -25,4 +26,5 @@ func main() {
 		fmt.Printf("Build time:\t%s\n", buildTime)
 		os.Exit(0)
 	}
+	app.Run(dirname)
 }

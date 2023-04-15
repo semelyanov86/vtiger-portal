@@ -4,6 +4,8 @@ go 1.20
 
 require (
 	github.com/go-mail/mail/v2 v2.3.0
+	github.com/go-sql-driver/mysql v1.7.0
+	github.com/jameskeane/bcrypt v0.0.0-20120420032655-c3cd44c1e20f
 	github.com/octoper/go-ray v0.1.5
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.2

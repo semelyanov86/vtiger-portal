@@ -40,6 +40,12 @@ migrate: confirm
 	@echo 'Running up migrations...'
 	migrate -path ./migrations -database $(addsuffix ${PORTAL_DB_DSN},mysql://) up
 
+## gen: generate all mocks
+.PHONY: gen
+gen:
+	mockgen -source=internal/service/service.go -destination=internal/service/mocks/mock.go
+	mockgen -source=internal/repository/repository.go -destination=internal/repository/mocks/mock.go
+
 # ==================================================================================== #
 # QUALITY CONTROL
 # ==================================================================================== #

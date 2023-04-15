@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 )
 
@@ -30,6 +31,11 @@ func Warnf(format string, msg LogMessage) {
 
 func Error(msg LogMessage) {
 	logrus.Error(msg)
+}
+
+func WrapError(msg string, err error) {
+	error := fmt.Errorf("%s: %w", msg, err)
+	logrus.Error(ConvertErrorToStruct(error, 0, nil))
 }
 
 func Errorf(format string, msg LogMessage) {

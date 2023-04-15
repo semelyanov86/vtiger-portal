@@ -25,3 +25,11 @@ func ConvertErrorToStruct(err error, code int, properties map[string]string) Log
 		Properties: properties,
 	}
 }
+
+func GenerateErrorMessageFromString(message string) LogMessage {
+	return LogMessage{
+		Msg:        message,
+		Code:       "500",
+		Properties: nil,
+	}
+}

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
+	"github.com/semelyanov86/vtiger-portal/pkg/email/smtp"
 	"github.com/semelyanov86/vtiger-portal/pkg/logger"
 	"time"
 )
@@ -29,6 +30,8 @@ func Run(configPath string) {
 		return
 	}
 	_ = cache.NewMemoryCache()
+	_ = smtp.NewMailer(cfg.Smtp.Host, cfg.Smtp.Port, cfg.Smtp.Username, cfg.Smtp.Password, cfg.Smtp.Sender)
+
 }
 
 func openDB(cfg *config.Config) (*sql.DB, error) {

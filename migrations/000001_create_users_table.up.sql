@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS `users`
 (
     `id`         BIGINT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT COMMENT 'Уникальный идентификатор пользователя',
-    `crmid` BIGINT NOT NULL COMMENT 'Mapping with crm',
+    `crmid` VARCHAR(100) UNIQUE NOT NULL COMMENT 'Mapping with crm',
     `first_name`       VARCHAR(255)    NOT NULL COMMENT 'Имя пользователя для отображения на сайте',
     `last_name`       VARCHAR(255)    NOT NULL COMMENT 'Фамилия пользователя для отображения на сайте',
     `description` LONGTEXT NOT NULL COMMENT 'Contact description',
-    `account_id` INT NOT NULL COMMENT 'Map to accounts module',
+    `account_id` VARCHAR(100) NOT NULL COMMENT 'Map to accounts module',
     `account_name` VARCHAR(190) NOT NULL COMMENT 'Name of company',
     `title` VARCHAR(190) NOT NULL COMMENT 'Title of contact',
     `department` VARCHAR(190) NOT NULL DEFAULT '' COMMENT 'Department of contact',

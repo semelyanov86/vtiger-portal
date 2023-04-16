@@ -3,10 +3,20 @@ package app
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
+	http2 "github.com/semelyanov86/vtiger-portal/internal/delivery/http"
+	"github.com/semelyanov86/vtiger-portal/internal/repository"
+	"github.com/semelyanov86/vtiger-portal/internal/server"
+	"github.com/semelyanov86/vtiger-portal/internal/service"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/email/smtp"
 	"github.com/semelyanov86/vtiger-portal/pkg/logger"
+	"net/http"
+	"os"
+	"os/signal"
+	"strconv"
+	"syscall"
 	"time"
 )
 
@@ -24,24 +34,46 @@ import (
 // Run initializes whole application.
 func Run(configPath string) {
 	cfg := config.Init(configPath)
-	_, err := openDB(cfg)
+	db, err := openDB(cfg)
 	if err != nil {
 		logger.Error(logger.ConvertErrorToStruct(err, 0, nil))
 		return
 	}
-	_ = cache.NewMemoryCache()
-	_ = smtp.NewMailer(cfg.Smtp.Host, cfg.Smtp.Port, cfg.Smtp.Username, cfg.Smtp.Password, cfg.Smtp.Sender)
+	memcache := cache.NewMemoryCache()
+	emailSender := smtp.NewMailer(cfg.Smtp.Host, cfg.Smtp.Port, cfg.Smtp.Username, cfg.Smtp.Password, cfg.Smtp.Sender)
 
+	repos := repository.NewRepositories(db, *cfg, memcache)
+	services := service.NewServices(*repos, emailSender)
+	handlers := http2.NewHandler(services, cfg)
 	// HTTP Server
-	/*srv := server.NewServer(cfg, handlers.Init(cfg))
+	srv := server.NewServer(cfg, handlers.Init())
 
 	go func() {
 		if err := srv.Run(); !errors.Is(err, http.ErrServerClosed) {
-			logger.Errorf("error occurred while running http server: %s\n", err.Error())
+			logger.Error(logger.GenerateErrorMessageFromString("error occurred while running http server:" + err.Error()))
 		}
 	}()
 
-	logger.Info(logger.GenerateErrorMessageFromString("Server started"))*/
+	logger.Info(logger.GenerateErrorMessageFromString("Server started at port: " + strconv.Itoa(cfg.HTTP.Port)))
+
+	// Graceful Shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+
+	<-quit
+
+	const timeout = 5 * time.Second
+
+	ctx, shutdown := context.WithTimeout(context.Background(), timeout)
+	defer shutdown()
+
+	if err := srv.Stop(ctx); err != nil {
+		logger.Error(logger.GenerateErrorMessageFromString("Failed to stop server: " + err.Error()))
+	}
+
+	if err := db.Close(); err != nil {
+		logger.Error(logger.GenerateErrorMessageFromString(err.Error()))
+	}
 
 }
 

@@ -8,11 +8,11 @@ import "github.com/jameskeane/bcrypt"
 
 type User struct {
 	Id             int64     `json:"id"`
-	Crmid          int64     `json:"crmid"`
-	FirstName      string    `json:"first_name"`
-	LastName       string    `json:"last_name"`
+	Crmid          string    `json:"crmid"`
+	FirstName      string    `json:"firstname"`
+	LastName       string    `json:"lastname"`
 	Description    string    `json:"description"`
-	AccountId      int       `json:"account_id"`
+	AccountId      string    `json:"account_id"`
 	AccountName    string    `json:"account_name"`
 	Title          string    `json:"title"`
 	Department     string    `json:"department"`
@@ -35,6 +35,7 @@ type User struct {
 	OtherPoBox     string    `json:"otherpobox"`
 	Image          string    `json:"image"`
 	Version        int       `json:"-"`
+	Code           string    `json:"-"`
 }
 
 var AnonymousUser = &User{}
@@ -73,7 +74,7 @@ func ValidatePasswordPlaintext(v *validator.Validator, password string) {
 
 func ValidateUser(v *validator.Validator, user *User) {
 	v.Check(user.Email != "", "data.email", "must be provided")
-	v.Check(user.Crmid != 0, "data.crmid", "must be provided")
+	v.Check(user.Crmid != "", "data.crmid", "must be provided")
 	ValidateEmail(v, user.Email)
 	if user.Password.Plaintext != nil {
 		ValidatePasswordPlaintext(v, *user.Password.Plaintext)
@@ -81,4 +82,65 @@ func ValidateUser(v *validator.Validator, user *User) {
 	if user.Password.Hash == nil {
 		panic("missing password Hash for user")
 	}
+}
+
+func ConvertMapToUser(m map[string]any) User {
+	user := User{}
+
+	for k, v := range m {
+		switch k {
+		case "id":
+			user.Crmid = v.(string)
+		case "firstname":
+			user.FirstName = v.(string)
+		case "lastname":
+			user.LastName = v.(string)
+		case "description":
+			user.Description = v.(string)
+		case "account_id":
+			user.AccountId = v.(string)
+		case "account_name":
+			user.AccountName = v.(string)
+		case "title":
+			user.Title = v.(string)
+		case "department":
+			user.Department = v.(string)
+		case "email":
+			user.Email = v.(string)
+		case "created_at":
+			user.CreatedAt, _ = time.Parse(time.RFC3339, v.(string))
+		case "updated_at":
+			user.UpdatedAt, _ = time.Parse(time.RFC3339, v.(string))
+		case "is_active":
+			user.IsActive = v.(bool)
+		case "mailingcity":
+			user.MailingCity = v.(string)
+		case "mailingstreet":
+			user.MailingStreet = v.(string)
+		case "mailingcountry":
+			user.MailingCountry = v.(string)
+		case "othercountry":
+			user.OtherCountry = v.(string)
+		case "mailingstate":
+			user.MailingState = v.(string)
+		case "mailingpobox":
+			user.MailingPoBox = v.(string)
+		case "othercity":
+			user.OtherCity = v.(string)
+		case "otherstate":
+			user.OtherState = v.(string)
+		case "mailingzip":
+			user.MailingZip = v.(string)
+		case "otherzip":
+			user.OtherZip = v.(string)
+		case "otherstreet":
+			user.OtherStreet = v.(string)
+		case "otherpobox":
+			user.OtherPoBox = v.(string)
+		case "image":
+			user.Image = v.(string)
+		}
+	}
+
+	return user
 }

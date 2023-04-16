@@ -9,7 +9,7 @@ import (
 var ErrItemNotFound = errors.New("cache: item not found")
 
 type item struct {
-	value     any
+	value     []byte
 	createdAt int64
 	ttl       int64
 }
@@ -41,7 +41,7 @@ func (c *MemoryCache) setTtlTimer() {
 	}
 }
 
-func (c *MemoryCache) Set(key string, value any, ttl int64) error {
+func (c *MemoryCache) Set(key string, value []byte, ttl int64) error {
 	c.Lock()
 	c.cache[key] = &item{
 		value:     value,
@@ -53,13 +53,13 @@ func (c *MemoryCache) Set(key string, value any, ttl int64) error {
 	return nil
 }
 
-func (c *MemoryCache) Get(key string) (any, error) {
+func (c *MemoryCache) Get(key string) ([]byte, error) {
 	c.RLock()
 	item, ex := c.cache[key]
 	c.RUnlock()
 
 	if !ex {
-		return nil, ErrItemNotFound
+		return []byte{}, ErrItemNotFound
 	}
 
 	return item.value, nil

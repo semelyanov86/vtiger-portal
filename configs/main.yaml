@@ -27,6 +27,7 @@ limiter:
   rps: 2
   burst: 4
   enabled: true
+  ttl: 10m
 cors:
   trustedOrigins: ["127.0.0.1"]
 email:
@@ -36,3 +37,13 @@ email:
   subjects:
     registrationEmail: "Спасибо за регистрацию, %s!"
     ticketSuccessful: "Тикет размещён успешно!"
+vtiger:
+  connection:
+    url: "https://serv.itvolga.com/webservice.php"
+    login: "admin"
+    password: ""
+    persistenceConnection: true
+    maxRetries: 3
+  business:
+    emailField: "email"
+    codeField: "code"

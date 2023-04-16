@@ -2,6 +2,7 @@ package config
 
 import (
 	_ "github.com/octoper/go-ray"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"gopkg.in/yaml.v3"
 	"os"
 	"time"
@@ -18,7 +19,8 @@ type (
 		Cors        struct {
 			TrustedOrigins []string `yaml:"trustedOrigins"`
 		}
-		Email EmailConfig `yaml:"email"`
+		Email  EmailConfig  `yaml:"email"`
+		Vtiger VtigerConfig `yaml:"vtiger"`
 	}
 	HTTPConfig struct {
 		Host               string        `yaml:"host"`
@@ -51,6 +53,7 @@ type (
 		Rps     float64
 		Burst   int
 		Enabled bool
+		TTL     time.Duration
 	}
 	EmailConfig struct {
 		Templates EmailTemplates `yaml:"templates"`
@@ -65,6 +68,14 @@ type (
 	EmailSubjects struct {
 		RegistrationEmail string `yaml:"registrationEmail"`
 		TicketSuccessful  string `yaml:"ticketSuccessful"`
+	}
+	VtigerConfig struct {
+		Connection vtiger.VtigerConnectionConfig `yaml:"connection"`
+		Business   VtigerBusinessConfig          `yaml:"business"`
+	}
+	VtigerBusinessConfig struct {
+		EmailField string `yaml:"emailField"`
+		CodeField  string `yaml:"codeField"`
 	}
 )
 

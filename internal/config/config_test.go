@@ -50,6 +50,11 @@ email:
   subjects:
     registrationEmail: Test Registration Email
     ticketSuccessful: Test Ticket Successful
+vtiger:
+  connection:
+    url: "https://serv.itvolga.com"
+    login: "admin"
+    password: ""
 `
 	err := os.Mkdir(testDir, os.ModePerm)
 	if err != nil {

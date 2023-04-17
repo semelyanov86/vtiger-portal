@@ -30,6 +30,7 @@ var ErrWrongCredentials = errors.New("invalid credentials due to auth")
 type VtigerConnector struct {
 	cache      cache.Cache
 	connection VtigerConnectionConfig
+	fetcher    CrmFetcher
 }
 
 type VtigerConnectionConfig struct {
@@ -75,10 +76,11 @@ type FormParamsData struct {
 	SessionName string `json:"sessionName"`
 }
 
-func NewVtigerConnector(cache cache.Cache, config VtigerConnectionConfig) VtigerConnector {
+func NewVtigerConnector(cache cache.Cache, config VtigerConnectionConfig, fetcher CrmFetcher) VtigerConnector {
 	return VtigerConnector{
 		cache:      cache,
 		connection: config,
+		fetcher:    fetcher,
 	}
 }
 
@@ -94,8 +96,8 @@ func (c VtigerConnector) Lookup(ctx context.Context, dataType, value, module str
 		columnsText += "\"" + column + "\","
 	}
 	columnsText = strings.TrimSuffix(columnsText, ",")
-	webRequest := NewWebRequest(c.connection)
-	resp, err := webRequest.FetchBytes(ctx, url.Values{
+
+	resp, err := c.fetcher.FetchBytes(ctx, url.Values{
 		"operation":   {"lookup"},
 		"sessionName": {sessionID},
 		"type":        {dataType},
@@ -122,8 +124,7 @@ func (c VtigerConnector) Query(ctx context.Context, query string) (*VtigerRespon
 		return nil, err
 	}
 
-	webRequest := NewWebRequest(c.connection)
-	resp, err := webRequest.FetchBytes(ctx, url.Values{
+	resp, err := c.fetcher.FetchBytes(ctx, url.Values{
 		"operation":   {"query"},
 		"sessionName": {sessionID},
 	}.Encode()+"&query="+url.QueryEscape(query))
@@ -173,13 +174,12 @@ func (c VtigerConnector) Query(ctx context.Context, query string) (*VtigerRespon
 func (c VtigerConnector) getToken() (SessionData, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*TimeoutInSec)
 	defer cancel()
-	webRequest := NewWebRequest(c.connection)
 	tryCounter := 1
 
 	var result *VtigerResponse[SessionData]
 
 	for {
-		response, err := webRequest.FetchBytes(ctx, "operation=getchallenge&username="+c.connection.Login)
+		response, err := c.fetcher.FetchBytes(ctx, "operation=getchallenge&username="+c.connection.Login)
 		if err != nil {
 			return SessionData{}, e.Wrap("error code 7 from vtiger connector", err)
 		}
@@ -278,7 +278,7 @@ func (c VtigerConnector) login(session SessionData) (SessionData, error) {
 	var token = session.Token
 	generatedKey := fmt.Sprintf("%x", md5.Sum([]byte(token+c.connection.Password)))
 	var tryCounter = 1
-	webRequest := NewWebRequest(c.connection)
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*TimeoutInSec)
 	defer cancel()
 	requestData := RequestData{FormParams: FormParamsData{
@@ -289,7 +289,7 @@ func (c VtigerConnector) login(session SessionData) (SessionData, error) {
 
 	for {
 		// login using username and accesskey
-		resp, err := webRequest.SendData(ctx, requestData)
+		resp, err := c.fetcher.SendData(ctx, requestData)
 
 		if err != nil {
 			return sessionData, e.Wrap("code 7", err)
@@ -340,12 +340,12 @@ func (c VtigerConnector) close(sessionID string) error {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*TimeoutInSec)
 	defer cancel()
-	var webRequest = NewWebRequest(c.connection)
+
 	requestData := RequestData{FormParams: FormParamsData{
 		Operation:   "logout",
 		SessionName: sessionID,
 	}}
 
-	_, err := webRequest.SendData(ctx, requestData)
+	_, err := c.fetcher.SendData(ctx, requestData)
 	return err
 }

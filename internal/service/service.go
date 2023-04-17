@@ -5,6 +5,8 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/email/smtp"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Services struct {
 	Users UsersService
 	Email smtp.Mailer

@@ -16,7 +16,7 @@ type UsersVtiger struct {
 
 func NewUsersVtiger(config config.Config, cache cache.Cache) UsersVtiger {
 	return UsersVtiger{
-		vtiger: vtiger.NewVtigerConnector(cache, config.Vtiger.Connection),
+		vtiger: vtiger.NewVtigerConnector(cache, config.Vtiger.Connection, vtiger.NewWebRequest(config.Vtiger.Connection)),
 		config: config,
 	}
 }

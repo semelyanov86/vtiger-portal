@@ -15,6 +15,11 @@ type WebRequests struct {
 	config VtigerConnectionConfig
 }
 
+type CrmFetcher interface {
+	FetchBytes(ctx context.Context, postfix string) ([]byte, error)
+	SendData(ctx context.Context, data RequestData) ([]byte, error)
+}
+
 var ErrWrongStatusCode = errors.New("wrong status code")
 
 func NewWebRequest(config VtigerConnectionConfig) WebRequests {

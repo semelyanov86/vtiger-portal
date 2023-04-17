@@ -42,15 +42,9 @@ func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput) (*domai
 			user = &u
 		}
 	}
-
+	FillVtigerContactWithAdditionalValues(user, input.Password)
 	if user == nil || user.Crmid == "" {
 		return user, e.Wrap("can not find user in vtiger", ErrUserNotFound)
-	}
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
-	err = user.Password.Set(input.Password)
-	if err != nil {
-		return user, e.Wrap("can not hash password", err)
 	}
 
 	if err := s.repo.Insert(ctx, user); err != nil {
@@ -58,4 +52,14 @@ func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput) (*domai
 	}
 
 	return user, nil
+}
+
+func FillVtigerContactWithAdditionalValues(user *domain.User, password string) error {
+	user.CreatedAt = time.Now()
+	user.UpdatedAt = time.Now()
+	err := user.Password.Set(password)
+	if err != nil {
+		return e.Wrap("can not hash password", err)
+	}
+	return nil
 }

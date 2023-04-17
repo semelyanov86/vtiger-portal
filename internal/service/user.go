@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/octoper/go-ray"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
@@ -28,6 +27,10 @@ func NewUsersService(repo repository.Users, crm repository.UsersCrm) UsersServic
 }
 
 func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput) (*domain.User, error) {
+	_, err := s.repo.GetByEmail(ctx, input.Email)
+	if !errors.Is(repository.ErrRecordNotFound, err) {
+		return nil, repository.ErrDuplicateEmail
+	}
 	users, err := s.crm.FindByEmail(ctx, input.Email)
 	var user *domain.User
 	if err != nil {
@@ -53,6 +56,6 @@ func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput) (*domai
 	if err := s.repo.Insert(ctx, user); err != nil {
 		return user, err
 	}
-	ray.Ray(user)
+
 	return user, nil
 }

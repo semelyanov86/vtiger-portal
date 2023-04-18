@@ -13,21 +13,10 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 	users := api.Group("/users")
 	{
 		users.POST("/", h.userSignUp)
+		users.POST("/login", h.signIn)
 	}
 }
 
-// @Summary User SignUp
-// @Tags users-auth
-// @Description create user account
-// @ModuleID userSignUp
-// @Accept  json
-// @Produce  json
-// @Param input body userSignUpInput true "sign up info"
-// @Success 201 {string} string "ok"
-// @Failure 400,404 {object} response
-// @Failure 500 {object} response
-// @Failure default {object} response
-// @Router /users/sign-up [post]
 func (h *Handler) userSignUp(c *gin.Context) {
 	var inp service.UserSignUpInput
 	if err := c.BindJSON(&inp); err != nil {
@@ -51,4 +40,32 @@ func (h *Handler) userSignUp(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, user)
+}
+
+func (h *Handler) signIn(c *gin.Context) {
+	var inp service.UserSignInInput
+	if err := c.BindJSON(&inp); err != nil {
+		for _, fieldErr := range err.(validator.ValidationErrors) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": fieldErr.Field(), "message": fieldErr.Error()})
+			return
+		}
+	}
+
+	token, err := h.services.Tokens.CreateAuthToken(c.Request.Context(), inp.Email, inp.Password)
+
+	if err != nil {
+		if errors.Is(err, repository.ErrRecordNotFound) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "email", "message": "User with this email not found"})
+
+			return
+		}
+		if errors.Is(err, service.ErrPasswordDoesNotMatch) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "password", "message": "Password you passed to us is incorrect"})
+
+			return
+		}
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusCreated, token)
 }

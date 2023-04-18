@@ -8,13 +8,15 @@ import (
 //go:generate mockgen -source=service.go -destination=mocks/mock.go
 
 type Services struct {
-	Users UsersService
-	Email smtp.Mailer
+	Users  UsersService
+	Email  smtp.Mailer
+	Tokens TokensService
 }
 
 func NewServices(repos repository.Repositories, email smtp.Mailer) *Services {
 	return &Services{
-		Users: NewUsersService(repos.Users, repos.UsersCrm),
-		Email: email,
+		Users:  NewUsersService(repos.Users, repos.UsersCrm),
+		Email:  email,
+		Tokens: NewTokensService(repos.Tokens, repos.Users),
 	}
 }

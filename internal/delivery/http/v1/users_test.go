@@ -11,6 +11,7 @@ import (
 	mock_repository "github.com/semelyanov86/vtiger-portal/internal/repository/mocks"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
 	"github.com/stretchr/testify/assert"
+	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -138,6 +139,125 @@ func TestHandler_createUser(t *testing.T) {
 			w := httptest.NewRecorder()
 			req := httptest.NewRequest("POST", "/api/v1/users",
 				bytes.NewBufferString(tt.body))
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}
+
+func TestHandler_Login(t *testing.T) {
+	type mockRepositoryUser func(r *mock_repository.MockUsers)
+	type mockRepositoryToken func(r *mock_repository.MockTokens)
+	mockedUser := domain.User{
+		Id:        1,
+		Crmid:     "12x11",
+		FirstName: "Sergey",
+		LastName:  "Emelyanov",
+		Email:     "emelyanov86@km.ru",
+		Password:  domain.Password{},
+		CreatedAt: time.Time{},
+		UpdatedAt: time.Time{},
+		IsActive:  true,
+		Version:   1,
+	}
+	mockedToken := &domain.Token{
+		ID:        1,
+		Plaintext: "SOME_TEXT",
+		Hash:      "SOME_HASH",
+		UserId:    1,
+		Expiry:    time.Time{},
+		Scope:     domain.ScopeAuthentication,
+	}
+
+	tests := []struct {
+		name         string
+		email        string
+		password     string
+		mockUser     mockRepositoryUser
+		mockToken    mockRepositoryToken
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name:     "Login Successfull",
+			email:    "emelyanov86@km.ru",
+			password: "GoodPasswordHele",
+			mockUser: func(r *mock_repository.MockUsers) {
+				var pass domain.Password
+				pass.Set("GoodPasswordHele")
+				mockedUser.Password = pass
+				r.EXPECT().GetByEmail(context.Background(), "emelyanov86@km.ru").Return(mockedUser, nil)
+			},
+			mockToken: func(r *mock_repository.MockTokens) {
+				r.EXPECT().New(context.Background(), int64(1), 24*time.Hour*90, domain.ScopeAuthentication).Return(mockedToken, nil)
+			},
+			statusCode:   201,
+			responseBody: `"id":1,"token":"SOME_TEXT"`,
+		}, {
+			name:     "Wrong Email",
+			email:    "emelyanov8611@km.ru",
+			password: "GoodPasswordHele",
+			mockUser: func(r *mock_repository.MockUsers) {
+				var pass domain.Password
+				pass.Set("GoodPasswordHele")
+				mockedUser.Password = pass
+				r.EXPECT().GetByEmail(context.Background(), "emelyanov8611@km.ru").Return(mockedUser, repository.ErrRecordNotFound)
+			},
+			mockToken: func(r *mock_repository.MockTokens) {
+				//r.EXPECT().New(context.Background(), int64(1), 24*time.Hour*90, domain.ScopeAuthentication).Return(mockedToken, nil)
+			},
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `User with this email not found`,
+		}, {
+			name:     "Wrong Password",
+			email:    "emelyanov86@km.ru",
+			password: "PasswordWrong",
+			mockUser: func(r *mock_repository.MockUsers) {
+				r.EXPECT().GetByEmail(context.Background(), "emelyanov86@km.ru").Return(mockedUser, service.ErrPasswordDoesNotMatch)
+			},
+			mockToken: func(r *mock_repository.MockTokens) {
+				//r.EXPECT().New(context.Background(), int64(1), 24*time.Hour*90, domain.ScopeAuthentication).Return(mockedToken, nil)
+			},
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `Password you passed to us is incorrect`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rt := mock_repository.NewMockTokens(c)
+
+			ru := mock_repository.NewMockUsers(c)
+			tt.mockUser(ru)
+			tt.mockToken(rt)
+
+			tokensService := service.NewTokensService(rt, ru)
+
+			services := &service.Services{Tokens: tokensService}
+			handler := Handler{services: services}
+
+			// Init Endpoint
+			r := gin.New()
+			r.POST("/api/v1/users/login", func(c *gin.Context) {
+
+			}, handler.signIn)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("POST", "/api/v1/users/login",
+				bytes.NewBufferString(fmt.Sprintf(`{
+				  "email": "%s",
+				  "password": "%s"
+				}`, tt.email, tt.password)))
 
 			// Make Request
 			r.ServeHTTP(w, req)

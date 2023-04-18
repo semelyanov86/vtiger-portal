@@ -7,6 +7,7 @@ package mock_repository
 import (
 	context "context"
 	reflect "reflect"
+	time "time"
 
 	gomock "github.com/golang/mock/gomock"
 	domain "github.com/semelyanov86/vtiger-portal/internal/domain"
@@ -48,6 +49,21 @@ func (m *MockUsers) GetByEmail(ctx context.Context, email string) (domain.User, 
 func (mr *MockUsersMockRecorder) GetByEmail(ctx, email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockUsers)(nil).GetByEmail), ctx, email)
+}
+
+// GetForToken mocks base method.
+func (m *MockUsers) GetForToken(ctx context.Context, tokenScope, tokenPlaintext string) (*domain.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetForToken", ctx, tokenScope, tokenPlaintext)
+	ret0, _ := ret[0].(*domain.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetForToken indicates an expected call of GetForToken.
+func (mr *MockUsersMockRecorder) GetForToken(ctx, tokenScope, tokenPlaintext interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetForToken", reflect.TypeOf((*MockUsers)(nil).GetForToken), ctx, tokenScope, tokenPlaintext)
 }
 
 // Insert mocks base method.
@@ -114,4 +130,70 @@ func (m *MockUsersCrm) FindByEmail(ctx context.Context, email string) ([]domain.
 func (mr *MockUsersCrmMockRecorder) FindByEmail(ctx, email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmail", reflect.TypeOf((*MockUsersCrm)(nil).FindByEmail), ctx, email)
+}
+
+// MockTokens is a mock of Tokens interface.
+type MockTokens struct {
+	ctrl     *gomock.Controller
+	recorder *MockTokensMockRecorder
+}
+
+// MockTokensMockRecorder is the mock recorder for MockTokens.
+type MockTokensMockRecorder struct {
+	mock *MockTokens
+}
+
+// NewMockTokens creates a new mock instance.
+func NewMockTokens(ctrl *gomock.Controller) *MockTokens {
+	mock := &MockTokens{ctrl: ctrl}
+	mock.recorder = &MockTokensMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockTokens) EXPECT() *MockTokensMockRecorder {
+	return m.recorder
+}
+
+// DeleteAllForUser mocks base method.
+func (m *MockTokens) DeleteAllForUser(ctx context.Context, scope string, userId int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteAllForUser", ctx, scope, userId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteAllForUser indicates an expected call of DeleteAllForUser.
+func (mr *MockTokensMockRecorder) DeleteAllForUser(ctx, scope, userId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAllForUser", reflect.TypeOf((*MockTokens)(nil).DeleteAllForUser), ctx, scope, userId)
+}
+
+// Insert mocks base method.
+func (m *MockTokens) Insert(ctx context.Context, token *domain.Token) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Insert", ctx, token)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Insert indicates an expected call of Insert.
+func (mr *MockTokensMockRecorder) Insert(ctx, token interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockTokens)(nil).Insert), ctx, token)
+}
+
+// New mocks base method.
+func (m *MockTokens) New(ctx context.Context, userId int64, ttl time.Duration, scope string) (*domain.Token, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "New", ctx, userId, ttl, scope)
+	ret0, _ := ret[0].(*domain.Token)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// New indicates an expected call of New.
+func (mr *MockTokensMockRecorder) New(ctx, userId, ttl, scope interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "New", reflect.TypeOf((*MockTokens)(nil).New), ctx, userId, ttl, scope)
 }

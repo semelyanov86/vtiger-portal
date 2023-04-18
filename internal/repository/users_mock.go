@@ -25,3 +25,9 @@ func (r *UsersMock) GetByEmail(ctx context.Context, email string) (domain.User, 
 func (r *UsersMock) Update(ctx context.Context, user *domain.User) error {
 	return nil
 }
+
+func (r *UsersMock) GetForToken(ctx context.Context, tokenScope, tokenPlaintext string) (*domain.User, error) {
+	var user domain.User
+
+	return &user, nil
+}

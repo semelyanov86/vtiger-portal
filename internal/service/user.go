@@ -17,6 +17,11 @@ type UserSignUpInput struct {
 	Password string `json:"password" binding:"required,min=5,max=20"`
 }
 
+type UserSignInInput struct {
+	Email    string `json:"email" binding:"required,email,max=64"`
+	Password string `json:"password" binding:"required,min=5,max=20"`
+}
+
 type UsersService struct {
 	repo repository.Users
 	crm  repository.UsersCrm

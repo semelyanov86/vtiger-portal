@@ -262,36 +262,19 @@ func TestHandler_Login(t *testing.T) {
 }
 
 func TestHandler_userInfo(t *testing.T) {
-	type mockRepositoryCrm func(r *mock_repository.MockUsersCrm)
-	type mockRepositoryDb func(r *mock_repository.MockUsers)
-
 	tests := []struct {
 		name         string
-		mockCrm      mockRepositoryCrm
-		mockDb       mockRepositoryDb
 		userModel    *domain.User
 		statusCode   int
 		responseBody string
 	}{
 		{
-			name: "Get user info",
-			mockCrm: func(r *mock_repository.MockUsersCrm) {
-				r.EXPECT().RetrieveById(context.Background(), "12x11").Return(domain.User{}, service.ErrUserNotFound)
-			},
-			mockDb: func(r *mock_repository.MockUsers) {
-				r.EXPECT().GetById(context.Background(), int64(1)).Return(repository.MockedUser, nil)
-			},
+			name:         "Get user info",
 			statusCode:   http.StatusOK,
 			userModel:    &repository.MockedUser,
 			responseBody: `"email":"emelyanov86@km.ru",`,
 		}, {
-			name: "Get user if anonymous",
-			mockCrm: func(r *mock_repository.MockUsersCrm) {
-				//r.EXPECT().RetrieveById(context.Background(), "12x11").Return(domain.User{}, nil)
-			},
-			mockDb: func(r *mock_repository.MockUsers) {
-				//r.EXPECT().GetById(context.Background(), int64(1)).Return(repository.MockedUser, nil)
-			},
+			name:         "Get user if anonymous",
 			statusCode:   http.StatusUnauthorized,
 			userModel:    domain.AnonymousUser,
 			responseBody: `"error":"Anonymous Access",`,
@@ -305,11 +288,9 @@ func TestHandler_userInfo(t *testing.T) {
 			c := gomock.NewController(t)
 			defer c.Finish()
 
-			rc := mock_repository.NewMockUsersCrm(c)
+			rc := repository.NewUsersCrmMock(repository.MockedUser)
 
-			rd := mock_repository.NewMockUsers(c)
-			tt.mockCrm(rc)
-			tt.mockDb(rd)
+			rd := repository.NewUsersMock()
 
 			usersService := service.NewUsersService(rd, rc, &wg)
 

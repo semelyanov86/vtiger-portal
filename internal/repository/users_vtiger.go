@@ -36,3 +36,12 @@ func (receiver UsersVtiger) FindByEmail(ctx context.Context, email string) ([]do
 	}
 	return users, nil
 }
+
+func (receiver UsersVtiger) RetrieveById(ctx context.Context, id string) (domain.User, error) {
+	result, err := receiver.vtiger.Retrieve(ctx, id)
+	if err != nil {
+		return domain.User{}, e.Wrap("can not retrieve user with id"+id, err)
+	}
+	user := domain.ConvertMapToUser(result.Result)
+	return user, nil
+}

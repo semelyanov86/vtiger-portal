@@ -18,7 +18,9 @@ func TestNewHandler(t *testing.T) {
 }
 
 func TestNewHandler_Init(t *testing.T) {
-	h := http2.NewHandler(&service.Services{}, &config.Config{
+	h := http2.NewHandler(&service.Services{
+		Context: service.MockedContextService{},
+	}, &config.Config{
 		Limiter: config.Limiter{
 			Rps:   2,
 			Burst: 4,

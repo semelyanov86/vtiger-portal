@@ -51,6 +51,21 @@ func (mr *MockUsersMockRecorder) GetByEmail(ctx, email interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockUsers)(nil).GetByEmail), ctx, email)
 }
 
+// GetById mocks base method.
+func (m *MockUsers) GetById(ctx context.Context, id int64) (domain.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetById", ctx, id)
+	ret0, _ := ret[0].(domain.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetById indicates an expected call of GetById.
+func (mr *MockUsersMockRecorder) GetById(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockUsers)(nil).GetById), ctx, id)
+}
+
 // GetForToken mocks base method.
 func (m *MockUsers) GetForToken(ctx context.Context, tokenScope, tokenPlaintext string) (*domain.User, error) {
 	m.ctrl.T.Helper()
@@ -130,6 +145,21 @@ func (m *MockUsersCrm) FindByEmail(ctx context.Context, email string) ([]domain.
 func (mr *MockUsersCrmMockRecorder) FindByEmail(ctx, email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmail", reflect.TypeOf((*MockUsersCrm)(nil).FindByEmail), ctx, email)
+}
+
+// RetrieveById mocks base method.
+func (m *MockUsersCrm) RetrieveById(ctx context.Context, id string) (domain.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveById", ctx, id)
+	ret0, _ := ret[0].(domain.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveById indicates an expected call of RetrieveById.
+func (mr *MockUsersCrmMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockUsersCrm)(nil).RetrieveById), ctx, id)
 }
 
 // MockTokens is a mock of Tokens interface.

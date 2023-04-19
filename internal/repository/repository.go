@@ -17,10 +17,12 @@ type Users interface {
 	GetByEmail(ctx context.Context, email string) (domain.User, error)
 	Update(ctx context.Context, user *domain.User) error
 	GetForToken(ctx context.Context, tokenScope, tokenPlaintext string) (*domain.User, error)
+	GetById(ctx context.Context, id int64) (domain.User, error)
 }
 
 type UsersCrm interface {
 	FindByEmail(ctx context.Context, email string) ([]domain.User, error)
+	RetrieveById(ctx context.Context, id string) (domain.User, error)
 }
 
 type Tokens interface {

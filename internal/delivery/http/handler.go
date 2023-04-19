@@ -27,6 +27,7 @@ func (h *Handler) Init() *gin.Engine {
 		gin.Logger(),
 		limiter.Limit(int(h.config.Limiter.Rps), h.config.Limiter.Burst, h.config.Limiter.TTL),
 		h.corsMiddleware,
+		h.authenticate,
 	)
 
 	/*	docs.SwaggerInfo.Host = fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port)

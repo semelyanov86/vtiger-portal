@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 )
@@ -115,6 +116,7 @@ func TestHandler_createUser(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var wg sync.WaitGroup
 			// Init Dependencies
 			c := gomock.NewController(t)
 			defer c.Finish()
@@ -124,7 +126,7 @@ func TestHandler_createUser(t *testing.T) {
 			rcrm := mock_repository.NewMockUsersCrm(c)
 			tt.mockCrm(rcrm)
 
-			usersService := service.NewUsersService(rdb, rcrm)
+			usersService := service.NewUsersService(rdb, rcrm, &wg)
 
 			services := &service.Services{Users: usersService}
 			handler := Handler{services: services}
@@ -153,18 +155,8 @@ func TestHandler_createUser(t *testing.T) {
 func TestHandler_Login(t *testing.T) {
 	type mockRepositoryUser func(r *mock_repository.MockUsers)
 	type mockRepositoryToken func(r *mock_repository.MockTokens)
-	mockedUser := domain.User{
-		Id:        1,
-		Crmid:     "12x11",
-		FirstName: "Sergey",
-		LastName:  "Emelyanov",
-		Email:     "emelyanov86@km.ru",
-		Password:  domain.Password{},
-		CreatedAt: time.Time{},
-		UpdatedAt: time.Time{},
-		IsActive:  true,
-		Version:   1,
-	}
+	mockedUserModel := repository.MockedUser
+
 	mockedToken := &domain.Token{
 		ID:        1,
 		Plaintext: "SOME_TEXT",
@@ -190,8 +182,8 @@ func TestHandler_Login(t *testing.T) {
 			mockUser: func(r *mock_repository.MockUsers) {
 				var pass domain.Password
 				pass.Set("GoodPasswordHele")
-				mockedUser.Password = pass
-				r.EXPECT().GetByEmail(context.Background(), "emelyanov86@km.ru").Return(mockedUser, nil)
+				mockedUserModel.Password = pass
+				r.EXPECT().GetByEmail(context.Background(), "emelyanov86@km.ru").Return(mockedUserModel, nil)
 			},
 			mockToken: func(r *mock_repository.MockTokens) {
 				r.EXPECT().New(context.Background(), int64(1), 24*time.Hour*90, domain.ScopeAuthentication).Return(mockedToken, nil)
@@ -205,8 +197,8 @@ func TestHandler_Login(t *testing.T) {
 			mockUser: func(r *mock_repository.MockUsers) {
 				var pass domain.Password
 				pass.Set("GoodPasswordHele")
-				mockedUser.Password = pass
-				r.EXPECT().GetByEmail(context.Background(), "emelyanov8611@km.ru").Return(mockedUser, repository.ErrRecordNotFound)
+				mockedUserModel.Password = pass
+				r.EXPECT().GetByEmail(context.Background(), "emelyanov8611@km.ru").Return(mockedUserModel, repository.ErrRecordNotFound)
 			},
 			mockToken: func(r *mock_repository.MockTokens) {
 				//r.EXPECT().New(context.Background(), int64(1), 24*time.Hour*90, domain.ScopeAuthentication).Return(mockedToken, nil)
@@ -218,7 +210,7 @@ func TestHandler_Login(t *testing.T) {
 			email:    "emelyanov86@km.ru",
 			password: "PasswordWrong",
 			mockUser: func(r *mock_repository.MockUsers) {
-				r.EXPECT().GetByEmail(context.Background(), "emelyanov86@km.ru").Return(mockedUser, service.ErrPasswordDoesNotMatch)
+				r.EXPECT().GetByEmail(context.Background(), "emelyanov86@km.ru").Return(mockedUserModel, service.ErrPasswordDoesNotMatch)
 			},
 			mockToken: func(r *mock_repository.MockTokens) {
 				//r.EXPECT().New(context.Background(), int64(1), 24*time.Hour*90, domain.ScopeAuthentication).Return(mockedToken, nil)
@@ -262,6 +254,83 @@ func TestHandler_Login(t *testing.T) {
 			// Make Request
 			r.ServeHTTP(w, req)
 
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}
+
+func TestHandler_userInfo(t *testing.T) {
+	type mockRepositoryCrm func(r *mock_repository.MockUsersCrm)
+	type mockRepositoryDb func(r *mock_repository.MockUsers)
+
+	tests := []struct {
+		name         string
+		mockCrm      mockRepositoryCrm
+		mockDb       mockRepositoryDb
+		userModel    *domain.User
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name: "Get user info",
+			mockCrm: func(r *mock_repository.MockUsersCrm) {
+				r.EXPECT().RetrieveById(context.Background(), "12x11").Return(domain.User{}, service.ErrUserNotFound)
+			},
+			mockDb: func(r *mock_repository.MockUsers) {
+				r.EXPECT().GetById(context.Background(), int64(1)).Return(repository.MockedUser, nil)
+			},
+			statusCode:   http.StatusOK,
+			userModel:    &repository.MockedUser,
+			responseBody: `"email":"emelyanov86@km.ru",`,
+		}, {
+			name: "Get user if anonymous",
+			mockCrm: func(r *mock_repository.MockUsersCrm) {
+				//r.EXPECT().RetrieveById(context.Background(), "12x11").Return(domain.User{}, nil)
+			},
+			mockDb: func(r *mock_repository.MockUsers) {
+				//r.EXPECT().GetById(context.Background(), int64(1)).Return(repository.MockedUser, nil)
+			},
+			statusCode:   http.StatusUnauthorized,
+			userModel:    domain.AnonymousUser,
+			responseBody: `"error":"Anonymous Access",`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var wg sync.WaitGroup
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rc := mock_repository.NewMockUsersCrm(c)
+
+			rd := mock_repository.NewMockUsers(c)
+			tt.mockCrm(rc)
+			tt.mockDb(rd)
+
+			usersService := service.NewUsersService(rd, rc, &wg)
+
+			services := &service.Services{Users: usersService, Context: service.MockedContextService{MockedUser: tt.userModel}}
+			handler := Handler{services: services}
+
+			// Init Endpoint
+			r := gin.New()
+
+			r.GET("/api/v1/users/my", func(c *gin.Context) {
+
+			}, handler.getUserInfo)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("GET", "/api/v1/users/my", nil)
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			wg.Wait()
 			// Assert
 			assert.Equal(t, tt.statusCode, w.Code)
 			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)

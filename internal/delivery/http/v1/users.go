@@ -14,6 +14,7 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 	{
 		users.POST("/", h.userSignUp)
 		users.POST("/login", h.signIn)
+		users.GET("/my", h.getUserInfo)
 	}
 }
 
@@ -68,4 +69,19 @@ func (h *Handler) signIn(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, token)
+}
+
+func (h Handler) getUserInfo(c *gin.Context) {
+	userModel := h.services.Context.ContextGetUser(c)
+
+	if userModel.Crmid == "" || userModel.Id < 1 {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Anonymous Access", "field": "crmid", "message": "Got anonymous user from token or user without crmid"})
+		return
+	}
+	user, err := h.services.Users.GetUserById(c.Request.Context(), userModel.Id)
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, user)
 }

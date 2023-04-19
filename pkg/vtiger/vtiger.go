@@ -142,9 +142,7 @@ func (c VtigerConnector) Query(ctx context.Context, query string) (*VtigerRespon
 	return processVtigerResponse[[]map[string]any](resp, vtigerResponse)
 }
 
-/*func (c VtigerConnector) retrieve(id string) (*VtigerResponse[map[string]any], error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*TimeoutInSec)
-	defer cancel()
+func (c VtigerConnector) Retrieve(ctx context.Context, id string) (*VtigerResponse[map[string]any], error) {
 	sessionID, err := c.sessionId()
 	if err != nil {
 		return nil, err
@@ -169,7 +167,7 @@ func (c VtigerConnector) Query(ctx context.Context, query string) (*VtigerRespon
 	vtigerResponse := &VtigerResponse[map[string]any]{}
 
 	return processVtigerResponse[map[string]any](resp, vtigerResponse)
-}*/
+}
 
 func (c VtigerConnector) getToken() (SessionData, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*TimeoutInSec)
@@ -244,11 +242,17 @@ func (c VtigerConnector) sessionId() (string, error) {
 	}
 
 	if cachedSessionData != nil {
+		decodedSessionData = &SessionData{}
 		err = json.Unmarshal(cachedSessionData, decodedSessionData)
 		if err != nil {
+			if jsonErr, ok := err.(*json.SyntaxError); ok {
+				problemPart := cachedSessionData[jsonErr.Offset-10 : jsonErr.Offset+10]
+
+				err = fmt.Errorf("%w ~ error near '%s' (offset %d)", err, problemPart, jsonErr.Offset)
+			}
 			return "", e.Wrap("can not convert caches data to session", err)
 		}
-		if decodedSessionData.ExpireTime > time.Now().Unix() || sessionData.Token == "" {
+		if decodedSessionData.ExpireTime > time.Now().Unix() || decodedSessionData.Token == "" {
 			sessionData, err = c.storeSession()
 			if err != nil {
 				return "", e.Wrap("can not receive session data", err)

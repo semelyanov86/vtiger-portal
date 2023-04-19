@@ -16,23 +16,15 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"sync"
 	"syscall"
 	"time"
 )
 
-// @title Customer Portal for Vtiger
-// @version 1.0
-// @description REST API for Customer Portal
-
-// @host localhost:4050
-// @BasePath /api/v1/
-
-// @securityDefinitions.apikey UsersAuth
-// @in header
-// @name Authorization
-
 // Run initializes whole application.
 func Run(configPath string) {
+	var wg sync.WaitGroup
+
 	cfg := config.Init(configPath)
 	db, err := openDB(cfg)
 	if err != nil {
@@ -43,7 +35,7 @@ func Run(configPath string) {
 	emailSender := smtp.NewMailer(cfg.Smtp.Host, cfg.Smtp.Port, cfg.Smtp.Username, cfg.Smtp.Password, cfg.Smtp.Sender)
 
 	repos := repository.NewRepositories(db, *cfg, memcache)
-	services := service.NewServices(*repos, emailSender)
+	services := service.NewServices(*repos, emailSender, &wg)
 	handlers := http2.NewHandler(services, cfg)
 	// HTTP Server
 	srv := server.NewServer(cfg, handlers.Init())
@@ -66,6 +58,7 @@ func Run(configPath string) {
 
 	ctx, shutdown := context.WithTimeout(context.Background(), timeout)
 	defer shutdown()
+	wg.Wait()
 
 	if err := srv.Stop(ctx); err != nil {
 		logger.Error(logger.GenerateErrorMessageFromString("Failed to stop server: " + err.Error()))

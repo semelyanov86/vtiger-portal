@@ -6,6 +6,9 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/logger"
+	"strconv"
+	"sync"
 	"time"
 )
 
@@ -25,10 +28,11 @@ type UserSignInInput struct {
 type UsersService struct {
 	repo repository.Users
 	crm  repository.UsersCrm
+	wg   *sync.WaitGroup
 }
 
-func NewUsersService(repo repository.Users, crm repository.UsersCrm) UsersService {
-	return UsersService{repo: repo, crm: crm}
+func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup) UsersService {
+	return UsersService{repo: repo, crm: crm, wg: wg}
 }
 
 func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput) (*domain.User, error) {
@@ -57,6 +61,35 @@ func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput) (*domai
 	}
 
 	return user, nil
+}
+
+func (s UsersService) GetUserByToken(ctx context.Context, token string) (*domain.User, error) {
+	return s.repo.GetForToken(ctx, domain.ScopeAuthentication, token)
+}
+
+func (s UsersService) GetUserById(ctx context.Context, id int64) (*domain.User, error) {
+	user, err := s.repo.GetById(ctx, id)
+	if err != nil {
+		return nil, e.Wrap("can not get user by id "+strconv.Itoa(int(id)), err)
+	}
+	s.wg.Add(1)
+	go func() {
+		defer s.wg.Done()
+		ctx2, cancel := context.WithTimeout(context.Background(), time.Second*5)
+		defer cancel()
+		updatedUser, err := s.crm.RetrieveById(ctx2, user.Crmid)
+		updatedUser.Id = id
+		if err != nil {
+			logger.Error(logger.GenerateErrorMessageFromString(err.Error()))
+			return
+		}
+		err = s.repo.Update(ctx2, &updatedUser)
+		if err != nil {
+			logger.Error(logger.GenerateErrorMessageFromString(err.Error()))
+			return
+		}
+	}()
+	return &user, nil
 }
 
 func FillVtigerContactWithAdditionalValues(user *domain.User, password string) error {

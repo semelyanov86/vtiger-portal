@@ -82,9 +82,38 @@ func (r *UsersRepo) GetByEmail(ctx context.Context, email string) (domain.User, 
 	return user, nil
 }
 
+func (r *UsersRepo) GetById(ctx context.Context, id int64) (domain.User, error) {
+	var query = `SELECT id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, password, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, version FROM users WHERE id = ?`
+	var user domain.User
+
+	err := r.db.QueryRowContext(ctx, query, id).Scan(
+		&user.Id,
+		&user.Crmid,
+		&user.FirstName,
+		&user.LastName,
+		&user.Description,
+		&user.AccountId,
+		&user.AccountName,
+		&user.Title,
+		&user.Department,
+		&user.Email, &user.Password.Hash,
+		&user.CreatedAt, &user.UpdatedAt,
+		&user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Version,
+	)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return user, ErrRecordNotFound
+		default:
+			return user, err
+		}
+	}
+	return user, nil
+}
+
 func (r *UsersRepo) Update(ctx context.Context, user *domain.User) error {
-	var query = `UPDATE users SET first_name = ?, last_name = ?, description = ?, account_id = ?, account_name = ?, title = ?, department = ?, email = ?, password = ?, updated_at = NOW(), is_active = ?, mailingcity = ?, mailingstreet = ?, mailingcountry = ?, othercountry = ?, mailingstate = ?, mailingpobox = ?, othercity = ?, otherstate = ?, mailingzip = ?, otherzip = ?, otherstreet = ?, otherpobox = ?, image = ?, version = version + 1 WHERE id = ? AND version = ?`
-	var args = []any{user.FirstName, user.LastName, user.Description, user.AccountId, user.AccountName, user.Title, user.Department, user.Email, user.Password.Hash, user.IsActive, user.MailingCity, user.MailingStreet, user.MailingCountry, user.OtherCountry, user.MailingState, user.MailingPoBox, user.OtherCity, user.OtherState, user.MailingZip, user.OtherZip, user.OtherStreet, user.OtherPoBox, user.Image, user.Id, user.Version}
+	var query = `UPDATE users SET first_name = ?, last_name = ?, description = ?, account_id = ?, account_name = ?, title = ?, department = ?, email = ?, password = ?, updated_at = NOW(), is_active = ?, mailingcity = ?, mailingstreet = ?, mailingcountry = ?, othercountry = ?, mailingstate = ?, mailingpobox = ?, othercity = ?, otherstate = ?, mailingzip = ?, otherzip = ?, otherstreet = ?, otherpobox = ?, image = ?, version = version + 1 WHERE id = ?`
+	var args = []any{user.FirstName, user.LastName, user.Description, user.AccountId, user.AccountName, user.Title, user.Department, user.Email, user.Password.Hash, user.IsActive, user.MailingCity, user.MailingStreet, user.MailingCountry, user.OtherCountry, user.MailingState, user.MailingPoBox, user.OtherCity, user.OtherState, user.MailingZip, user.OtherZip, user.OtherStreet, user.OtherPoBox, user.Image, user.Id}
 
 	_, err := r.db.ExecContext(ctx, query, args...)
 	if err != nil {

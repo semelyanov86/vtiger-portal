@@ -32,6 +32,10 @@ type Tokens interface {
 	New(ctx context.Context, userId int64, ttl time.Duration, scope string) (*domain.Token, error)
 }
 
+type Managers interface {
+	RetrieveById(ctx context.Context, id string) (domain.Manager, error)
+}
+
 var ErrRecordNotFound = errors.New("record not found")
 var ErrEditConflict = errors.New("edit conflict")
 var ErrWrongCrmId = errors.New("wrong crm id")
@@ -40,6 +44,7 @@ type Repositories struct {
 	Users    Users
 	UsersCrm UsersCrm
 	Tokens   *TokensRepo
+	Managers Managers
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -47,5 +52,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		Users:    NewUsersRepo(db),
 		UsersCrm: NewUsersVtiger(config, cache),
 		Tokens:   NewTokensRepo(db),
+		Managers: NewManagersCrm(config, cache),
 	}
 }

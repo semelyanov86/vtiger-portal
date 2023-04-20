@@ -75,7 +75,7 @@ func (h *Handler) signIn(c *gin.Context) {
 func (h Handler) getUserInfo(c *gin.Context) {
 	userModel := h.services.Context.ContextGetUser(c)
 	if userModel.Crmid == "" || userModel.Id < 1 {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Anonymous Access", "field": "crmid", "message": "Got anonymous user from token or user without crmid"})
+		anonymousResponse(c)
 		return
 	}
 	user, err := h.services.Users.GetUserById(c.Request.Context(), userModel.Id)

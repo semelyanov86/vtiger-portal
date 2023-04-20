@@ -242,3 +242,41 @@ func (mr *MockTokensMockRecorder) New(ctx, userId, ttl, scope interface{}) *gomo
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "New", reflect.TypeOf((*MockTokens)(nil).New), ctx, userId, ttl, scope)
 }
+
+// MockManagers is a mock of Managers interface.
+type MockManagers struct {
+	ctrl     *gomock.Controller
+	recorder *MockManagersMockRecorder
+}
+
+// MockManagersMockRecorder is the mock recorder for MockManagers.
+type MockManagersMockRecorder struct {
+	mock *MockManagers
+}
+
+// NewMockManagers creates a new mock instance.
+func NewMockManagers(ctrl *gomock.Controller) *MockManagers {
+	mock := &MockManagers{ctrl: ctrl}
+	mock.recorder = &MockManagersMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockManagers) EXPECT() *MockManagersMockRecorder {
+	return m.recorder
+}
+
+// RetrieveById mocks base method.
+func (m *MockManagers) RetrieveById(ctx context.Context, id string) (domain.Manager, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveById", ctx, id)
+	ret0, _ := ret[0].(domain.Manager)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveById indicates an expected call of RetrieveById.
+func (mr *MockManagersMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockManagers)(nil).RetrieveById), ctx, id)
+}

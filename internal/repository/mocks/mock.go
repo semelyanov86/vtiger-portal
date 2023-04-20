@@ -132,6 +132,21 @@ func (m *MockUsersCrm) EXPECT() *MockUsersCrmMockRecorder {
 	return m.recorder
 }
 
+// ClearUserCodeField mocks base method.
+func (m *MockUsersCrm) ClearUserCodeField(ctx context.Context, id string) (domain.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ClearUserCodeField", ctx, id)
+	ret0, _ := ret[0].(domain.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ClearUserCodeField indicates an expected call of ClearUserCodeField.
+func (mr *MockUsersCrmMockRecorder) ClearUserCodeField(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClearUserCodeField", reflect.TypeOf((*MockUsersCrm)(nil).ClearUserCodeField), ctx, id)
+}
+
 // FindByEmail mocks base method.
 func (m *MockUsersCrm) FindByEmail(ctx context.Context, email string) ([]domain.User, error) {
 	m.ctrl.T.Helper()

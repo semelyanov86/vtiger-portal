@@ -31,6 +31,7 @@ limiter:
 cors:
   trustedOrigins: ["127.0.0.1"]
 email:
+  sendWelcomeEmail: true
   templates:
     registrationEmail: "./templates/registration_email.html"
     ticketSuccessful: "./templates/ticket_successful.html"
@@ -47,3 +48,6 @@ vtiger:
   business:
     emailField: "email"
     codeField: "code"
+    supportEmail: "emelyanov86@list.ru"
+    companyName: "SergeyEm"
+    clearCode: true

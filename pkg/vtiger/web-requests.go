@@ -2,6 +2,7 @@ package vtiger
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"io"
@@ -58,6 +59,43 @@ func (w WebRequests) SendData(ctx context.Context, data RequestData) ([]byte, er
 		"username":    {data.FormParams.Username},
 		"accessKey":   {data.FormParams.AccessKey},
 		"sessionName": {data.FormParams.SessionName},
+	}
+	reqBody := strings.NewReader(form.Encode())
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, w.config.Url, reqBody)
+
+	if err != nil {
+		return []byte{}, err
+	}
+	req.Header.Set("User-Agent", "Go-Portal")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return []byte{}, err
+	}
+	if res.StatusCode != http.StatusOK {
+		return []byte{}, e.Wrap("status code: "+strconv.Itoa(res.StatusCode), ErrWrongStatusCode)
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return body, nil
+}
+
+func (w WebRequests) SendObject(ctx context.Context, operation string, session string, elementType string, data map[string]any) ([]byte, error) {
+	jsonObject, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	form := url.Values{
+		"operation":   {operation},
+		"sessionName": {session},
+		"element":     {string(jsonObject)},
+		"elementType": {elementType},
 	}
 	reqBody := strings.NewReader(form.Encode())
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, w.config.Url, reqBody)

@@ -56,8 +56,9 @@ type (
 		TTL     time.Duration
 	}
 	EmailConfig struct {
-		Templates EmailTemplates `yaml:"templates"`
-		Subjects  EmailSubjects  `yaml:"subjects"`
+		SendWelcomeEmail bool           `yaml:"sendWelcomeEmail"`
+		Templates        EmailTemplates `yaml:"templates"`
+		Subjects         EmailSubjects  `yaml:"subjects"`
 	}
 
 	EmailTemplates struct {
@@ -74,8 +75,11 @@ type (
 		Business   VtigerBusinessConfig          `yaml:"business"`
 	}
 	VtigerBusinessConfig struct {
-		EmailField string `yaml:"emailField"`
-		CodeField  string `yaml:"codeField"`
+		EmailField   string `yaml:"emailField"`
+		CodeField    string `yaml:"codeField"`
+		SupportEmail string `yaml:"supportEmail"`
+		CompanyName  string `yaml:"companyName"`
+		ClearCode    bool   `yaml:"clearCode"`
 	}
 )
 

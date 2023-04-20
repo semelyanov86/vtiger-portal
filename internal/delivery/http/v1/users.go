@@ -27,7 +27,7 @@ func (h *Handler) userSignUp(c *gin.Context) {
 		}
 	}
 
-	user, err := h.services.Users.SignUp(c.Request.Context(), inp)
+	user, err := h.services.Users.SignUp(c.Request.Context(), inp, h.config)
 
 	if err != nil {
 		if errors.Is(err, repository.ErrDuplicateEmail) {

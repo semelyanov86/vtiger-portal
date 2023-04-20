@@ -23,6 +23,7 @@ type Users interface {
 type UsersCrm interface {
 	FindByEmail(ctx context.Context, email string) ([]domain.User, error)
 	RetrieveById(ctx context.Context, id string) (domain.User, error)
+	ClearUserCodeField(ctx context.Context, id string) (domain.User, error)
 }
 
 type Tokens interface {

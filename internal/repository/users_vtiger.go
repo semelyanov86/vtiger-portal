@@ -45,3 +45,21 @@ func (receiver UsersVtiger) RetrieveById(ctx context.Context, id string) (domain
 	user := domain.ConvertMapToUser(result.Result)
 	return user, nil
 }
+
+func (receiver UsersVtiger) ClearUserCodeField(ctx context.Context, id string) (domain.User, error) {
+	result, err := receiver.vtiger.Retrieve(ctx, id)
+	if err != nil {
+		return domain.User{}, e.Wrap("can not retrieve user with id"+id, err)
+	}
+	data := result.Result
+	codeField := receiver.config.Vtiger.Business.CodeField
+	if codeField != "" {
+		data[codeField] = ""
+	}
+	result, err = receiver.vtiger.Update(ctx, data)
+	if err != nil {
+		return domain.User{}, e.Wrap("can not retrieve user with id"+id, err)
+	}
+	user := domain.ConvertMapToUser(result.Result)
+	return user, nil
+}

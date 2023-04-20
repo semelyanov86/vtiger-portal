@@ -35,7 +35,7 @@ func Run(configPath string) {
 	emailSender := smtp.NewMailer(cfg.Smtp.Host, cfg.Smtp.Port, cfg.Smtp.Username, cfg.Smtp.Password, cfg.Smtp.Sender)
 
 	repos := repository.NewRepositories(db, *cfg, memcache)
-	services := service.NewServices(*repos, emailSender, &wg)
+	services := service.NewServices(*repos, emailSender, &wg, *cfg, memcache)
 	handlers := http2.NewHandler(services, cfg)
 	// HTTP Server
 	srv := server.NewServer(cfg, handlers.Init())

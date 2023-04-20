@@ -24,3 +24,7 @@ func (receiver UsersCrmMock) FindByEmail(ctx context.Context, email string) ([]d
 func (receiver UsersCrmMock) RetrieveById(ctx context.Context, id string) (domain.User, error) {
 	return receiver.user, nil
 }
+
+func (receiver UsersCrmMock) ClearUserCodeField(ctx context.Context, id string) (domain.User, error) {
+	return receiver.user, nil
+}

@@ -2,9 +2,11 @@ package service
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
-	"github.com/semelyanov86/vtiger-portal/pkg/email/smtp"
+	"github.com/semelyanov86/vtiger-portal/pkg/cache"
+	"github.com/semelyanov86/vtiger-portal/pkg/email"
 	"sync"
 )
 
@@ -12,15 +14,16 @@ import (
 
 type Services struct {
 	Users   UsersService
-	Email   smtp.Mailer
+	Emails  EmailService
 	Tokens  TokensService
 	Context ContextServiceInterface
 }
 
-func NewServices(repos repository.Repositories, email smtp.Mailer, wg *sync.WaitGroup) *Services {
+func NewServices(repos repository.Repositories, email email.Sender, wg *sync.WaitGroup, config config.Config, cache cache.Cache) *Services {
+	emailService := *NewEmailsService(email, config.Email, cache)
 	return &Services{
-		Users:   NewUsersService(repos.Users, repos.UsersCrm, wg),
-		Email:   email,
+		Users:   NewUsersService(repos.Users, repos.UsersCrm, wg, emailService),
+		Emails:  *NewEmailsService(email, config.Email, cache),
 		Tokens:  NewTokensService(repos.Tokens, repos.Users),
 		Context: NewContextService(),
 	}

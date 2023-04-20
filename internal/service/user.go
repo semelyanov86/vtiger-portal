@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
@@ -26,16 +27,17 @@ type UserSignInInput struct {
 }
 
 type UsersService struct {
-	repo repository.Users
-	crm  repository.UsersCrm
-	wg   *sync.WaitGroup
+	repo  repository.Users
+	crm   repository.UsersCrm
+	wg    *sync.WaitGroup
+	email EmailServiceInterface
 }
 
-func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup) UsersService {
-	return UsersService{repo: repo, crm: crm, wg: wg}
+func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface) UsersService {
+	return UsersService{repo: repo, crm: crm, wg: wg, email: email}
 }
 
-func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput) (*domain.User, error) {
+func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput, cfg *config.Config) (*domain.User, error) {
 	_, err := s.repo.GetByEmail(ctx, input.Email)
 	if !errors.Is(repository.ErrRecordNotFound, err) {
 		return nil, repository.ErrDuplicateEmail
@@ -51,13 +53,45 @@ func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput) (*domai
 			user = &u
 		}
 	}
-	FillVtigerContactWithAdditionalValues(user, input.Password)
+	err = FillVtigerContactWithAdditionalValues(user, input.Password)
+	if err != nil {
+		return nil, e.Wrap("can not fill data with additional values", err)
+	}
 	if user == nil || user.Crmid == "" {
 		return user, e.Wrap("can not find user in vtiger", ErrUserNotFound)
 	}
 
 	if err := s.repo.Insert(ctx, user); err != nil {
 		return user, err
+	}
+
+	if cfg.Vtiger.Business.ClearCode {
+		s.wg.Add(1)
+		go func() {
+			defer s.wg.Done()
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			_, err := s.crm.ClearUserCodeField(ctx, user.Crmid)
+			if err != nil {
+				logger.Error(logger.GenerateErrorMessageFromString(err.Error()))
+			}
+		}()
+	}
+
+	if cfg.Email.SendWelcomeEmail {
+		s.wg.Add(1)
+		go func() {
+			defer s.wg.Done()
+			err = s.email.SendGreetingsToUser(VerificationEmailInput{
+				Name:         user.FirstName + " " + user.LastName,
+				CompanyName:  cfg.Vtiger.Business.CompanyName,
+				SupportEmail: cfg.Vtiger.Business.SupportEmail,
+				Email:        user.Email,
+			})
+			if err != nil {
+				logger.Error(logger.GenerateErrorMessageFromString(err.Error()))
+			}
+		}()
 	}
 
 	return user, nil

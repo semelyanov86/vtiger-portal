@@ -3,3 +3,62 @@
 
 // Package mock_service is a generated GoMock package.
 package mock_service
+
+import (
+	reflect "reflect"
+
+	gin "github.com/gin-gonic/gin"
+	gomock "github.com/golang/mock/gomock"
+	domain "github.com/semelyanov86/vtiger-portal/internal/domain"
+)
+
+// MockContextServiceInterface is a mock of ContextServiceInterface interface.
+type MockContextServiceInterface struct {
+	ctrl     *gomock.Controller
+	recorder *MockContextServiceInterfaceMockRecorder
+}
+
+// MockContextServiceInterfaceMockRecorder is the mock recorder for MockContextServiceInterface.
+type MockContextServiceInterfaceMockRecorder struct {
+	mock *MockContextServiceInterface
+}
+
+// NewMockContextServiceInterface creates a new mock instance.
+func NewMockContextServiceInterface(ctrl *gomock.Controller) *MockContextServiceInterface {
+	mock := &MockContextServiceInterface{ctrl: ctrl}
+	mock.recorder = &MockContextServiceInterfaceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockContextServiceInterface) EXPECT() *MockContextServiceInterfaceMockRecorder {
+	return m.recorder
+}
+
+// ContextGetUser mocks base method.
+func (m *MockContextServiceInterface) ContextGetUser(c *gin.Context) *domain.User {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ContextGetUser", c)
+	ret0, _ := ret[0].(*domain.User)
+	return ret0
+}
+
+// ContextGetUser indicates an expected call of ContextGetUser.
+func (mr *MockContextServiceInterfaceMockRecorder) ContextGetUser(c interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContextGetUser", reflect.TypeOf((*MockContextServiceInterface)(nil).ContextGetUser), c)
+}
+
+// ContextSetUser mocks base method.
+func (m *MockContextServiceInterface) ContextSetUser(c *gin.Context, user *domain.User) *gin.Context {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ContextSetUser", c, user)
+	ret0, _ := ret[0].(*gin.Context)
+	return ret0
+}
+
+// ContextSetUser indicates an expected call of ContextSetUser.
+func (mr *MockContextServiceInterfaceMockRecorder) ContextSetUser(c, user interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContextSetUser", reflect.TypeOf((*MockContextServiceInterface)(nil).ContextSetUser), c, user)
+}

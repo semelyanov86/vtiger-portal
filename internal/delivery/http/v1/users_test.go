@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	mock_repository "github.com/semelyanov86/vtiger-portal/internal/repository/mocks"
@@ -126,10 +127,10 @@ func TestHandler_createUser(t *testing.T) {
 			rcrm := mock_repository.NewMockUsersCrm(c)
 			tt.mockCrm(rcrm)
 
-			usersService := service.NewUsersService(rdb, rcrm, &wg)
+			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService())
 
 			services := &service.Services{Users: usersService}
-			handler := Handler{services: services}
+			handler := Handler{services: services, config: &config.Config{}}
 
 			// Init Endpoint
 			r := gin.New()
@@ -292,7 +293,7 @@ func TestHandler_userInfo(t *testing.T) {
 
 			rd := repository.NewUsersMock()
 
-			usersService := service.NewUsersService(rd, rc, &wg)
+			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService())
 
 			services := &service.Services{Users: usersService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}

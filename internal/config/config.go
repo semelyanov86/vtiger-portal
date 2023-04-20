@@ -16,6 +16,7 @@ type (
 		Db          DatabaseConfig `yaml:"db"`
 		Smtp        SmtpConfig     `yaml:"smtp"`
 		Limiter     Limiter        `yaml:"limiter"`
+		Domain      string         `yaml:"domain"`
 		Cors        struct {
 			TrustedOrigins []string `yaml:"trustedOrigins"`
 		}
@@ -62,13 +63,15 @@ type (
 	}
 
 	EmailTemplates struct {
-		RegistrationEmail string `yaml:"registrationEmail"`
-		TicketSuccessful  string `yaml:"ticketSuccessful"`
+		RegistrationEmail    string `yaml:"registrationEmail"`
+		TicketSuccessful     string `yaml:"ticketSuccessful"`
+		RestorePasswordEmail string `yaml:"restorePasswordEmail"`
 	}
 
 	EmailSubjects struct {
 		RegistrationEmail string `yaml:"registrationEmail"`
 		TicketSuccessful  string `yaml:"ticketSuccessful"`
+		RestorePassword   string `yaml:"restorePassword"`
 	}
 	VtigerConfig struct {
 		Connection vtiger.VtigerConnectionConfig `yaml:"connection"`

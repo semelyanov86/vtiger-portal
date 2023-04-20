@@ -233,7 +233,7 @@ func TestHandler_Login(t *testing.T) {
 			tt.mockUser(ru)
 			tt.mockToken(rt)
 
-			tokensService := service.NewTokensService(rt, ru)
+			tokensService := service.NewTokensService(rt, ru, service.NewMockEmailService(), config.Config{})
 
 			services := &service.Services{Tokens: tokensService}
 			handler := Handler{services: services}
@@ -313,6 +313,93 @@ func TestHandler_userInfo(t *testing.T) {
 			r.ServeHTTP(w, req)
 
 			wg.Wait()
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}
+
+func TestHandler_restorePassword(t *testing.T) {
+	type mockRepositoryUser func(r *mock_repository.MockUsers)
+	type mockRepositoryToken func(r *mock_repository.MockTokens)
+
+	mockedUserModel := repository.MockedUser
+
+	mockedToken := &domain.Token{
+		ID:        2,
+		Plaintext: "PASS_TEXT",
+		Hash:      "PASS_HASH",
+		UserId:    1,
+		Expiry:    time.Time{},
+		Scope:     domain.ScopePasswordReset,
+	}
+
+	tests := []struct {
+		name         string
+		email        string
+		mockUser     mockRepositoryUser
+		mockToken    mockRepositoryToken
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name:  "Token sent",
+			email: "emelyanov86@km.ru",
+			mockUser: func(r *mock_repository.MockUsers) {
+				r.EXPECT().GetByEmail(context.Background(), "emelyanov86@km.ru").Return(mockedUserModel, nil)
+			},
+			mockToken: func(r *mock_repository.MockTokens) {
+				r.EXPECT().New(context.Background(), int64(1), 45*time.Minute, domain.ScopePasswordReset).Return(mockedToken, nil)
+			},
+			statusCode:   201,
+			responseBody: `"message":"Token successfully created, please check an email"`,
+		},
+		{
+			name:  "Token sent",
+			email: "wrong-email",
+			mockUser: func(r *mock_repository.MockUsers) {
+			},
+			mockToken: func(r *mock_repository.MockTokens) {
+			},
+			statusCode:   400,
+			responseBody: `Error:Field validation for 'Email' failed on the 'email' tag`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rt := mock_repository.NewMockTokens(c)
+
+			ru := mock_repository.NewMockUsers(c)
+			tt.mockUser(ru)
+			tt.mockToken(rt)
+
+			tokensService := service.NewTokensService(rt, ru, service.NewMockEmailService(), config.Config{})
+
+			services := &service.Services{Tokens: tokensService}
+			handler := Handler{services: services}
+
+			// Init Endpoint
+			r := gin.New()
+			r.POST("/api/v1/users/restore", func(c *gin.Context) {
+
+			}, handler.sendRestoreToken)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("POST", "/api/v1/users/restore",
+				bytes.NewBufferString(fmt.Sprintf(`{
+				  "email": "%s"
+				}`, tt.email)))
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
 			// Assert
 			assert.Equal(t, tt.statusCode, w.Code)
 			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)

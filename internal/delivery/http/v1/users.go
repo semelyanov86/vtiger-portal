@@ -15,6 +15,7 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 		users.POST("/", h.userSignUp)
 		users.POST("/login", h.signIn)
 		users.GET("/my", h.getUserInfo)
+		users.POST("/restore", h.sendRestoreToken)
 	}
 }
 
@@ -83,4 +84,32 @@ func (h Handler) getUserInfo(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, user)
+}
+
+func (h Handler) sendRestoreToken(c *gin.Context) {
+	type UserEmailInput struct {
+		Email string `json:"email" binding:"required,email,max=64"`
+	}
+	var inp UserEmailInput
+	if err := c.BindJSON(&inp); err != nil {
+		for _, fieldErr := range err.(validator.ValidationErrors) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": fieldErr.Field(), "message": fieldErr.Error()})
+			return
+		}
+	}
+	err := h.services.Tokens.SendPasswordResetToken(c.Request.Context(), inp.Email)
+	if errors.Is(repository.ErrRecordNotFound, err) {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "email", "message": "User with this email not found"})
+		return
+	}
+	if errors.Is(service.ErrUserIsNotActive, err) {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "is_active", "message": "This user was disabled in portal"})
+		return
+	}
+
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{"success": true, "message": "Token successfully created, please check an email"})
 }

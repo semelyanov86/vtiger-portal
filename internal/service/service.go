@@ -24,7 +24,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 	return &Services{
 		Users:   NewUsersService(repos.Users, repos.UsersCrm, wg, emailService),
 		Emails:  *NewEmailsService(email, config.Email, cache),
-		Tokens:  NewTokensService(repos.Tokens, repos.Users),
+		Tokens:  NewTokensService(repos.Tokens, repos.Users, emailService, config),
 		Context: NewContextService(),
 	}
 }

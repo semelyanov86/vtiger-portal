@@ -30,14 +30,17 @@ limiter:
   ttl: 10m
 cors:
   trustedOrigins: ["127.0.0.1"]
+domain: "http://127.0.0.1"
 email:
   sendWelcomeEmail: true
   templates:
     registrationEmail: "./templates/registration_email.html"
     ticketSuccessful: "./templates/ticket_successful.html"
+    restorePasswordEmail: "./templates/password_reset.html"
   subjects:
     registrationEmail: "Спасибо за регистрацию, %s!"
     ticketSuccessful: "Тикет размещён успешно!"
+    restorePassword: "Сброс пароля от клиентского портала"
 vtiger:
   connection:
     url: "https://serv.itvolga.com/webservice.php"

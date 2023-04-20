@@ -15,6 +15,8 @@ import (
 
 var ErrUserNotFound = errors.New("user not found")
 
+var ErrUserIsNotActive = errors.New("user is not active")
+
 type UserSignUpInput struct {
 	Email    string `json:"email" binding:"required,email,max=64"`
 	Code     string `json:"code" binding:"required,min=3,max=10"`
@@ -129,6 +131,7 @@ func (s UsersService) GetUserById(ctx context.Context, id int64) (*domain.User, 
 func FillVtigerContactWithAdditionalValues(user *domain.User, password string) error {
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
+	user.IsActive = true
 	err := user.Password.Set(password)
 	if err != nil {
 		return e.Wrap("can not hash password", err)

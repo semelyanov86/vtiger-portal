@@ -40,8 +40,8 @@ func (h *Handler) Init() *gin.Engine {
 	}*/
 
 	// Init router
-	router.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
+	router.GET("/api/v1/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": "active"})
 	})
 
 	h.initAPI(router)

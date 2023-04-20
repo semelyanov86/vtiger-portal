@@ -33,7 +33,7 @@ func TestNewHandler_Init(t *testing.T) {
 	ts := httptest.NewServer(router)
 	defer ts.Close()
 
-	res, err := http.Get(ts.URL + "/ping")
+	res, err := http.Get(ts.URL + "/api/v1/ping")
 	if err != nil {
 		t.Error(err)
 	}

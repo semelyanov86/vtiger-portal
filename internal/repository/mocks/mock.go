@@ -11,6 +11,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	domain "github.com/semelyanov86/vtiger-portal/internal/domain"
+	vtiger "github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 // MockUsers is a mock of Users interface.
@@ -279,4 +280,42 @@ func (m *MockManagers) RetrieveById(ctx context.Context, id string) (domain.Mana
 func (mr *MockManagersMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockManagers)(nil).RetrieveById), ctx, id)
+}
+
+// MockModules is a mock of Modules interface.
+type MockModules struct {
+	ctrl     *gomock.Controller
+	recorder *MockModulesMockRecorder
+}
+
+// MockModulesMockRecorder is the mock recorder for MockModules.
+type MockModulesMockRecorder struct {
+	mock *MockModules
+}
+
+// NewMockModules creates a new mock instance.
+func NewMockModules(ctrl *gomock.Controller) *MockModules {
+	mock := &MockModules{ctrl: ctrl}
+	mock.recorder = &MockModulesMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockModules) EXPECT() *MockModulesMockRecorder {
+	return m.recorder
+}
+
+// GetModuleInfo mocks base method.
+func (m *MockModules) GetModuleInfo(ctx context.Context, module string) (vtiger.Module, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetModuleInfo", ctx, module)
+	ret0, _ := ret[0].(vtiger.Module)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetModuleInfo indicates an expected call of GetModuleInfo.
+func (mr *MockModulesMockRecorder) GetModuleInfo(ctx, module interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetModuleInfo", reflect.TypeOf((*MockModules)(nil).GetModuleInfo), ctx, module)
 }

@@ -51,7 +51,7 @@ type SessionData struct {
 }
 
 type ResultData interface {
-	SessionData | map[string]any | []map[string]any
+	SessionData | Module | map[string]any | []map[string]any
 }
 
 type ErrorData struct {
@@ -167,6 +167,33 @@ func (c VtigerConnector) Retrieve(ctx context.Context, id string) (*VtigerRespon
 	vtigerResponse := &VtigerResponse[map[string]any]{}
 
 	return processVtigerResponse[map[string]any](resp, vtigerResponse)
+}
+
+func (c VtigerConnector) Describe(ctx context.Context, element string) (*VtigerResponse[Module], error) {
+	sessionID, err := c.sessionId()
+	if err != nil {
+		return nil, err
+	}
+
+	webRequest := NewWebRequest(c.connection)
+
+	// send a request to retrieve a record
+	resp, err := webRequest.FetchBytes(ctx, url.Values{
+		"operation":   {"describe"},
+		"sessionName": {sessionID},
+		"elementType": {element},
+	}.Encode())
+	if err != nil {
+		return nil, e.Wrap("code 7", err)
+	}
+
+	err = c.close(sessionID)
+	if err != nil {
+		return nil, err
+	}
+	vtigerResponse := &VtigerResponse[Module]{}
+
+	return processVtigerResponse[Module](resp, vtigerResponse)
 }
 
 func (c VtigerConnector) Update(ctx context.Context, data map[string]any) (*VtigerResponse[map[string]any], error) {

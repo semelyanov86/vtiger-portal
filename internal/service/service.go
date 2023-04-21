@@ -18,6 +18,7 @@ type Services struct {
 	Tokens   TokensService
 	Context  ContextServiceInterface
 	Managers ManagerService
+	Modules  ModulesService
 }
 
 func NewServices(repos repository.Repositories, email email.Sender, wg *sync.WaitGroup, config config.Config, cache cache.Cache) *Services {
@@ -28,6 +29,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		Tokens:   NewTokensService(repos.Tokens, repos.Users, emailService, config),
 		Context:  NewContextService(),
 		Managers: NewManagerService(repos.Managers, cache),
+		Modules:  NewModulesService(repos.Modules, cache),
 	}
 }
 

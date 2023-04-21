@@ -7,6 +7,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"time"
 )
 
@@ -36,6 +37,10 @@ type Managers interface {
 	RetrieveById(ctx context.Context, id string) (domain.Manager, error)
 }
 
+type Modules interface {
+	GetModuleInfo(ctx context.Context, module string) (vtiger.Module, error)
+}
+
 var ErrRecordNotFound = errors.New("record not found")
 var ErrEditConflict = errors.New("edit conflict")
 var ErrWrongCrmId = errors.New("wrong crm id")
@@ -45,6 +50,7 @@ type Repositories struct {
 	UsersCrm UsersCrm
 	Tokens   *TokensRepo
 	Managers Managers
+	Modules  ModulesCrm
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -53,5 +59,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		UsersCrm: NewUsersVtiger(config, cache),
 		Tokens:   NewTokensRepo(db),
 		Managers: NewManagersCrm(config, cache),
+		Modules:  NewModulesCrm(config, cache),
 	}
 }

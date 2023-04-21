@@ -129,7 +129,7 @@ func TestHandler_createUser(t *testing.T) {
 			tt.mockCrm(rcrm)
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService(), companyService)
+			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c))
 
 			services := &service.Services{Users: usersService}
 			handler := Handler{services: services, config: &config.Config{}}
@@ -297,7 +297,7 @@ func TestHandler_userInfo(t *testing.T) {
 			rd := repository.NewUsersMock()
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService)
+			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c))
 
 			services := &service.Services{Users: usersService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -401,6 +401,79 @@ func TestHandler_restorePassword(t *testing.T) {
 				bytes.NewBufferString(fmt.Sprintf(`{
 				  "email": "%s"
 				}`, tt.email)))
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}
+
+func TestHandler_resetPassword(t *testing.T) {
+	type mockRepositoryToken func(r *mock_repository.MockTokens)
+
+	tests := []struct {
+		name         string
+		token        string
+		password     string
+		mockToken    mockRepositoryToken
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name:     "Password updated",
+			token:    "ISBTSR6CWE7ZNQGWN2QIHRFGNA",
+			password: "NewPasswordHere",
+			mockToken: func(r *mock_repository.MockTokens) {
+				r.EXPECT().DeleteAllForUser(context.Background(), domain.ScopePasswordReset, int64(1)).Return(nil)
+			},
+			statusCode:   http.StatusAccepted,
+			responseBody: `"email":"emelyanov86@km.ru"`,
+		}, {
+			name:     "Wrong Token",
+			token:    "",
+			password: "NewPasswordHere",
+			mockToken: func(r *mock_repository.MockTokens) {
+				//r.EXPECT().DeleteAllForUser(context.Background(), domain.ScopePasswordReset, int64(1)).Return(nil)
+			},
+			statusCode:   http.StatusBadRequest,
+			responseBody: `"error":"Validation Error",`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var wg sync.WaitGroup
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rt := mock_repository.NewMockTokens(c)
+
+			tt.mockToken(rt)
+
+			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
+			rc := repository.NewUsersCrmMock(repository.MockedUser)
+			usersService := service.NewUsersService(repository.NewUsersMock(), rc, &wg, service.NewMockEmailService(), companyService, rt)
+
+			services := &service.Services{Users: usersService}
+			handler := Handler{services: services}
+
+			// Init Endpoint
+			r := gin.New()
+			r.PUT("/api/v1/users/password", func(c *gin.Context) {
+
+			}, handler.resetPassword)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("PUT", "/api/v1/users/password",
+				bytes.NewBufferString(fmt.Sprintf(`{
+				  "token": "%s", "password": "%s"
+				}`, tt.token, tt.password)))
 
 			// Make Request
 			r.ServeHTTP(w, req)

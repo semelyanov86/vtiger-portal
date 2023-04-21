@@ -28,16 +28,22 @@ type UserSignInInput struct {
 	Password string `json:"password" binding:"required,min=5,max=20"`
 }
 
-type UsersService struct {
-	repo    repository.Users
-	crm     repository.UsersCrm
-	wg      *sync.WaitGroup
-	email   EmailServiceInterface
-	company Company
+type PasswordResetInput struct {
+	Token    string `json:"token" binding:"required,min=5,max=40"`
+	Password string `json:"password" binding:"required,min=5,max=20"`
 }
 
-func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface, company Company) UsersService {
-	return UsersService{repo: repo, crm: crm, wg: wg, email: email, company: company}
+type UsersService struct {
+	repo            repository.Users
+	crm             repository.UsersCrm
+	wg              *sync.WaitGroup
+	email           EmailServiceInterface
+	company         Company
+	tokenRepository repository.Tokens
+}
+
+func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface, company Company, tokenRepository repository.Tokens) UsersService {
+	return UsersService{repo: repo, crm: crm, wg: wg, email: email, company: company, tokenRepository: tokenRepository}
 }
 
 func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput, cfg *config.Config) (*domain.User, error) {
@@ -131,6 +137,26 @@ func (s UsersService) GetUserById(ctx context.Context, id int64) (*domain.User, 
 		}
 	}()
 	return &user, nil
+}
+
+func (s UsersService) ResetUserPassword(ctx context.Context, input PasswordResetInput) (domain.User, error) {
+	user, err := s.repo.GetForToken(ctx, domain.ScopePasswordReset, input.Token)
+	if err != nil {
+		return domain.User{}, err
+	}
+	err = user.Password.Set(input.Password)
+	if err != nil {
+		return *user, err
+	}
+	err = s.repo.Update(ctx, user)
+	if err != nil {
+		return *user, err
+	}
+	err = s.tokenRepository.DeleteAllForUser(ctx, domain.ScopePasswordReset, user.Id)
+	if err != nil {
+		return *user, err
+	}
+	return *user, nil
 }
 
 func FillVtigerContactWithAdditionalValues(user *domain.User, password string) error {

@@ -46,7 +46,5 @@ func (r *UsersMock) GetById(ctx context.Context, id int64) (domain.User, error) 
 }
 
 func (r *UsersMock) GetForToken(ctx context.Context, tokenScope, tokenPlaintext string) (*domain.User, error) {
-	var user domain.User
-
-	return &user, nil
+	return &MockedUser, nil
 }

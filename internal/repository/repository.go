@@ -41,6 +41,10 @@ type Modules interface {
 	GetModuleInfo(ctx context.Context, module string) (vtiger.Module, error)
 }
 
+type Company interface {
+	GetCompanyInfo(ctx context.Context) (domain.Company, error)
+}
+
 var ErrRecordNotFound = errors.New("record not found")
 var ErrEditConflict = errors.New("edit conflict")
 var ErrWrongCrmId = errors.New("wrong crm id")
@@ -51,6 +55,7 @@ type Repositories struct {
 	Tokens   *TokensRepo
 	Managers Managers
 	Modules  ModulesCrm
+	Company  Company
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -60,5 +65,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		Tokens:   NewTokensRepo(db),
 		Managers: NewManagersCrm(config, cache),
 		Modules:  NewModulesCrm(config, cache),
+		Company:  NewCompanyCrm(config, cache),
 	}
 }

@@ -29,14 +29,15 @@ type UserSignInInput struct {
 }
 
 type UsersService struct {
-	repo  repository.Users
-	crm   repository.UsersCrm
-	wg    *sync.WaitGroup
-	email EmailServiceInterface
+	repo    repository.Users
+	crm     repository.UsersCrm
+	wg      *sync.WaitGroup
+	email   EmailServiceInterface
+	company Company
 }
 
-func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface) UsersService {
-	return UsersService{repo: repo, crm: crm, wg: wg, email: email}
+func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface, company Company) UsersService {
+	return UsersService{repo: repo, crm: crm, wg: wg, email: email, company: company}
 }
 
 func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput, cfg *config.Config) (*domain.User, error) {
@@ -81,12 +82,16 @@ func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput, cfg *co
 	}
 
 	if cfg.Email.SendWelcomeEmail {
+		companyData, err := s.company.GetCompany(ctx)
+		if err != nil {
+			return nil, e.Wrap("can not send email because company data not received", err)
+		}
 		s.wg.Add(1)
 		go func() {
 			defer s.wg.Done()
 			err = s.email.SendGreetingsToUser(VerificationEmailInput{
 				Name:         user.FirstName + " " + user.LastName,
-				CompanyName:  cfg.Vtiger.Business.CompanyName,
+				CompanyName:  companyData.OrganizationName,
 				SupportEmail: cfg.Vtiger.Business.SupportEmail,
 				Email:        user.Email,
 			})

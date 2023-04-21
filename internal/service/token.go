@@ -15,16 +15,18 @@ type TokensService struct {
 	userRepo repository.Users
 	emails   EmailServiceInterface
 	config   config.Config
+	company  Company
 }
 
 var ErrPasswordDoesNotMatch = errors.New("password does not match")
 
-func NewTokensService(repo repository.Tokens, userRepo repository.Users, emails EmailServiceInterface, config config.Config) TokensService {
+func NewTokensService(repo repository.Tokens, userRepo repository.Users, emails EmailServiceInterface, config config.Config, company Company) TokensService {
 	return TokensService{
 		repo:     repo,
 		userRepo: userRepo,
 		emails:   emails,
 		config:   config,
+		company:  company,
 	}
 }
 
@@ -53,12 +55,16 @@ func (s TokensService) SendPasswordResetToken(ctx context.Context, email string)
 	if err != nil {
 		return e.Wrap("Can not create new token", err)
 	}
+	companyData, err := s.company.GetCompany(ctx)
+	if err != nil {
+		return e.Wrap("can not send email because company data not received", err)
+	}
 	emailData := PasswordRestoreData{
 		Name:    user.FirstName + " " + user.LastName,
 		Email:   user.Email,
 		Token:   token.Plaintext,
 		Valid:   token.Expiry,
-		Company: s.config.Vtiger.Business.CompanyName,
+		Company: companyData.OrganizationName,
 		Support: s.config.Vtiger.Business.SupportEmail,
 		Domain:  s.config.Domain,
 		Subject: s.config.Email.Subjects.RestorePassword,

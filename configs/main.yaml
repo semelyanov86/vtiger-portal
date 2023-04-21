@@ -52,5 +52,5 @@ vtiger:
     emailField: "email"
     codeField: "code"
     supportEmail: "emelyanov86@list.ru"
-    companyName: "SergeyEm"
+    companyId: "23x1"
     clearCode: true

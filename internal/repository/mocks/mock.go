@@ -319,3 +319,41 @@ func (mr *MockModulesMockRecorder) GetModuleInfo(ctx, module interface{}) *gomoc
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetModuleInfo", reflect.TypeOf((*MockModules)(nil).GetModuleInfo), ctx, module)
 }
+
+// MockCompany is a mock of Company interface.
+type MockCompany struct {
+	ctrl     *gomock.Controller
+	recorder *MockCompanyMockRecorder
+}
+
+// MockCompanyMockRecorder is the mock recorder for MockCompany.
+type MockCompanyMockRecorder struct {
+	mock *MockCompany
+}
+
+// NewMockCompany creates a new mock instance.
+func NewMockCompany(ctrl *gomock.Controller) *MockCompany {
+	mock := &MockCompany{ctrl: ctrl}
+	mock.recorder = &MockCompanyMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockCompany) EXPECT() *MockCompanyMockRecorder {
+	return m.recorder
+}
+
+// GetCompanyInfo mocks base method.
+func (m *MockCompany) GetCompanyInfo(ctx context.Context) (domain.Company, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCompanyInfo", ctx)
+	ret0, _ := ret[0].(domain.Company)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCompanyInfo indicates an expected call of GetCompanyInfo.
+func (mr *MockCompanyMockRecorder) GetCompanyInfo(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCompanyInfo", reflect.TypeOf((*MockCompany)(nil).GetCompanyInfo), ctx)
+}

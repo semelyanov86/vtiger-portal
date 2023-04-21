@@ -81,7 +81,7 @@ type (
 		EmailField   string `yaml:"emailField"`
 		CodeField    string `yaml:"codeField"`
 		SupportEmail string `yaml:"supportEmail"`
-		CompanyName  string `yaml:"companyName"`
+		CompanyId    string `yaml:"companyId"`
 		ClearCode    bool   `yaml:"clearCode"`
 	}
 )

@@ -11,6 +11,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	mock_repository "github.com/semelyanov86/vtiger-portal/internal/repository/mocks"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
+	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -127,7 +128,8 @@ func TestHandler_createUser(t *testing.T) {
 			rcrm := mock_repository.NewMockUsersCrm(c)
 			tt.mockCrm(rcrm)
 
-			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService())
+			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
+			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService(), companyService)
 
 			services := &service.Services{Users: usersService}
 			handler := Handler{services: services, config: &config.Config{}}
@@ -233,7 +235,8 @@ func TestHandler_Login(t *testing.T) {
 			tt.mockUser(ru)
 			tt.mockToken(rt)
 
-			tokensService := service.NewTokensService(rt, ru, service.NewMockEmailService(), config.Config{})
+			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
+			tokensService := service.NewTokensService(rt, ru, service.NewMockEmailService(), config.Config{}, companyService)
 
 			services := &service.Services{Tokens: tokensService}
 			handler := Handler{services: services}
@@ -293,7 +296,8 @@ func TestHandler_userInfo(t *testing.T) {
 
 			rd := repository.NewUsersMock()
 
-			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService())
+			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
+			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService)
 
 			services := &service.Services{Users: usersService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -379,7 +383,8 @@ func TestHandler_restorePassword(t *testing.T) {
 			tt.mockUser(ru)
 			tt.mockToken(rt)
 
-			tokensService := service.NewTokensService(rt, ru, service.NewMockEmailService(), config.Config{})
+			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
+			tokensService := service.NewTokensService(rt, ru, service.NewMockEmailService(), config.Config{}, companyService)
 
 			services := &service.Services{Tokens: tokensService}
 			handler := Handler{services: services}

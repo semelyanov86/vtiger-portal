@@ -19,17 +19,20 @@ type Services struct {
 	Context  ContextServiceInterface
 	Managers ManagerService
 	Modules  ModulesService
+	Company  Company
 }
 
 func NewServices(repos repository.Repositories, email email.Sender, wg *sync.WaitGroup, config config.Config, cache cache.Cache) *Services {
 	emailService := *NewEmailsService(email, config.Email, cache)
+	companyService := NewCompanyService(repos.Company, cache)
 	return &Services{
-		Users:    NewUsersService(repos.Users, repos.UsersCrm, wg, emailService),
+		Users:    NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService),
 		Emails:   *NewEmailsService(email, config.Email, cache),
-		Tokens:   NewTokensService(repos.Tokens, repos.Users, emailService, config),
+		Tokens:   NewTokensService(repos.Tokens, repos.Users, emailService, config, companyService),
 		Context:  NewContextService(),
 		Managers: NewManagerService(repos.Managers, cache),
 		Modules:  NewModulesService(repos.Modules, cache),
+		Company:  companyService,
 	}
 }
 

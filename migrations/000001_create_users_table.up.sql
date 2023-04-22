@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `users`
     `otherstreet` VarChar( 250 ) NOT NULL DEFAULT '',
     `otherpobox` VarChar( 30 ) NOT NULL DEFAULT '',
     `image` VARCHAR(190) NOT NULL DEFAULT '',
+    `imageattachmentids` varchar(190) NOT NULL DEFAULT '',
     `version`    INT             NOT NULL DEFAULT 1 COMMENT 'Версия записи, каждое обновление увеличивает индекс на 1'
 );
 

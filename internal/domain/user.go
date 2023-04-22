@@ -7,35 +7,36 @@ import (
 import "github.com/jameskeane/bcrypt"
 
 type User struct {
-	Id             int64     `json:"id"`
-	Crmid          string    `json:"crmid"`
-	FirstName      string    `json:"firstname"`
-	LastName       string    `json:"lastname"`
-	Description    string    `json:"description"`
-	AccountId      string    `json:"account_id"`
-	AccountName    string    `json:"account_name"`
-	Title          string    `json:"title"`
-	Department     string    `json:"department"`
-	Email          string    `json:"email"`
-	Password       Password  `json:"-"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
-	IsActive       bool      `json:"is_active"`
-	MailingCity    string    `json:"mailingcity"`
-	MailingStreet  string    `json:"mailingstreet"`
-	MailingCountry string    `json:"mailingcountry"`
-	OtherCountry   string    `json:"othercountry"`
-	MailingState   string    `json:"mailingstate"`
-	MailingPoBox   string    `json:"mailingpobox"`
-	OtherCity      string    `json:"othercity"`
-	OtherState     string    `json:"otherstate"`
-	MailingZip     string    `json:"mailingzip"`
-	OtherZip       string    `json:"otherzip"`
-	OtherStreet    string    `json:"otherstreet"`
-	OtherPoBox     string    `json:"otherpobox"`
-	Image          string    `json:"image"`
-	Version        int       `json:"-"`
-	Code           string    `json:"-"`
+	Id                 int64     `json:"id"`
+	Crmid              string    `json:"crmid"`
+	FirstName          string    `json:"firstname"`
+	LastName           string    `json:"lastname"`
+	Description        string    `json:"description"`
+	AccountId          string    `json:"account_id"`
+	AccountName        string    `json:"account_name"`
+	Title              string    `json:"title"`
+	Department         string    `json:"department"`
+	Email              string    `json:"email"`
+	Password           Password  `json:"-"`
+	CreatedAt          time.Time `json:"created_at"`
+	UpdatedAt          time.Time `json:"updated_at"`
+	IsActive           bool      `json:"is_active"`
+	MailingCity        string    `json:"mailingcity"`
+	MailingStreet      string    `json:"mailingstreet"`
+	MailingCountry     string    `json:"mailingcountry"`
+	OtherCountry       string    `json:"othercountry"`
+	MailingState       string    `json:"mailingstate"`
+	MailingPoBox       string    `json:"mailingpobox"`
+	OtherCity          string    `json:"othercity"`
+	OtherState         string    `json:"otherstate"`
+	MailingZip         string    `json:"mailingzip"`
+	OtherZip           string    `json:"otherzip"`
+	OtherStreet        string    `json:"otherstreet"`
+	OtherPoBox         string    `json:"otherpobox"`
+	Image              string    `json:"image"`
+	Version            int       `json:"-"`
+	Code               string    `json:"-"`
+	Imageattachmentids string    `json:"imageattachmentids"`
 }
 
 var AnonymousUser = &User{}
@@ -139,6 +140,8 @@ func ConvertMapToUser(m map[string]any) User {
 			user.OtherPoBox = v.(string)
 		case "image":
 			user.Image = v.(string)
+		case "imageattachmentids":
+			user.Imageattachmentids = v.(string)
 		}
 	}
 

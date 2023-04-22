@@ -34,3 +34,12 @@ func anonymousResponse(c *gin.Context) {
 	}
 	c.AbortWithStatusJSON(http.StatusUnauthorized, message)
 }
+
+func notPermittedResponse(c *gin.Context) {
+	message := validationResponse{
+		Error:   "Access Not Permitted",
+		Field:   "crmid",
+		Message: "You are not allowed to view this record",
+	}
+	c.AbortWithStatusJSON(http.StatusForbidden, message)
+}

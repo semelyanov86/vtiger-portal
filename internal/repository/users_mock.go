@@ -9,6 +9,7 @@ import (
 var MockedUser = domain.User{
 	Id:          1,
 	Crmid:       "12x11",
+	AccountId:   "11x1",
 	FirstName:   "Sergey",
 	LastName:    "Emelyanov",
 	Description: "Test Description",

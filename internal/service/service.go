@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
@@ -20,7 +21,10 @@ type Services struct {
 	Managers ManagerService
 	Modules  ModulesService
 	Company  Company
+	HelpDesk HelpDesk
 }
+
+var ErrOperationNotPermitted = errors.New("you are not permitted to view this record")
 
 func NewServices(repos repository.Repositories, email email.Sender, wg *sync.WaitGroup, config config.Config, cache cache.Cache) *Services {
 	emailService := *NewEmailsService(email, config.Email, cache)
@@ -33,6 +37,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		Managers: NewManagerService(repos.Managers, cache),
 		Modules:  NewModulesService(repos.Modules, cache),
 		Company:  companyService,
+		HelpDesk: NewHelpDeskService(repos.HelpDesk, cache),
 	}
 }
 

@@ -45,6 +45,10 @@ type Company interface {
 	GetCompanyInfo(ctx context.Context) (domain.Company, error)
 }
 
+type HelpDesk interface {
+	RetrieveById(ctx context.Context, id string) (domain.HelpDesk, error)
+}
+
 var ErrRecordNotFound = errors.New("record not found")
 var ErrEditConflict = errors.New("edit conflict")
 var ErrWrongCrmId = errors.New("wrong crm id")
@@ -56,6 +60,7 @@ type Repositories struct {
 	Managers Managers
 	Modules  ModulesCrm
 	Company  Company
+	HelpDesk HelpDesk
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -66,5 +71,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		Managers: NewManagersCrm(config, cache),
 		Modules:  NewModulesCrm(config, cache),
 		Company:  NewCompanyCrm(config, cache),
+		HelpDesk: NewHelpDeskCrm(config, cache),
 	}
 }

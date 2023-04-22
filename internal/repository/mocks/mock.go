@@ -357,3 +357,41 @@ func (mr *MockCompanyMockRecorder) GetCompanyInfo(ctx interface{}) *gomock.Call 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCompanyInfo", reflect.TypeOf((*MockCompany)(nil).GetCompanyInfo), ctx)
 }
+
+// MockHelpDesk is a mock of HelpDesk interface.
+type MockHelpDesk struct {
+	ctrl     *gomock.Controller
+	recorder *MockHelpDeskMockRecorder
+}
+
+// MockHelpDeskMockRecorder is the mock recorder for MockHelpDesk.
+type MockHelpDeskMockRecorder struct {
+	mock *MockHelpDesk
+}
+
+// NewMockHelpDesk creates a new mock instance.
+func NewMockHelpDesk(ctrl *gomock.Controller) *MockHelpDesk {
+	mock := &MockHelpDesk{ctrl: ctrl}
+	mock.recorder = &MockHelpDeskMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockHelpDesk) EXPECT() *MockHelpDeskMockRecorder {
+	return m.recorder
+}
+
+// RetrieveById mocks base method.
+func (m *MockHelpDesk) RetrieveById(ctx context.Context, id string) (domain.HelpDesk, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveById", ctx, id)
+	ret0, _ := ret[0].(domain.HelpDesk)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveById indicates an expected call of RetrieveById.
+func (mr *MockHelpDeskMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockHelpDesk)(nil).RetrieveById), ctx, id)
+}

@@ -54,3 +54,4 @@ vtiger:
     supportEmail: "emelyanov86@list.ru"
     companyId: "23x1"
     clearCode: true
+    defaultPagination: 20

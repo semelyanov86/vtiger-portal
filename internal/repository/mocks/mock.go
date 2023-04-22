@@ -11,6 +11,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	domain "github.com/semelyanov86/vtiger-portal/internal/domain"
+	repository "github.com/semelyanov86/vtiger-portal/internal/repository"
 	vtiger "github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
@@ -379,6 +380,36 @@ func NewMockHelpDesk(ctrl *gomock.Controller) *MockHelpDesk {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockHelpDesk) EXPECT() *MockHelpDeskMockRecorder {
 	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockHelpDesk) Count(ctx context.Context, client string) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, client)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockHelpDeskMockRecorder) Count(ctx, client interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockHelpDesk)(nil).Count), ctx, client)
+}
+
+// GetAll mocks base method.
+func (m *MockHelpDesk) GetAll(ctx context.Context, filter repository.TicketsQueryFilter) ([]domain.HelpDesk, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
+	ret0, _ := ret[0].([]domain.HelpDesk)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAll indicates an expected call of GetAll.
+func (mr *MockHelpDeskMockRecorder) GetAll(ctx, filter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockHelpDesk)(nil).GetAll), ctx, filter)
 }
 
 // RetrieveById mocks base method.

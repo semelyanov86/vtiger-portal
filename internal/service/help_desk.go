@@ -72,3 +72,12 @@ func (h HelpDesk) GetRelatedComments(ctx context.Context, id string, companyId s
 	}
 	return h.comment.GetRelated(ctx, id)
 }
+
+func (h HelpDesk) GetAll(ctx context.Context, filter repository.TicketsQueryFilter) ([]domain.HelpDesk, int, error) {
+	tickets, err := h.repository.GetAll(ctx, filter)
+	if err != nil {
+		return tickets, 0, err
+	}
+	count, err := h.repository.Count(ctx, filter.Client)
+	return tickets, count, err
+}

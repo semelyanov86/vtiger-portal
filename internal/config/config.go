@@ -78,11 +78,12 @@ type (
 		Business   VtigerBusinessConfig          `yaml:"business"`
 	}
 	VtigerBusinessConfig struct {
-		EmailField   string `yaml:"emailField"`
-		CodeField    string `yaml:"codeField"`
-		SupportEmail string `yaml:"supportEmail"`
-		CompanyId    string `yaml:"companyId"`
-		ClearCode    bool   `yaml:"clearCode"`
+		EmailField        string `yaml:"emailField"`
+		CodeField         string `yaml:"codeField"`
+		SupportEmail      string `yaml:"supportEmail"`
+		CompanyId         string `yaml:"companyId"`
+		ClearCode         bool   `yaml:"clearCode"`
+		DefaultPagination int    `yaml:"defaultPagination"`
 	}
 )
 

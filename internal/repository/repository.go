@@ -47,6 +47,8 @@ type Company interface {
 
 type HelpDesk interface {
 	RetrieveById(ctx context.Context, id string) (domain.HelpDesk, error)
+	GetAll(ctx context.Context, filter TicketsQueryFilter) ([]domain.HelpDesk, error)
+	Count(ctx context.Context, client string) (int, error)
 }
 
 type Comment interface {

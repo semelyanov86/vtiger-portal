@@ -16,12 +16,14 @@ const CacheHelpDeskTtl = 500
 type HelpDesk struct {
 	repository repository.HelpDesk
 	cache      cache.Cache
+	comment    CommentServiceInterface
 }
 
-func NewHelpDeskService(repository repository.HelpDesk, cache cache.Cache) HelpDesk {
+func NewHelpDeskService(repository repository.HelpDesk, cache cache.Cache, comments CommentServiceInterface) HelpDesk {
 	return HelpDesk{
 		repository: repository,
 		cache:      cache,
+		comment:    comments,
 	}
 }
 
@@ -58,4 +60,15 @@ func (h HelpDesk) GetHelpDeskById(ctx context.Context, id string) (domain.HelpDe
 
 func (h HelpDesk) retrieveHelpDesk(ctx context.Context, id string) (domain.HelpDesk, error) {
 	return h.repository.RetrieveById(ctx, id)
+}
+
+func (h HelpDesk) GetRelatedComments(ctx context.Context, id string, companyId string) ([]domain.Comment, error) {
+	helpDesk, err := h.GetHelpDeskById(ctx, id)
+	if err != nil {
+		return []domain.Comment{}, err
+	}
+	if helpDesk.ParentID != companyId {
+		return []domain.Comment{}, ErrOperationNotPermitted
+	}
+	return h.comment.GetRelated(ctx, id)
 }

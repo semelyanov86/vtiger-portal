@@ -142,6 +142,33 @@ func (c VtigerConnector) Query(ctx context.Context, query string) (*VtigerRespon
 	return processVtigerResponse[[]map[string]any](resp, vtigerResponse)
 }
 
+func (c VtigerConnector) RetrieveRelated(ctx context.Context, id string, module string) (*VtigerResponse[[]map[string]any], error) {
+	sessionID, err := c.sessionId()
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.fetcher.FetchBytes(ctx, url.Values{
+		"operation":    {"retrieve_related"},
+		"sessionName":  {sessionID},
+		"id":           {id},
+		"relatedLabel": {module},
+		"relatedType":  {module},
+	}.Encode())
+
+	if err != nil {
+		return nil, e.Wrap("code 7", err)
+	}
+
+	err = c.close(sessionID)
+	if err != nil {
+		return nil, err
+	}
+	vtigerResponse := &VtigerResponse[[]map[string]any]{}
+
+	return processVtigerResponse[[]map[string]any](resp, vtigerResponse)
+}
+
 func (c VtigerConnector) Retrieve(ctx context.Context, id string) (*VtigerResponse[map[string]any], error) {
 	sessionID, err := c.sessionId()
 	if err != nil {

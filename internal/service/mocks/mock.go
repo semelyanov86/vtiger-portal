@@ -5,6 +5,7 @@
 package mock_service
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gin "github.com/gin-gonic/gin"
@@ -61,4 +62,42 @@ func (m *MockContextServiceInterface) ContextSetUser(c *gin.Context, user *domai
 func (mr *MockContextServiceInterfaceMockRecorder) ContextSetUser(c, user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContextSetUser", reflect.TypeOf((*MockContextServiceInterface)(nil).ContextSetUser), c, user)
+}
+
+// MockCommentServiceInterface is a mock of CommentServiceInterface interface.
+type MockCommentServiceInterface struct {
+	ctrl     *gomock.Controller
+	recorder *MockCommentServiceInterfaceMockRecorder
+}
+
+// MockCommentServiceInterfaceMockRecorder is the mock recorder for MockCommentServiceInterface.
+type MockCommentServiceInterfaceMockRecorder struct {
+	mock *MockCommentServiceInterface
+}
+
+// NewMockCommentServiceInterface creates a new mock instance.
+func NewMockCommentServiceInterface(ctrl *gomock.Controller) *MockCommentServiceInterface {
+	mock := &MockCommentServiceInterface{ctrl: ctrl}
+	mock.recorder = &MockCommentServiceInterfaceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockCommentServiceInterface) EXPECT() *MockCommentServiceInterfaceMockRecorder {
+	return m.recorder
+}
+
+// GetRelated mocks base method.
+func (m *MockCommentServiceInterface) GetRelated(ctx context.Context, id string) ([]domain.Comment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRelated", ctx, id)
+	ret0, _ := ret[0].([]domain.Comment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRelated indicates an expected call of GetRelated.
+func (mr *MockCommentServiceInterfaceMockRecorder) GetRelated(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRelated", reflect.TypeOf((*MockCommentServiceInterface)(nil).GetRelated), ctx, id)
 }

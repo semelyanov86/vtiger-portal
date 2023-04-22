@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
@@ -22,6 +23,7 @@ type Services struct {
 	Modules  ModulesService
 	Company  Company
 	HelpDesk HelpDesk
+	Comments Comments
 }
 
 var ErrOperationNotPermitted = errors.New("you are not permitted to view this record")
@@ -29,6 +31,7 @@ var ErrOperationNotPermitted = errors.New("you are not permitted to view this re
 func NewServices(repos repository.Repositories, email email.Sender, wg *sync.WaitGroup, config config.Config, cache cache.Cache) *Services {
 	emailService := *NewEmailsService(email, config.Email, cache)
 	companyService := NewCompanyService(repos.Company, cache)
+	commentsService := NewComments(repos.Comments, cache)
 	return &Services{
 		Users:    NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens),
 		Emails:   *NewEmailsService(email, config.Email, cache),
@@ -37,11 +40,16 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		Managers: NewManagerService(repos.Managers, cache),
 		Modules:  NewModulesService(repos.Modules, cache),
 		Company:  companyService,
-		HelpDesk: NewHelpDeskService(repos.HelpDesk, cache),
+		HelpDesk: NewHelpDeskService(repos.HelpDesk, cache, commentsService),
+		Comments: commentsService,
 	}
 }
 
 type ContextServiceInterface interface {
 	ContextSetUser(c *gin.Context, user *domain.User) *gin.Context
 	ContextGetUser(c *gin.Context) *domain.User
+}
+
+type CommentServiceInterface interface {
+	GetRelated(ctx context.Context, id string) ([]domain.Comment, error)
 }

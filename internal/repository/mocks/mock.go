@@ -395,3 +395,41 @@ func (mr *MockHelpDeskMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockHelpDesk)(nil).RetrieveById), ctx, id)
 }
+
+// MockComment is a mock of Comment interface.
+type MockComment struct {
+	ctrl     *gomock.Controller
+	recorder *MockCommentMockRecorder
+}
+
+// MockCommentMockRecorder is the mock recorder for MockComment.
+type MockCommentMockRecorder struct {
+	mock *MockComment
+}
+
+// NewMockComment creates a new mock instance.
+func NewMockComment(ctrl *gomock.Controller) *MockComment {
+	mock := &MockComment{ctrl: ctrl}
+	mock.recorder = &MockCommentMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockComment) EXPECT() *MockCommentMockRecorder {
+	return m.recorder
+}
+
+// RetrieveFromModule mocks base method.
+func (m *MockComment) RetrieveFromModule(ctx context.Context, id string) ([]domain.Comment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveFromModule", ctx, id)
+	ret0, _ := ret[0].([]domain.Comment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveFromModule indicates an expected call of RetrieveFromModule.
+func (mr *MockCommentMockRecorder) RetrieveFromModule(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveFromModule", reflect.TypeOf((*MockComment)(nil).RetrieveFromModule), ctx, id)
+}

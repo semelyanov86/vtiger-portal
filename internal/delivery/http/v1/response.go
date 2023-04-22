@@ -2,14 +2,21 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/pkg/logger"
 	"net/http"
 )
 
-/*type dataResponse struct {
-	Data  interface{} `json:"data"`
-	Count int64       `json:"count"`
-}*/
+type DataResponse[T DataResponseModules] struct {
+	Data  []T `json:"data"`
+	Count int `json:"count"`
+	Page  int `json:"page"`
+	Size  int `json:"size"`
+}
+
+type DataResponseModules interface {
+	domain.Comment | domain.HelpDesk
+}
 
 type response struct {
 	Message string `json:"message"`

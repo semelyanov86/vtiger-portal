@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"bytes"
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
@@ -11,6 +12,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/service"
 	mock_service "github.com/semelyanov86/vtiger-portal/internal/service/mocks"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -79,7 +81,7 @@ func TestHandler_getTicketById(t *testing.T) {
 			rm := mock_repository.NewMockHelpDesk(c)
 			tt.mockTicket(rm)
 
-			managerService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), &mock_service.MockCommentServiceInterface{}, mock_service.NewMockDocumentServiceInterface(c))
+			managerService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), &mock_service.MockCommentServiceInterface{}, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
 
 			services := &service.Services{HelpDesk: managerService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -181,7 +183,7 @@ func TestHandler_getRelatedComments(t *testing.T) {
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache())
 
-			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c))
+			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
 
 			services := &service.Services{HelpDesk: helpDeskService, Comments: commentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -274,7 +276,7 @@ func TestHandler_getAllTickets(t *testing.T) {
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache())
 
-			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c))
+			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
 
 			services := &service.Services{HelpDesk: helpDeskService, Comments: commentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services, config: &config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultPagination: 20}}}}
@@ -378,7 +380,7 @@ func TestHandler_getRelatedDocuments(t *testing.T) {
 			commentService := service.NewComments(rc, cache.NewMemoryCache())
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
-			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, documentService)
+			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{})
 
 			services := &service.Services{HelpDesk: helpDeskService, Comments: commentService, Documents: documentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -489,7 +491,7 @@ func TestHandler_getFile(t *testing.T) {
 			commentService := service.NewComments(rc, cache.NewMemoryCache())
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
-			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, documentService)
+			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{})
 
 			services := &service.Services{HelpDesk: helpDeskService, Comments: commentService, Documents: documentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -504,6 +506,73 @@ func TestHandler_getFile(t *testing.T) {
 			w := httptest.NewRecorder()
 			req := httptest.NewRequest("GET", "/api/v1/tickets/"+tt.id+"/file/"+tt.fileId,
 				nil)
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}
+
+func TestHandler_createTicket(t *testing.T) {
+	type mockRepositoryModule func(r *mock_repository.MockModules)
+
+	tests := []struct {
+		name         string
+		mockModule   mockRepositoryModule
+		userModel    *domain.User
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name: "Ticket created",
+			mockModule: func(r *mock_repository.MockModules) {
+				r.EXPECT().GetModuleInfo(context.Background(), "HelpDesk").Return(vtiger.MockedModule, nil)
+			},
+			statusCode:   http.StatusCreated,
+			responseBody: `"ticket_no":"TICKET_28"`,
+			userModel:    &repository.MockedUser,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rc := mock_repository.NewMockComment(c)
+			rd := mock_repository.NewMockDocument(c)
+			rmm := mock_repository.NewMockModules(c)
+			tt.mockModule(rmm)
+
+			commentService := service.NewComments(rc, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+
+			helpDeskService := service.NewHelpDeskService(repository.HelpDeskMockRepository{}, cache.NewMemoryCache(), commentService, documentService, service.NewModulesService(rmm, cache.NewMemoryCache()), config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultUser: "19x1"}}})
+
+			services := &service.Services{HelpDesk: helpDeskService, Comments: commentService, Documents: documentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
+			handler := Handler{services: services}
+
+			// Init Endpoint
+			r := gin.New()
+			r.POST("/api/v1/tickets", func(c *gin.Context) {
+
+			}, handler.createTicket)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("POST", "/api/v1/tickets",
+				bytes.NewBufferString(`{
+  "ticket_title": "Problem with internet",
+  "ticketpriorities": "Normal",
+  "ticketseverities": "Minor",
+  "ticketcategories": "Big Problem",
+  "description": "There are no internet in my appartment."
+}`))
 
 			// Make Request
 			r.ServeHTTP(w, req)

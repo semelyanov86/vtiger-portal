@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
@@ -13,19 +14,25 @@ import (
 
 const CacheHelpDeskTtl = 500
 
+var ErrValidation = errors.New("validation error")
+
 type HelpDesk struct {
 	repository repository.HelpDesk
 	cache      cache.Cache
 	comment    CommentServiceInterface
 	document   DocumentServiceInterface
+	module     ModulesService
+	config     config.Config
 }
 
-func NewHelpDeskService(repository repository.HelpDesk, cache cache.Cache, comments CommentServiceInterface, document DocumentServiceInterface) HelpDesk {
+func NewHelpDeskService(repository repository.HelpDesk, cache cache.Cache, comments CommentServiceInterface, document DocumentServiceInterface, module ModulesService, config config.Config) HelpDesk {
 	return HelpDesk{
 		repository: repository,
 		cache:      cache,
 		comment:    comments,
 		document:   document,
+		module:     module,
+		config:     config,
 	}
 }
 
@@ -93,4 +100,50 @@ func (h HelpDesk) GetAll(ctx context.Context, filter repository.TicketsQueryFilt
 	}
 	count, err := h.repository.Count(ctx, filter.Client)
 	return tickets, count, err
+}
+
+type CreateTicketInput struct {
+	TicketTitle      string `json:"ticket_title" binding:"required"`
+	Ticketpriorities string `json:"ticketpriorities" binding:"required"`
+	Ticketseverities string `json:"ticketseverities"`
+	Ticketcategories string `json:"ticketcategories"`
+	Description      string `json:"description" binding:"required"`
+}
+
+func (h HelpDesk) CreateTicket(ctx context.Context, input CreateTicketInput, user domain.User) (domain.HelpDesk, error) {
+	module, err := h.module.Describe(ctx, "HelpDesk")
+	var helpDesk domain.HelpDesk
+	if err != nil {
+		return domain.HelpDesk{}, e.Wrap("can not get module info", err)
+	}
+	helpDesk.TicketTitle = input.TicketTitle
+	helpDesk.AssignedUserID = h.config.Vtiger.Business.DefaultUser
+	helpDesk.TicketPriorities = input.Ticketpriorities
+	helpDesk.TicketSeverities = input.Ticketseverities
+	helpDesk.TicketCategories = input.Ticketcategories
+	helpDesk.Description = input.Description
+	helpDesk.ParentID = user.AccountId
+	helpDesk.ContactID = user.Crmid
+	helpDesk.FromPortal = true
+	helpDesk.Source = "PORTAL"
+	var fields = module.Fields
+	for _, field := range fields {
+		switch field.Name {
+		case "ticketstatus":
+			helpDesk.TicketStatus = field.Type.DefaultValue
+		case "ticketseverities":
+			if !field.Type.IsPicklistExist(helpDesk.TicketSeverities) {
+				return helpDesk, e.Wrap("Wrong value for field ticketseverities", ErrValidation)
+			}
+		case "ticketpriorities":
+			if !field.Type.IsPicklistExist(helpDesk.TicketPriorities) {
+				return helpDesk, e.Wrap("Wrong value for field ticketpriorities", ErrValidation)
+			}
+		case "ticketcategories":
+			if !field.Type.IsPicklistExist(helpDesk.TicketCategories) {
+				return helpDesk, e.Wrap("Wrong value for field ticketcategories", ErrValidation)
+			}
+		}
+	}
+	return h.repository.Create(ctx, helpDesk)
 }

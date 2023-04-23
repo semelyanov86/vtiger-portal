@@ -74,3 +74,15 @@ func (m HelpDeskCrm) Count(ctx context.Context, client string) (int, error) {
 	}
 	return count, nil
 }
+
+func (m HelpDeskCrm) Create(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error) {
+	ticketMap, err := ticket.ConvertToMap()
+	if err != nil {
+		return ticket, e.Wrap("can not convert to map", err)
+	}
+	result, err := m.vtiger.Create(ctx, "HelpDesk", ticketMap)
+	if err != nil {
+		return ticket, e.Wrap("can not create user", err)
+	}
+	return domain.ConvertMapToHelpDesk(result.Result)
+}

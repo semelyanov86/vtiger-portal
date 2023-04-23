@@ -477,6 +477,59 @@ paths:
         "403":
           description: Operation not permitted
   "/tickets":
+    post:
+      tags:
+        - tickets
+      summary: Create new ticket
+      description: Allows authorized user create new ticket and send it to Vtiger CRM.
+      operationId: createTicket
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ticket_title:
+                  description: Title of ticket
+                  type: string
+                  example: "Problem with internet"
+                ticketpriorities:
+                  description: Proirity of ticket
+                  type: string
+                  example: "Normal"
+                ticketseverities:
+                  description: Severity of ticket
+                  type: string
+                  example: "Minor"
+                ticketcategories:
+                  description: Category of ticket
+                  type: string
+                  example: "Big Problem"
+                description:
+                  description: Some description of ticket
+                  type: string
+                  example: "There are no internet in my appartment."
+      responses:
+        "201":
+          description: Ticket created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HelpDesk"
+        "400":
+          description: Invalid ID supplied
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        "404":
+          description: HelpDesk or file not found
+        "403":
+          description: Operation not permitted
     get:
       tags:
         - tickets
@@ -623,6 +676,8 @@ components:
           type: string
           example: "Chuvashia"
         image:
+          type: string
+        imagecontent:
           type: string
       xml:
         name: User

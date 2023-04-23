@@ -397,6 +397,21 @@ func (mr *MockHelpDeskMockRecorder) Count(ctx, client interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockHelpDesk)(nil).Count), ctx, client)
 }
 
+// Create mocks base method.
+func (m *MockHelpDesk) Create(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, ticket)
+	ret0, _ := ret[0].(domain.HelpDesk)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockHelpDeskMockRecorder) Create(ctx, ticket interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockHelpDesk)(nil).Create), ctx, ticket)
+}
+
 // GetAll mocks base method.
 func (m *MockHelpDesk) GetAll(ctx context.Context, filter repository.TicketsQueryFilter) ([]domain.HelpDesk, error) {
 	m.ctrl.T.Helper()

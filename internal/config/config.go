@@ -84,6 +84,7 @@ type (
 		CompanyId         string `yaml:"companyId"`
 		ClearCode         bool   `yaml:"clearCode"`
 		DefaultPagination int    `yaml:"defaultPagination"`
+		DefaultUser       string `yaml:"defaultUser"`
 	}
 )
 

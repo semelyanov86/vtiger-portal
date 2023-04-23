@@ -15,13 +15,14 @@ type Module struct {
 }
 
 type ModuleField struct {
-	Name      string `json:"name"`
-	Label     string `json:"label"`
-	Mandatory bool   `json:"mandatory"`
-	Isunique  bool   `json:"isunique"`
-	Nullable  bool   `json:"nullable"`
-	Editable  bool   `json:"editable"`
-	Default   string `json:"default"`
+	Name      string    `json:"name"`
+	Label     string    `json:"label"`
+	Mandatory bool      `json:"mandatory"`
+	Isunique  bool      `json:"isunique"`
+	Nullable  bool      `json:"nullable"`
+	Editable  bool      `json:"editable"`
+	Default   string    `json:"default"`
+	Type      FieldType `json:"type"`
 }
 
 type FieldType struct {
@@ -35,6 +36,18 @@ type FieldType struct {
 type PicklistValues struct {
 	Label string `json:"label"`
 	Value string `json:"value"`
+}
+
+func (f FieldType) IsPicklistExist(value string) bool {
+	if value == "" {
+		return true
+	}
+	for _, picklistValue := range f.PicklistValues {
+		if picklistValue.Value == value {
+			return true
+		}
+	}
+	return false
 }
 
 var MockedModule = Module{

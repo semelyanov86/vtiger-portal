@@ -55,3 +55,4 @@ vtiger:
     companyId: "23x1"
     clearCode: true
     defaultPagination: 20
+    defaultUser: "19x1"

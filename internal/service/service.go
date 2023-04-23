@@ -35,15 +35,16 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 	companyService := NewCompanyService(repos.Company, cache)
 	commentsService := NewComments(repos.Comments, cache)
 	documentService := NewDocuments(repos.Documents, cache)
+	modulesService := NewModulesService(repos.Modules, cache)
 	return &Services{
 		Users:     NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens, repos.Documents),
 		Emails:    *NewEmailsService(email, config.Email, cache),
 		Tokens:    NewTokensService(repos.Tokens, repos.Users, emailService, config, companyService),
 		Context:   NewContextService(),
 		Managers:  NewManagerService(repos.Managers, cache),
-		Modules:   NewModulesService(repos.Modules, cache),
+		Modules:   modulesService,
 		Company:   companyService,
-		HelpDesk:  NewHelpDeskService(repos.HelpDesk, cache, commentsService, documentService),
+		HelpDesk:  NewHelpDeskService(repos.HelpDesk, cache, commentsService, documentService, modulesService, config),
 		Comments:  commentsService,
 		Documents: documentService,
 	}

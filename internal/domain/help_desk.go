@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"strconv"
@@ -132,4 +133,19 @@ func ConvertMapToHelpDesk(m map[string]any) (HelpDesk, error) {
 	}
 
 	return helpDesk, nil
+}
+
+func (h HelpDesk) ConvertToMap() (map[string]any, error) {
+	var result map[string]interface{}
+	data, err := json.Marshal(h)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(data, &result)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }

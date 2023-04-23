@@ -17,13 +17,15 @@ type HelpDesk struct {
 	repository repository.HelpDesk
 	cache      cache.Cache
 	comment    CommentServiceInterface
+	document   DocumentServiceInterface
 }
 
-func NewHelpDeskService(repository repository.HelpDesk, cache cache.Cache, comments CommentServiceInterface) HelpDesk {
+func NewHelpDeskService(repository repository.HelpDesk, cache cache.Cache, comments CommentServiceInterface, document DocumentServiceInterface) HelpDesk {
 	return HelpDesk{
 		repository: repository,
 		cache:      cache,
 		comment:    comments,
+		document:   document,
 	}
 }
 
@@ -71,6 +73,17 @@ func (h HelpDesk) GetRelatedComments(ctx context.Context, id string, companyId s
 		return []domain.Comment{}, ErrOperationNotPermitted
 	}
 	return h.comment.GetRelated(ctx, id)
+}
+
+func (h HelpDesk) GetRelatedDocuments(ctx context.Context, id string, companyId string) ([]domain.Document, error) {
+	helpDesk, err := h.GetHelpDeskById(ctx, id)
+	if err != nil {
+		return []domain.Document{}, err
+	}
+	if helpDesk.ParentID != companyId {
+		return []domain.Document{}, ErrOperationNotPermitted
+	}
+	return h.document.GetRelated(ctx, id)
 }
 
 func (h HelpDesk) GetAll(ctx context.Context, filter repository.TicketsQueryFilter) ([]domain.HelpDesk, int, error) {

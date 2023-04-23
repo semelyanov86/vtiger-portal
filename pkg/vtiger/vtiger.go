@@ -51,7 +51,7 @@ type SessionData struct {
 }
 
 type ResultData interface {
-	SessionData | Module | map[string]any | []map[string]any
+	SessionData | Module | map[string]any | []map[string]any | []File
 }
 
 type ErrorData struct {
@@ -74,6 +74,14 @@ type FormParamsData struct {
 	Username    string `json:"username"`
 	AccessKey   string `json:"access_key"`
 	SessionName string `json:"sessionName"`
+}
+
+type File struct {
+	Fileid       string `json:"fileid"`
+	Filename     string `json:"filename"`
+	Filetype     string `json:"filetype"`
+	Filesize     int    `json:"filesize"`
+	Filecontents string `json:"filecontents"`
 }
 
 func NewVtigerConnector(cache cache.Cache, config VtigerConnectionConfig, fetcher CrmFetcher) VtigerConnector {
@@ -221,6 +229,33 @@ func (c VtigerConnector) Describe(ctx context.Context, element string) (*VtigerR
 	vtigerResponse := &VtigerResponse[Module]{}
 
 	return processVtigerResponse[Module](resp, vtigerResponse)
+}
+
+func (c VtigerConnector) RetrieveFiles(ctx context.Context, id string) (*VtigerResponse[[]File], error) {
+	sessionID, err := c.sessionId()
+	if err != nil {
+		return nil, err
+	}
+
+	webRequest := NewWebRequest(c.connection)
+
+	// send a request to retrieve a record
+	resp, err := webRequest.FetchBytes(ctx, url.Values{
+		"operation":   {"files_retrieve"},
+		"sessionName": {sessionID},
+		"id":          {id},
+	}.Encode())
+	if err != nil {
+		return nil, e.Wrap("code 7", err)
+	}
+
+	err = c.close(sessionID)
+	if err != nil {
+		return nil, err
+	}
+	vtigerResponse := &VtigerResponse[[]File]{}
+
+	return processVtigerResponse[[]File](resp, vtigerResponse)
 }
 
 func (c VtigerConnector) Update(ctx context.Context, data map[string]any) (*VtigerResponse[map[string]any], error) {

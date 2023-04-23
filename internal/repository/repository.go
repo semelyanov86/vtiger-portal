@@ -55,30 +55,37 @@ type Comment interface {
 	RetrieveFromModule(ctx context.Context, id string) ([]domain.Comment, error)
 }
 
+type Document interface {
+	RetrieveFromModule(ctx context.Context, id string) ([]domain.Document, error)
+	RetrieveFile(ctx context.Context, id string) (vtiger.File, error)
+}
+
 var ErrRecordNotFound = errors.New("record not found")
 var ErrEditConflict = errors.New("edit conflict")
 var ErrWrongCrmId = errors.New("wrong crm id")
 
 type Repositories struct {
-	Users    Users
-	UsersCrm UsersCrm
-	Tokens   *TokensRepo
-	Managers Managers
-	Modules  ModulesCrm
-	Company  Company
-	HelpDesk HelpDesk
-	Comments Comment
+	Users     Users
+	UsersCrm  UsersCrm
+	Tokens    *TokensRepo
+	Managers  Managers
+	Modules   ModulesCrm
+	Company   Company
+	HelpDesk  HelpDesk
+	Comments  Comment
+	Documents Document
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
 	return &Repositories{
-		Users:    NewUsersRepo(db),
-		UsersCrm: NewUsersVtiger(config, cache),
-		Tokens:   NewTokensRepo(db),
-		Managers: NewManagersCrm(config, cache),
-		Modules:  NewModulesCrm(config, cache),
-		Company:  NewCompanyCrm(config, cache),
-		HelpDesk: NewHelpDeskCrm(config, cache),
-		Comments: NewCommentCrm(config, cache),
+		Users:     NewUsersRepo(db),
+		UsersCrm:  NewUsersVtiger(config, cache),
+		Tokens:    NewTokensRepo(db),
+		Managers:  NewManagersCrm(config, cache),
+		Modules:   NewModulesCrm(config, cache),
+		Company:   NewCompanyCrm(config, cache),
+		HelpDesk:  NewHelpDeskCrm(config, cache),
+		Comments:  NewCommentCrm(config, cache),
+		Documents: NewDocumentCrm(config, cache),
 	}
 }

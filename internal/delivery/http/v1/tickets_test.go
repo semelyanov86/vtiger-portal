@@ -79,7 +79,7 @@ func TestHandler_getTicketById(t *testing.T) {
 			rm := mock_repository.NewMockHelpDesk(c)
 			tt.mockTicket(rm)
 
-			managerService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), &mock_service.MockCommentServiceInterface{})
+			managerService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), &mock_service.MockCommentServiceInterface{}, mock_service.NewMockDocumentServiceInterface(c))
 
 			services := &service.Services{HelpDesk: managerService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -181,7 +181,7 @@ func TestHandler_getRelatedComments(t *testing.T) {
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache())
 
-			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService)
+			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c))
 
 			services := &service.Services{HelpDesk: helpDeskService, Comments: commentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -274,7 +274,7 @@ func TestHandler_getAllTickets(t *testing.T) {
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache())
 
-			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService)
+			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c))
 
 			services := &service.Services{HelpDesk: helpDeskService, Comments: commentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services, config: &config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultPagination: 20}}}}
@@ -288,6 +288,221 @@ func TestHandler_getAllTickets(t *testing.T) {
 			// Create Request
 			w := httptest.NewRecorder()
 			req := httptest.NewRequest("GET", "/api/v1/tickets"+tt.postfix,
+				nil)
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}
+
+func TestHandler_getRelatedDocuments(t *testing.T) {
+	type mockRepositoryTicket func(r *mock_repository.MockHelpDesk)
+	type mockRepositoryDocument func(r *mock_repository.MockDocument)
+
+	tests := []struct {
+		name         string
+		id           string
+		mockTicket   mockRepositoryTicket
+		mockDocument mockRepositoryDocument
+		userModel    *domain.User
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name: "Document received",
+			id:   "17x16",
+			mockTicket: func(r *mock_repository.MockHelpDesk) {
+				r.EXPECT().RetrieveById(context.Background(), "17x16").Return(domain.MockedHelpDesk, nil)
+			},
+			mockDocument: func(r *mock_repository.MockDocument) {
+				r.EXPECT().RetrieveFromModule(context.Background(), "17x16").Return([]domain.Document{domain.MockedDocument}, nil)
+			},
+			statusCode:   http.StatusOK,
+			responseBody: `"notes_title":"customer-portal"`,
+			userModel:    &repository.MockedUser,
+		},
+		{
+			name: "Anonymous Access",
+			id:   "17x1",
+			mockTicket: func(r *mock_repository.MockHelpDesk) {
+			},
+			mockDocument: func(r *mock_repository.MockDocument) {
+			},
+			statusCode:   http.StatusUnauthorized,
+			responseBody: `"error":"Anonymous Access",`,
+			userModel:    domain.AnonymousUser,
+		}, {
+			name: "Wrong ID",
+			id:   "17",
+			mockTicket: func(r *mock_repository.MockHelpDesk) {
+			},
+			mockDocument: func(r *mock_repository.MockDocument) {
+			},
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `wrong id`,
+			userModel:    &repository.MockedUser,
+		},
+		{
+			name: "Not owned ticket",
+			id:   "17x16",
+			mockTicket: func(r *mock_repository.MockHelpDesk) {
+				ticket := domain.MockedHelpDesk
+				ticket.ParentID = "11x16"
+				r.EXPECT().RetrieveById(context.Background(), "17x16").Return(ticket, nil)
+			},
+			mockDocument: func(r *mock_repository.MockDocument) {
+			},
+			statusCode:   http.StatusForbidden,
+			responseBody: `"message":"You are not allowed to view this record"`,
+			userModel:    &repository.MockedUser,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rm := mock_repository.NewMockHelpDesk(c)
+			rc := mock_repository.NewMockComment(c)
+			rd := mock_repository.NewMockDocument(c)
+			tt.mockTicket(rm)
+			tt.mockDocument(rd)
+
+			commentService := service.NewComments(rc, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+
+			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, documentService)
+
+			services := &service.Services{HelpDesk: helpDeskService, Comments: commentService, Documents: documentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
+			handler := Handler{services: services}
+
+			// Init Endpoint
+			r := gin.New()
+			r.GET("/api/v1/tickets/:id/documents", func(c *gin.Context) {
+
+			}, handler.getDocuments)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("GET", "/api/v1/tickets/"+tt.id+"/documents",
+				nil)
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}
+
+func TestHandler_getFile(t *testing.T) {
+	type mockRepositoryTicket func(r *mock_repository.MockHelpDesk)
+	type mockRepositoryDocument func(r *mock_repository.MockDocument)
+
+	tests := []struct {
+		name         string
+		id           string
+		fileId       string
+		mockTicket   mockRepositoryTicket
+		mockDocument mockRepositoryDocument
+		userModel    *domain.User
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name:   "File received",
+			id:     "17x16",
+			fileId: "15x42",
+			mockTicket: func(r *mock_repository.MockHelpDesk) {
+
+			},
+			mockDocument: func(r *mock_repository.MockDocument) {
+				r.EXPECT().RetrieveFile(context.Background(), "15x42").Return(domain.MockedFile, nil)
+				r.EXPECT().RetrieveFromModule(context.Background(), "17x16").Return([]domain.Document{domain.MockedDocument}, nil)
+			},
+			statusCode:   http.StatusOK,
+			responseBody: `"filecontents":"iVBORw0KGgoAAAANSUhEUgAAAnAAAAD1CAIAAA"`,
+			userModel:    &repository.MockedUser,
+		},
+		{
+			name:   "Anonymous Access",
+			id:     "17x1",
+			fileId: "15x42",
+			mockTicket: func(r *mock_repository.MockHelpDesk) {
+			},
+			mockDocument: func(r *mock_repository.MockDocument) {
+			},
+			statusCode:   http.StatusUnauthorized,
+			responseBody: `"error":"Anonymous Access",`,
+			userModel:    domain.AnonymousUser,
+		}, {
+			name:   "Wrong ID",
+			id:     "17",
+			fileId: "15x42",
+			mockTicket: func(r *mock_repository.MockHelpDesk) {
+			},
+			mockDocument: func(r *mock_repository.MockDocument) {
+			},
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `wrong id`,
+			userModel:    &repository.MockedUser,
+		},
+		{
+			name:   "Not owned file",
+			id:     "17x16",
+			fileId: "15x42",
+			mockTicket: func(r *mock_repository.MockHelpDesk) {
+
+			},
+			mockDocument: func(r *mock_repository.MockDocument) {
+				document := domain.MockedDocument
+				document.Imageattachmentids = "15x15"
+				r.EXPECT().RetrieveFromModule(context.Background(), "17x16").Return([]domain.Document{document}, nil)
+			},
+			statusCode:   http.StatusForbidden,
+			responseBody: `"message":"You are not allowed to view this record"`,
+			userModel:    &repository.MockedUser,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rm := mock_repository.NewMockHelpDesk(c)
+			rc := mock_repository.NewMockComment(c)
+			rd := mock_repository.NewMockDocument(c)
+			tt.mockTicket(rm)
+			tt.mockDocument(rd)
+
+			commentService := service.NewComments(rc, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+
+			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, documentService)
+
+			services := &service.Services{HelpDesk: helpDeskService, Comments: commentService, Documents: documentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
+			handler := Handler{services: services}
+
+			// Init Endpoint
+			r := gin.New()
+			r.GET("/api/v1/tickets/:id/file/:file", func(c *gin.Context) {
+
+			}, handler.getFile)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("GET", "/api/v1/tickets/"+tt.id+"/file/"+tt.fileId,
 				nil)
 
 			// Make Request

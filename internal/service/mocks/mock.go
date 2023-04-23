@@ -11,6 +11,7 @@ import (
 	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 	domain "github.com/semelyanov86/vtiger-portal/internal/domain"
+	vtiger "github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 // MockContextServiceInterface is a mock of ContextServiceInterface interface.
@@ -100,4 +101,57 @@ func (m *MockCommentServiceInterface) GetRelated(ctx context.Context, id string)
 func (mr *MockCommentServiceInterfaceMockRecorder) GetRelated(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRelated", reflect.TypeOf((*MockCommentServiceInterface)(nil).GetRelated), ctx, id)
+}
+
+// MockDocumentServiceInterface is a mock of DocumentServiceInterface interface.
+type MockDocumentServiceInterface struct {
+	ctrl     *gomock.Controller
+	recorder *MockDocumentServiceInterfaceMockRecorder
+}
+
+// MockDocumentServiceInterfaceMockRecorder is the mock recorder for MockDocumentServiceInterface.
+type MockDocumentServiceInterfaceMockRecorder struct {
+	mock *MockDocumentServiceInterface
+}
+
+// NewMockDocumentServiceInterface creates a new mock instance.
+func NewMockDocumentServiceInterface(ctrl *gomock.Controller) *MockDocumentServiceInterface {
+	mock := &MockDocumentServiceInterface{ctrl: ctrl}
+	mock.recorder = &MockDocumentServiceInterfaceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockDocumentServiceInterface) EXPECT() *MockDocumentServiceInterfaceMockRecorder {
+	return m.recorder
+}
+
+// GetFile mocks base method.
+func (m *MockDocumentServiceInterface) GetFile(ctx context.Context, id, relatedId string) (vtiger.File, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFile", ctx, id, relatedId)
+	ret0, _ := ret[0].(vtiger.File)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFile indicates an expected call of GetFile.
+func (mr *MockDocumentServiceInterfaceMockRecorder) GetFile(ctx, id, relatedId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFile", reflect.TypeOf((*MockDocumentServiceInterface)(nil).GetFile), ctx, id, relatedId)
+}
+
+// GetRelated mocks base method.
+func (m *MockDocumentServiceInterface) GetRelated(ctx context.Context, id string) ([]domain.Document, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRelated", ctx, id)
+	ret0, _ := ret[0].([]domain.Document)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRelated indicates an expected call of GetRelated.
+func (mr *MockDocumentServiceInterfaceMockRecorder) GetRelated(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRelated", reflect.TypeOf((*MockDocumentServiceInterface)(nil).GetRelated), ctx, id)
 }

@@ -464,3 +464,56 @@ func (mr *MockCommentMockRecorder) RetrieveFromModule(ctx, id interface{}) *gomo
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveFromModule", reflect.TypeOf((*MockComment)(nil).RetrieveFromModule), ctx, id)
 }
+
+// MockDocument is a mock of Document interface.
+type MockDocument struct {
+	ctrl     *gomock.Controller
+	recorder *MockDocumentMockRecorder
+}
+
+// MockDocumentMockRecorder is the mock recorder for MockDocument.
+type MockDocumentMockRecorder struct {
+	mock *MockDocument
+}
+
+// NewMockDocument creates a new mock instance.
+func NewMockDocument(ctrl *gomock.Controller) *MockDocument {
+	mock := &MockDocument{ctrl: ctrl}
+	mock.recorder = &MockDocumentMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockDocument) EXPECT() *MockDocumentMockRecorder {
+	return m.recorder
+}
+
+// RetrieveFile mocks base method.
+func (m *MockDocument) RetrieveFile(ctx context.Context, id string) (vtiger.File, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveFile", ctx, id)
+	ret0, _ := ret[0].(vtiger.File)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveFile indicates an expected call of RetrieveFile.
+func (mr *MockDocumentMockRecorder) RetrieveFile(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveFile", reflect.TypeOf((*MockDocument)(nil).RetrieveFile), ctx, id)
+}
+
+// RetrieveFromModule mocks base method.
+func (m *MockDocument) RetrieveFromModule(ctx context.Context, id string) ([]domain.Document, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveFromModule", ctx, id)
+	ret0, _ := ret[0].([]domain.Document)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveFromModule indicates an expected call of RetrieveFromModule.
+func (mr *MockDocumentMockRecorder) RetrieveFromModule(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveFromModule", reflect.TypeOf((*MockDocument)(nil).RetrieveFromModule), ctx, id)
+}

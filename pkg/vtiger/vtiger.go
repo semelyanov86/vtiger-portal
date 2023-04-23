@@ -281,6 +281,29 @@ func (c VtigerConnector) Update(ctx context.Context, data map[string]any) (*Vtig
 	return processVtigerResponse[map[string]any](resp, vtigerResponse)
 }
 
+func (c VtigerConnector) Create(ctx context.Context, element string, data map[string]any) (*VtigerResponse[map[string]any], error) {
+	sessionID, err := c.sessionId()
+	if err != nil {
+		return nil, err
+	}
+
+	webRequest := NewWebRequest(c.connection)
+
+	// send a request to retrieve a record
+	resp, err := webRequest.SendObject(ctx, "create", sessionID, element, data)
+	if err != nil {
+		return nil, e.Wrap("code 7", err)
+	}
+
+	err = c.close(sessionID)
+	if err != nil {
+		return nil, err
+	}
+	vtigerResponse := &VtigerResponse[map[string]any]{}
+
+	return processVtigerResponse[map[string]any](resp, vtigerResponse)
+}
+
 func (c VtigerConnector) getToken() (SessionData, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*TimeoutInSec)
 	defer cancel()

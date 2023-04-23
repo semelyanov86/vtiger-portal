@@ -129,7 +129,7 @@ func TestHandler_createUser(t *testing.T) {
 			tt.mockCrm(rcrm)
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c))
+			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c))
 
 			services := &service.Services{Users: usersService}
 			handler := Handler{services: services, config: &config.Config{}}
@@ -297,7 +297,7 @@ func TestHandler_userInfo(t *testing.T) {
 			rd := repository.NewUsersMock()
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c))
+			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c))
 
 			services := &service.Services{Users: usersService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -457,7 +457,7 @@ func TestHandler_resetPassword(t *testing.T) {
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
 			rc := repository.NewUsersCrmMock(repository.MockedUser)
-			usersService := service.NewUsersService(repository.NewUsersMock(), rc, &wg, service.NewMockEmailService(), companyService, rt)
+			usersService := service.NewUsersService(repository.NewUsersMock(), rc, &wg, service.NewMockEmailService(), companyService, rt, mock_repository.NewMockDocument(c))
 
 			services := &service.Services{Users: usersService}
 			handler := Handler{services: services}

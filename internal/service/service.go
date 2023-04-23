@@ -36,7 +36,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 	commentsService := NewComments(repos.Comments, cache)
 	documentService := NewDocuments(repos.Documents, cache)
 	return &Services{
-		Users:     NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens),
+		Users:     NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens, repos.Documents),
 		Emails:    *NewEmailsService(email, config.Email, cache),
 		Tokens:    NewTokensService(repos.Tokens, repos.Users, emailService, config, companyService),
 		Context:   NewContextService(),

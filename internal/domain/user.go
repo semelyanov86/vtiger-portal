@@ -37,6 +37,7 @@ type User struct {
 	Version            int       `json:"-"`
 	Code               string    `json:"-"`
 	Imageattachmentids string    `json:"imageattachmentids"`
+	Imagecontent       string    `json:"imagecontent"`
 }
 
 var AnonymousUser = &User{}

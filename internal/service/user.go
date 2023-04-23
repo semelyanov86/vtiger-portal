@@ -40,10 +40,11 @@ type UsersService struct {
 	email           EmailServiceInterface
 	company         Company
 	tokenRepository repository.Tokens
+	document        repository.Document
 }
 
-func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface, company Company, tokenRepository repository.Tokens) UsersService {
-	return UsersService{repo: repo, crm: crm, wg: wg, email: email, company: company, tokenRepository: tokenRepository}
+func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface, company Company, tokenRepository repository.Tokens, document repository.Document) UsersService {
+	return UsersService{repo: repo, crm: crm, wg: wg, email: email, company: company, tokenRepository: tokenRepository, document: document}
 }
 
 func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput, cfg *config.Config) (*domain.User, error) {
@@ -118,6 +119,12 @@ func (s UsersService) GetUserById(ctx context.Context, id int64) (*domain.User, 
 	user, err := s.repo.GetById(ctx, id)
 	if err != nil {
 		return nil, e.Wrap("can not get user by id "+strconv.Itoa(int(id)), err)
+	}
+	if user.Imageattachmentids != "" {
+		file, err := s.document.RetrieveFile(ctx, user.Imageattachmentids)
+		if err == nil && file.Filecontents != "" {
+			user.Imagecontent = file.Filecontents
+		}
 	}
 	s.wg.Add(1)
 	go func() {

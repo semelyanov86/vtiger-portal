@@ -1,0 +1,2435 @@
+_type: export
+__export_format: 4
+__export_date: 2023-04-23T07:35:17.935Z
+__export_source: insomnia.desktop.app:v2022.4.2
+resources:
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211deb8795f33
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
+    modified: 1682232610388
+    created: 1682232473773
+    url: "{{ base_url }}/tickets/{{ ticketId }}/documents"
+    name: Related documents from ticket
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1682232473773
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1682098348631
+    created: 1682098348631
+    name: tickets
+    description: Operations with HelpDesk module
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1682098348631
+    _type: request_group
+  - _id: wrk_66e74e4b495c4404841a78c723c211de
+    parentId: null
+    modified: 1681752522262
+    created: 1681752522262
+    name: Vtiger Customer Portal
+    description: ""
+    scope: design
+    _type: workspace
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de793d958d
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
+    modified: 1682233387539
+    created: 1682232473771
+    url: "{{ base_url }}/tickets/{{ ticketId }}/file/{{ fileId }}"
+    name: Get file in Ticket
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1682232473771
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de46f4f7b3
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
+    modified: 1682174927901
+    created: 1682171278798
+    url: "{{ base_url }}/tickets"
+    name: Get Tickets
+    description: >-
+      Here you can get all tickets, attached to authenticated user. Optionally
+      you can pass also pagination params.
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"data": [
+      		{
+      			"ticket_no": "TT2",
+      			"assigned_user_id": "19x1",
+      			"parent_id": "11x6",
+      			"ticketpriorities": "Normal",
+      			"product_id": "",
+      			"ticketseverities": "",
+      			"ticketstatus": "In Progress",
+      			"ticketcategories": "",
+      			"hours": 0,
+      			"days": 0,
+      			"createdtime": "2022-12-03T18:35:49Z",
+      			"modifiedtime": "2023-04-22T05:45:02Z",
+      			"from_portal": false,
+      			"modifiedby": "19x1",
+      			"ticket_title": "gdfgdfgvsfd",
+      			"description": "Here is some description",
+      			"solution": "",
+      			"contact_id": "",
+      			"created_user_id": "",
+      			"source": "CRM",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"id": "17x16",
+      			"label": ""
+      		},
+      		{
+      			"ticket_no": "TT3",
+      			"assigned_user_id": "19x1",
+      			"parent_id": "11x6",
+      			"ticketpriorities": "Low",
+      			"product_id": "",
+      			"ticketseverities": "Minor",
+      			"ticketstatus": "Open",
+      			"ticketcategories": "Big Problem",
+      			"hours": 2,
+      			"days": 0,
+      			"createdtime": "2023-03-15T14:54:01Z",
+      			"modifiedtime": "2023-04-21T17:37:51Z",
+      			"from_portal": false,
+      			"modifiedby": "19x1",
+      			"ticket_title": "sdfdsfdsf",
+      			"description": "Some description",
+      			"solution": "Some solution",
+      			"contact_id": "12x11",
+      			"created_user_id": "",
+      			"source": "CRM",
+      			"starred": false,
+      			"tags": [
+      				"test1",
+      				"test2"
+      			],
+      			"id": "17x28",
+      			"label": ""
+      		}
+      	],
+      	"count": 2,
+      	"page": 1,
+      	"size": 20
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters:
+      - name: page
+        disabled: true
+        value: "1"
+        id: pair_8d0ad7d75fb54917bcca31b74d2be90e
+      - name: size
+        disabled: true
+        value: "10"
+        id: pair_d1e556b86b9f4dbf9cd74fd3d9cba060
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1682171278798
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211deeb2dc7bf
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
+    modified: 1682171279330
+    created: 1682145840383
+    url: "{{ base_url }}/tickets/{{ ticketId }}/comments"
+    name: Related comments from ticket
+    description: >-
+      This endpoint for getting related comments, attached to ticket. Note, that
+      here is displayed only not internal comments. Currently there is no
+      pagination supported and displayed maximum 100 comments.
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"data": [
+      		{
+      			"id": "32x39",
+      			"commentcontent": "This is public comment",
+      			"source": "CRM",
+      			"customer": "",
+      			"userid": "",
+      			"reasontoedit": "",
+      			"creator": "19x1",
+      			"assigned_user_id": "19x1",
+      			"createdtime": "2023-04-21T17:37:51Z",
+      			"modifiedtime": "2023-04-21T17:37:51Z",
+      			"related_to": "17x28",
+      			"parent_comments": "",
+      			"is_private": false,
+      			"filename": "0",
+      			"related_email_id": "0"
+      		}
+      	],
+      	"count": 1,
+      	"page": 1,
+      	"size": 100
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1682145840383
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211dee9835bc2
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
+    modified: 1682145840869
+    created: 1682098348610
+    url: "{{ base_url }}/tickets/{{ ticketId }}"
+    name: Find HelpDesk by ID
+    description: |-
+      Here you can get ticket information based on it's ID
+
+      Example response:
+      ```json
+      {
+      	"ticket_no": "TT3",
+      	"assigned_user_id": "19x1",
+      	"parent_id": "11x6",
+      	"ticketpriorities": "Low",
+      	"product_id": "",
+      	"ticketseverities": "Minor",
+      	"ticketstatus": "Open",
+      	"ticketcategories": "Big Problem",
+      	"hours": 2,
+      	"days": 0,
+      	"createdtime": "2023-03-15T14:54:01Z",
+      	"modifiedtime": "2023-04-21T17:37:51Z",
+      	"from_portal": false,
+      	"modifiedby": "19x1",
+      	"ticket_title": "sdfdsfdsf",
+      	"description": "Some description",
+      	"solution": "Some solution",
+      	"contact_id": "12x11",
+      	"created_user_id": "",
+      	"source": "CRM",
+      	"starred": "0",
+      	"tags": [
+      		"test1",
+      		"test2"
+      	],
+      	"id": "17x28",
+      	"label": "sdfdsfdsf"
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1682098348610
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de01c821a8
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211defbd34a2b
+    modified: 1682098349143
+    created: 1682057273135
+    url: "{{ base_url }}/modules/{{ moduleName }}"
+    name: Module Info
+    description: >-
+      Here you can get full structure about module, you passwd in request. Note,
+      you need to pass system module name of vtiger, for example Project. List
+      of modules with their ids:
+
+      * Accounts	3
+
+      * Assets	27
+
+      * Calendar	1
+
+      * Campaigns	17
+
+      * Cases	39
+
+      * CampanyDetails	26
+
+      * Contacts	4
+
+      * Currency	21
+
+      * DocumentFolders	22
+
+      * Documents	7
+
+      * EmailCampaigns	37
+
+      * Emails	8
+
+      * Events	18
+
+      * Faq	10
+
+      * Groups	20
+
+      * HelpDesk	9
+
+      * Invoice	16
+
+      * Leads	2
+
+      * LineItem	33
+
+      * ModComments	28
+
+      * Olark	40
+
+      * PBXManager	24
+
+      * Potentials	5
+
+      * PriceBooks	12
+
+      * PrintTemplates	41
+
+      * Products	6
+
+      * ProductTaxes	35
+
+      * Project	31
+
+      * ProjectMilestone	29
+
+      * ProjectTask	30
+
+      * PurchaseOrder	14
+
+      * Quotes	13
+
+      * SalesOrder	15
+
+      * ServiceContracts	23
+
+      * Services	25
+
+      * SLA	38
+
+      * Tax	34
+
+      * Users	19
+
+      * Vendors	11
+
+
+      Example response of HelpDesk module:
+
+
+      ```json
+
+      {
+      	"label": "Tickets",
+      	"name": "HelpDesk",
+      	"createable": true,
+      	"updateable": true,
+      	"deleteable": true,
+      	"retrieveable": true,
+      	"fields": [
+      		{
+      			"name": "ticket_no",
+      			"label": "Ticket Number",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": false,
+      			"editable": false,
+      			"default": ""
+      		},
+      		{
+      			"name": "assigned_user_id",
+      			"label": "Assigned To",
+      			"mandatory": true,
+      			"isunique": false,
+      			"nullable": false,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "parent_id",
+      			"label": "Organization Name",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "ticketpriorities",
+      			"label": "Priority",
+      			"mandatory": true,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "product_id",
+      			"label": "Product Name",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "ticketseverities",
+      			"label": "Severity",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "ticketstatus",
+      			"label": "Status",
+      			"mandatory": true,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "ticketcategories",
+      			"label": "Category",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "hours",
+      			"label": "Hours",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "days",
+      			"label": "Days",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "createdtime",
+      			"label": "Created Time",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": false,
+      			"editable": false,
+      			"default": ""
+      		},
+      		{
+      			"name": "modifiedtime",
+      			"label": "Modified Time",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": false,
+      			"editable": false,
+      			"default": ""
+      		},
+      		{
+      			"name": "from_portal",
+      			"label": "From Portal",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "modifiedby",
+      			"label": "Last Modified By",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": false,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "ticket_title",
+      			"label": "Title",
+      			"mandatory": true,
+      			"isunique": false,
+      			"nullable": false,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "description",
+      			"label": "Description",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "solution",
+      			"label": "Solution",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "contact_id",
+      			"label": "Contact Name",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "source",
+      			"label": "Source",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": false,
+      			"default": ""
+      		},
+      		{
+      			"name": "starred",
+      			"label": "starred",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "tags",
+      			"label": "tags",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "kanban_color",
+      			"label": "Color",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": true,
+      			"editable": true,
+      			"default": ""
+      		},
+      		{
+      			"name": "id",
+      			"label": "ticketid",
+      			"mandatory": false,
+      			"isunique": false,
+      			"nullable": false,
+      			"editable": false,
+      			"default": ""
+      		}
+      	],
+      	"idPrefix": "17",
+      	"isEntity": true,
+      	"allowDuplicates": true,
+      	"labelFields": "title"
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1682057273135
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211defbd34a2b
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1682057273145
+    created: 1682057273145
+    name: module
+    description: Module informations with all data in it
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1682057273145
+    _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211deaa5108ed
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de1a8565a9
+    modified: 1682057306142
+    created: 1682010335863
+    url: "{{ base_url }}/managers/{{ managerId }}"
+    name: Find manager by ID
+    description: >-
+      Here you can get user from vtiger by it's ID. As a query param in address
+      you need to pass vtiger user ID, for example `19x1`
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"id": "19x1",
+      	"user_name": "admin",
+      	"first_name": "",
+      	"last_name": "Administrator",
+      	"email2": "",
+      	"title": "",
+      	"phone_work": "",
+      	"department": "",
+      	"description": "",
+      	"address_street": "",
+      	"address_city": "",
+      	"address_state": "",
+      	"address_postalcode": "",
+      	"address_country": "",
+      	"imagename": ""
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+      disabled: false
+    metaSortKey: -1682010335863
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de1a8565a9
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1682010335872
+    created: 1682010335872
+    name: manager
+    description: Users module in vtiger, getting info about assigned managers
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1682010335872
+    _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de816b2196
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de5bdcd3c0
+    modified: 1682092428365
+    created: 1682089127951
+    url: "{{ base_url }}/company"
+    name: Get company data
+    description: >-
+      Here you can get all organisation details from vtiger. Note, this endpoint
+      is available without authorization.
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"organizationname": "vtiger",
+      	"address": "95, 12th Main Road, 3rd Block, Rajajinagar",
+      	"city": "Bangalore",
+      	"state": "Karnataka",
+      	"country": "India",
+      	"code": "560010",
+      	"phone": "+91 9243602352",
+      	"fax": "+91 9243602352",
+      	"website": "www.vtiger.com",
+      	"logoname": "vtiger-crm-logo.png",
+      	"logo": "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",
+      	"vatid": "",
+      	"inn": "",
+      	"kpp": "",
+      	"bankaccount": "",
+      	"bankname": "",
+      	"bankid": "",
+      	"corraccount": "",
+      	"director": "",
+      	"bookkeeper": "",
+      	"entepreneur": "",
+      	"entepreneurreg": "",
+      	"okpo": "",
+      	"id": "23x1"
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+      disabled: true
+    metaSortKey: -1682089127951
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de5bdcd3c0
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1682002384621
+    created: 1682002384621
+    name: support
+    description: Technical stuff for analytics and checking portal status
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1682002384621
+    _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de572982bb
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de5bdcd3c0
+    modified: 1682002585932
+    created: 1682002384612
+    url: "{{ base_url }}/ping"
+    name: Status of application
+    description: >-
+      Here you can check if application is active or not. As a response you will
+      get 200 status with success json message.
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"message": "active",
+      	"success": true
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1682002384612
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_6fc38a12f86b4d308e683aa89c9c9fe9
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1681883793300
+    created: 1681883789866
+    url: http://vtiger.test:8000/webservice.php?id=12x11&operation=retrieve&sessionName=3619dcf3643f82678f049
+    name: New Request
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1681883789866
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de051cf8c0
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1682092745582
+    created: 1682092427875
+    url: "{{ base_url }}/users/password"
+    name: Reset Password
+    description: >-
+      Using this endpoint you can reset password. For this purposes you need
+      provide password token and new password. Example request:
+
+
+      ```json
+
+      {
+        "token": "ISBTSR6CWE7ZNQGWN2QIHRFGNA",
+        "password": "NewPassword"
+      }
+
+      ```
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"id": 14,
+      	"crmid": "12x11",
+      	"firstname": "Sergei",
+      	"lastname": "Emelianov",
+      	"description": "Here is changed description second",
+      	"account_id": "11x6",
+      	"account_name": "",
+      	"title": "Director",
+      	"department": "Management",
+      	"email": "se@sergeyem.ru",
+      	"created_at": "2023-04-20T06:35:29Z",
+      	"updated_at": "2023-04-21T17:57:18.50397715+02:00",
+      	"is_active": true,
+      	"mailingcity": "Cheboksary",
+      	"mailingstreet": "Bulvar Yunosti, 3",
+      	"mailingcountry": "Russia",
+      	"othercountry": "Russia",
+      	"mailingstate": "Chuvashia",
+      	"mailingpobox": "",
+      	"othercity": "Cheboksary",
+      	"otherstate": "Chuvashia",
+      	"mailingzip": "428010",
+      	"otherzip": "428010",
+      	"otherstreet": "Bulvar Yunosti, 3",
+      	"otherpobox": "",
+      	"image": ""
+      }
+
+      ```
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "token": "MB4S35ETWCRAC3OQINBXBHKGUU",
+          "password": "1qaz2wsx"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_38a86f18a3854531b5509610f9c5c4df
+    authentication: {}
+    metaSortKey: -1682092427875
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1681752584161
+    created: 1681752584161
+    name: user
+    description: Operations about user
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1681752584161
+    _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de75ca1604
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1682092606435
+    created: 1682002384617
+    url: "{{ base_url }}/users/restore"
+    name: Restore Password
+    description: >-
+      If you forgot password in portal, you can send json with email field. Then
+      system will send an email to provided address with token link inside it.
+
+
+      Example request body:
+
+
+      ```json
+
+      {
+        "email": "emelyanov86@km.ru"
+      }
+
+      ```
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "email": "se@sergeyem.ru"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_442c4140830040aa823cf438bee63491
+    authentication: {}
+    metaSortKey: -1682002384617
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de94b9a1a1
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1682232474303
+    created: 1681838399470
+    url: "{{ base_url }}/users/my"
+    name: Get data about authenticated user
+    description: >-
+      In this endpoint you can get profile data about current authenticated
+      user. You need to pass only GET request without any params. But you MUST
+      provide authorization bearer token.
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"id": 4,
+      	"crmid": "12x11",
+      	"firstname": "Sergei",
+      	"lastname": "Emelianov",
+      	"description": "",
+      	"account_id": "11x6",
+      	"account_name": "",
+      	"title": "Director",
+      	"department": "Management",
+      	"email": "se@sergeyem.ru",
+      	"created_at": "2023-04-17T17:44:09Z",
+      	"updated_at": "2023-04-17T17:44:09Z",
+      	"is_active": false,
+      	"mailingcity": "Cheboksary",
+      	"mailingstreet": "Bulvar Yunosti, 3",
+      	"mailingcountry": "Russia",
+      	"othercountry": "Russia",
+      	"mailingstate": "Chuvashia",
+      	"mailingpobox": "",
+      	"othercity": "Cheboksary",
+      	"otherstate": "Chuvashia",
+      	"mailingzip": "428010",
+      	"otherzip": "428010",
+      	"otherstreet": "Bulvar Yunosti, 3",
+      	"otherpobox": "",
+      	"image": "",
+      	"imageattachmentids": "12x42"
+      }
+
+      ```
+
+
+      Note, that here is stored ID of attached image. To get a base64 decoded image, you need to send additional response.
+
+
+      If you will not provide token or provide wrong one, you will get 403 status with message:
+
+
+      ```json
+
+      {
+      	"error": "Token Error",
+      	"field": "Bearer",
+      	"message": "Wrong Token in authorization header"
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_e691c6b54ceb4f55aa5bf8004e1b456f
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_aba2096e90e34148b6344199f0e566bd
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1681838399470
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de740025cb
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1681827945965
+    created: 1681827945965
+    url: "{{ base_url }}/users/logout"
+    name: Logs out current logged in user session
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1681827945965
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de00ac9da2
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1682010433337
+    created: 1681827520782
+    url: "{{ base_url }}/users/login"
+    name: Login in system
+    description: >-
+      Authorisation endpoint, allows user to get a Bearer token from system.
+      Example response with status code 201:
+
+
+      ```json
+
+      {
+      	"id": 1,
+      	"token": "WHXDXIXGAMFFYE76DBY6DHUWJY",
+      	"expiry": "2023-07-17T16:33:29.670530331+02:00"
+      }
+
+      ```
+
+
+      To get a bearer token, you need to pass email and password in request body:
+
+
+      ```json
+
+      {
+        "email": "se@sergeyem.ru",
+        "password": "1qaz2wsx"
+      }
+
+      ```
+
+
+      In case you passed incorrect password, you will get 422 error with example json:
+
+
+      ```json
+
+      {
+      	"error": "Validation Error",
+      	"field": "password",
+      	"message": "Password you passed to us is incorrect"
+      }
+
+      ```
+
+
+      If you passed wrong or incorrect email, you will get 400 error with content:
+
+      ```json
+
+      {
+      	"error": "Validation Error",
+      	"field": "Email",
+      	"message": "Key: 'UserSignInInput.Email' Error:Field validation for 'Email' failed on the 'email' tag"
+      }
+
+      ```
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "email": "se@sergeyem.ru",
+          "password": "1qaz2wsx"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_9c3cbbca3ddf46fe8f1e8a0fafa6fcee
+      - id: pair_8a676909b6184d22a3c688567414753d
+        name: Accept
+        value: application/json
+        description: ""
+    authentication: {}
+    metaSortKey: -1681827520782
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211defe3d55d0
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1682001735558
+    created: 1681752584137
+    url: "{{ base_url }}/users"
+    name: Create user
+    description: >-
+      Registration endpoint. Accept following required fields:
+
+      * email - contact email in Vtiger
+
+      * code - registration code, stored in vtiger contact.
+
+      * password - minimum 8 characters for future authorisation
+
+
+      Example request
+
+      ```json
+
+      {
+      	"email": "se@sergeyem.ru",
+      	"code": "1134",
+      	"password": "1qaz2wsx"
+      }
+
+      ```
+
+
+      In case of validation error, returns status 400 with example response:
+
+      ```json
+
+      {
+      	"error": "Validation Error",
+      	"field": "Password",
+      	"message": "Key: 'UserSignUpInput.Password' Error:Field validation for 'Password' failed on the 'min' tag"
+      }
+
+      ```
+
+
+      Example of success response:
+
+      ```json
+
+      {
+      	"id": 4,
+      	"crmid": "12x11",
+      	"firstname": "Sergei",
+      	"lastname": "Emelianov",
+      	"description": "",
+      	"account_id": "11x6",
+      	"account_name": "",
+      	"title": "Director",
+      	"department": "Management",
+      	"email": "se@sergeyem.ru",
+      	"created_at": "2023-04-17T19:44:08.791999494+02:00",
+      	"updated_at": "2023-04-17T19:44:08.791999601+02:00",
+      	"is_active": false,
+      	"mailingcity": "Cheboksary",
+      	"mailingstreet": "Bulvar Yunosti, 3",
+      	"mailingcountry": "Russia",
+      	"othercountry": "Russia",
+      	"mailingstate": "Chuvashia",
+      	"mailingpobox": "",
+      	"othercity": "Cheboksary",
+      	"otherstate": "Chuvashia",
+      	"mailingzip": "428010",
+      	"otherzip": "428010",
+      	"otherstreet": "Bulvar Yunosti, 3",
+      	"otherpobox": "",
+      	"image": ""
+      }
+
+      ```
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email": "se@sergeyem.ru",
+        	"code": "1134",
+        	"password": "1qaz2wsx"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_e7f38670bc6d43399150e6c8704932f3
+      - id: pair_c93d6c0444da43de8b5ead7e4db71887
+        name: Accept
+        value: application/json
+        description: ""
+    authentication: {}
+    metaSortKey: -1681752584137
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_7051e4988ba662848196b333737a56823b214220
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1681752522266
+    created: 1681752522266
+    name: Base Environment
+    data:
+      base_url: "{{ scheme }}://{{ host }}{{ base_path }}"
+    dataPropertyOrder: null
+    color: null
+    isPrivate: false
+    metaSortKey: 1681752522266
+    _type: environment
+  - _id: jar_7051e4988ba662848196b333737a56823b214220
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1681752522267
+    created: 1681752522267
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
+  - _id: spc_034c419a866f48258ca444d906a7a806
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1682235163486
+    created: 1681752522263
+    fileName: Vtiger Customer Portal
+    contents: >
+      openapi: 3.0.0
+
+      info:
+        description: "This is API documentation for Vtiger custmer portal service. This is only client for Vtiger API. This is a place for your customers to see and update tickets, view past quotes and invoices, and share files. The customer portal is a self-service portal where customers can get their business-related questions answered."
+        version: 1.0.2
+        title: Vtiger Go Customer Portal
+        termsOfService: http://swagger.io/terms/
+        contact:
+          email: se@sergeyem.ru
+        license:
+          name: Apache 2.0
+          url: http://www.apache.org/licenses/LICENSE-2.0.html
+      tags:
+        - name: user
+          description: Operations with users, mapped to contacts module
+          externalDocs:
+            description: Contacts module
+            url: https://www.vtiger.com/features/contact-management/
+        - name: support
+          description: Technical stuff for analytics and checking portal status
+        - name: manager
+          description: Users module in vtiger, getting info about assigned managers
+        - name: module
+          description: Module informations with all data in it
+        - name: tickets
+          description: Operations with HelpDesk module
+      paths:
+        /users:
+          post:
+            tags:
+              - user
+            summary: Create user
+            description: Here you can register new contact in portal using activation code
+            operationId: createUser
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: "emelyanov86@km.ru"
+                      password:
+                         type: string
+                         example: "PasswordHere"
+                      code:
+                          type: string
+                          example: "1122"
+              description: Passing email and password you can authorize in system and get bearer token
+              required: true
+            responses:
+              "201":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/User"
+              "400":
+                description: Validation error
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/ValidationResponse"
+        /users/login:
+          post:
+            tags:
+              - user
+            summary: Login in system
+            description: "Here you can get authentication bearer"
+            operationId: loginUser
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: "emelyanov86@km.ru"
+                      password:
+                         type: string
+                         example: "PasswordHere"
+              description: Pass needed data to create new user from contact in Vtiger
+              required: true
+            responses:
+              "201":
+                description: successful operation
+                headers:
+                  X-Rate-Limit:
+                    description: calls per hour allowed by the user
+                    schema:
+                      type: integer
+                      format: int32
+                  X-Expires-After:
+                    description: date in UTC when token expires
+                    schema:
+                      type: string
+                      format: date-time
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/Token"
+              "400":
+                description: Invalid username/password supplied
+        /users/restore:
+          post:
+            tags:
+              - user
+            summary: Restore Password
+            description: "Send password restore token to email"
+            operationId: restorePassword
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: "emelyanov86@km.ru"
+              description: Pass an email address where you receive an email with token link
+              required: true
+            responses:
+              "201":
+                description: successful operation
+                headers:
+                  X-Rate-Limit:
+                    description: calls per hour allowed by the user
+                    schema:
+                      type: integer
+                      format: int32
+                  X-Expires-After:
+                    description: date in UTC when token expires
+                    schema:
+                      type: string
+                      format: date-time
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/MessageResponse"
+              "400":
+                description: Invalid email supplied
+              "422":
+                description: Validation error
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/ValidationResponse"
+        /users/password:
+          put:
+            tags:
+              - user
+            summary: Reset Password
+            description: "Reset password usin password reset token"
+            operationId: resetPassword
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: "FDDD23FDDFKR"
+                      password:
+                        type: string
+                        example: "NewPassword"
+              description: Pass a token and new password to update a user
+              required: true
+            responses:
+              "201":
+                description: successful operation
+                headers:
+                  X-Rate-Limit:
+                    description: calls per hour allowed by the user
+                    schema:
+                      type: integer
+                      format: int32
+                  X-Expires-After:
+                    description: date in UTC when token expires
+                    schema:
+                      type: string
+                      format: date-time
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/User"
+              "400":
+                description: Invalid token provided
+              "422":
+                description: Validation error
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/ValidationResponse"
+        /users/logout:
+          get:
+            tags:
+              - user
+            summary: Logs out current logged in user session
+            description: ""
+            operationId: logoutUser
+            responses:
+              default:
+                description: successful operation
+        /users/my:
+          get:
+            tags:
+              - user
+            summary: Get data about authenticated user
+            description: You must provide an Authorisation header in order to get currenc user data
+            operationId: myUser
+            security:
+              - bearerAuth: []
+            responses:
+              "201":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/User"
+              "401":
+                description: anonymous access
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        error:
+                          type: string
+                          example: "Anonymous Access"
+                        field:
+                          type: string
+                          example: "crmid"
+                        message:
+                          type: string
+                          example: "Got anonymous user from token or user without crmid"
+        "/managers/{managerId}":
+          get:
+            tags:
+              - manager
+            summary: Find manager by ID
+            description: Returns a single manager
+            operationId: getManagerById
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: managerId
+                in: path
+                description: ID of manager to return
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/Manager"
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Manager not found
+        "/modules/{moduleName}":
+          get:
+            tags:
+              - module
+            summary: Module Info
+            description: Get all information about module by it name
+            operationId: describeModule
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: moduleName
+                in: path
+                description: Name of module to return
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/Module"
+              "400":
+                description: Invalid Name supplied
+              "404":
+                description: Module not found
+              "500":
+                description: Vtiger error response
+        /ping:
+          get:
+            tags:
+              - support
+            summary: Status of application
+            description: Get response with full status of application
+            operationId: ping
+            responses:
+              "200":
+                description: successfull operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/MessageResponse"
+        /company:
+          get:
+            tags:
+              - support
+            summary: Get company data
+            description: All company information stored in company details of Vtiger. Accessable without bearer token.
+            operationId: companyDetails
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/Company"
+        "/tickets/{ticketId}":
+          get:
+            tags:
+              - tickets
+            summary: Find HelpDesk by ID
+            description: Returns a single ticket
+            operationId: getHelpDeskById
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: ticketId
+                in: path
+                description: ID of ticket to return
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/HelpDesk"
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: HelpDesk not found
+              "403":
+                description: Operation not permitted
+        "/tickets/{ticketId}/comments":
+          get:
+            tags:
+              - tickets
+            summary: Related comments from ticket
+            description: Returns an array of comments from related ticket
+            operationId: getCommentsFromTicket
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: ticketId
+                in: path
+                description: ID of ticket
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Comment"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100                  
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: HelpDesk not found
+              "403":
+                description: Operation not permitted
+        "/tickets/{ticketId}/documents":
+          get:
+            tags:
+              - tickets
+            summary: Related documents from ticket
+            description: Returns an array of documents from related ticket
+            operationId: getDocumentsFromTicket
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: ticketId
+                in: path
+                description: ID of ticket
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Document"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100                  
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: HelpDesk not found
+              "403":
+                description: Operation not permitted
+        "/tickets/{ticketId}/file/{fileId}":
+          get:
+            tags:
+              - tickets
+            summary: Get file in Ticket
+            description: Returns an array of documents from related ticket
+            operationId: getFileFromTicket
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: fileId
+                in: path
+                description: ID of file
+                required: true
+                schema:
+                  type: string
+                  format: string
+              - name: ticketId
+                in: path
+                description: ID of ticket
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/File"                
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: HelpDesk or file not found
+              "403":
+                description: Operation not permitted
+        "/tickets":
+          get:
+            tags:
+              - tickets
+            summary: Get Tickets
+            description: This endpoint returns a list of tickets based on the provided page number and page size.
+            operationId: getAllTickets
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: page
+                in: query
+                description: The page number to retrieve (default is 1)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 1
+              - name: size
+                in: query
+                description: The number of items per page (default is 20)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 20
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/HelpDesk"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid pagination params
+              "403":
+                description: Operation not permitted
+      externalDocs:
+        description: Find out more about Swagger
+        url: http://swagger.io
+      servers:
+        - url: http://127.0.0.1:4045/api/v1
+      components:
+        securitySchemes:
+          bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: Token
+        responses:
+          UnauthorizedError:
+            description: Access token is missing or invalid
+            content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        error:
+                          type: string
+                          example: "Anonymous Access"
+                        field:
+                          type: string
+                          example: "crmid"
+                        message:
+                          type: string
+                          example: "Got anonymous user from token or user without crmid"
+        requestBodies:
+          UserArray:
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/User"
+            description: List of user object
+            required: true
+        schemas:
+          User:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+                example: 1
+              crmid:
+                type: string
+                example: "12x11"
+              firstname:
+                type: string
+                example: "Ivan"
+              lastname:
+                type: string
+                example: "Ivanov"
+              description:
+                type: string
+                example: "This is description of contact"
+              account_id:
+                type: string
+                example: "11x6"
+              account_name:
+                type: string
+                example: "Coca Cola"
+              title:
+                type: string
+                example: "Manager"
+              departmant:
+                type: string
+                example: "Management"
+              created_at:
+                type: string
+                example: "2023-04-17T19:44:08.791999494+02:00"
+              updated_at:
+                type: string
+                example: "2023-04-17T19:44:08.791999494+02:00"
+              is_active:
+                type: boolean
+              mailingcity:
+                type: string
+                example: "Moscow"
+              email:
+                type: string
+                example: "emelyanov86@km.ru"
+              password:
+                type: string
+              mailingstreet:
+                type: string
+                example: "Repina street, 143"
+              mailingcountry:
+                type: string
+                example: "Russia"
+              mailingstate:
+                type: string
+                example: "Chuvashia"
+              image:
+                type: string
+            xml:
+              name: User
+          Manager:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "19x1"
+              user_name:
+                type: string
+                example: "jdoe"
+              first_name:
+                type: string
+                example: "John"
+              last_name:
+                type: string
+                example: "Doe"
+              email2:
+                type: string
+                example: "john.doe@example.com"
+              title:
+                type: string
+                example: "Project Manager"
+              phone_work:
+                type: string
+                example: "+1 555 123456"
+              department:
+                type: string
+                example: "IT Department"
+              description:
+                type: string
+                example: "Responsible for managing IT projects."
+              address_street:
+                type: string
+                example: "123 Main St"
+              address_city:
+                type: string
+                example: "New York"
+              address_state:
+                type: string
+                example: "NY"
+              address_postalcode:
+                type: string
+                example: "10001"
+              address_country:
+                type: string
+                example: "USA"
+              imagename:
+                type: string
+                example: "johndoe.jpg"
+                
+          Token:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+                example: 1
+              token:
+                type: string
+                example: "DSR24DSRDWEFR"
+              expiry:
+                type: string
+                example: "2023-04-17T19:44:08.791999494+02:00"
+          ApiResponse:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              type:
+                type: string
+              message:
+                type: string
+          ValidationResponse:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Key: 'UserSignUpInput.Password' Error:Field validation for 'Password' failed on the 'min' tag"
+              field:
+                type: string
+                example: "Password"
+              error:
+                type: string
+                example: "Validation Error"
+          MessageResponse:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Response was success"
+              success:
+                type: boolean
+                example: true
+          Module:
+            type: object
+            properties:
+              label:
+                type: string
+                example: "Invoices"
+              name:
+                type: string
+                example: "Invoice"
+              createable:
+                type: boolean
+                example: true
+              updateable:
+                type: boolean
+                example: true
+              deleteable:
+                type: boolean
+                example: true
+              retrieveable:
+                type: boolean
+                example: true
+              fields:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModuleField'
+                example:
+                  - name: "subject"
+                    label: "Subject"
+                    mandatory: true
+                    isunique: true
+                    nullable: false
+                    editable: true
+                    default: ""
+                  - name: "duedate"
+                    label: "Due Date"
+                    mandatory: false
+                    isunique: false
+                    nullable: true
+                    editable: true
+                    default: "default2"
+              idPrefix:
+                type: string
+                example: "2"
+              isEntity:
+                type: boolean
+                example: true
+              allowDuplicates:
+                type: boolean
+                example: false
+              labelFields:
+                type: string
+                example: "subject"
+          ModuleField:
+            type: object
+            properties:
+              name:
+                type: string
+                example: "invoicestatus"
+              label:
+                type: string
+                example: "Invoice Status"
+              mandatory:
+                type: boolean
+                example: true
+              isunique:
+                type: boolean
+                example: true
+              nullable:
+                type: boolean
+                example: false
+              editable:
+                type: boolean
+                example: true
+              default:
+                type: string
+                example: "Created"
+          HelpDesk:
+            type: object
+            properties:
+              ticket_no:
+                type: string
+                example: TICKET_28
+              assigned_user_id:
+                type: string
+                example: 19x1
+              parent_id:
+                type: string
+                example: 11x329
+              ticketpriorities:
+                type: string
+                example: Normal
+              product_id:
+                type: string
+                example: ''
+              ticketseverities:
+                type: string
+                example: ''
+              ticketstatus:
+                type: string
+                example: Open
+              ticketcategories:
+                type: string
+                example: ''
+              hours:
+                type: number
+                example: 0.00000000
+              days:
+                type: number
+                example: 0.00000000
+              createdtime:
+                type: string
+                format: date-time
+                example: '2017-02-08T10:56:07Z'
+              modifiedtime:
+                type: string
+                format: date-time
+                example: '2018-07-13T18:55:51Z'
+              from_portal:
+                type: string
+                example: '0'
+              modifiedby:
+                type: string
+                example: 19x1
+              ticket_title:
+                type: string
+                example: Problem with emails
+              description:
+                type: string
+                example: They are not attached to client
+              solution:
+                type: string
+                example: Solution not provided yet
+              contact_id:
+                type: string
+                example: ''
+              created_user_id:
+                type: string
+                example: 19x1
+              source:
+                type: string
+                example: IMPORT
+              starred:
+                type: boolean
+                example: false
+              tags:
+                type: array
+                example: ["test1", "test2"]
+              id:
+                type: string
+                example: 17x923
+              label:
+                type: string
+                example: Problem with emails
+          Comment:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "37x123"
+              commentcontent:
+                type: "string"
+                example: "This is a test comment."
+              source:
+                type: "string"
+                example: "CRM"
+              customer:
+                type: "string"
+                example: "11x456"
+              userid:
+                type: "string"
+                example: "19x789"
+              reasontoedit:
+                type: "string"
+                example: "Typo fix"
+              creator:
+                type: "string"
+                example: "19x123"
+              assigned_user_id:
+                type: "string"
+                example: "19x456"
+              createdtime:
+                type: "string"
+                format: "date-time"
+                example: "2023-04-21T10:00:00Z"
+              modifiedtime:
+                type: "string"
+                format: "date-time"
+                example: "2023-04-21T10:15:00Z"
+              related_to:
+                type: "string"
+                example: "17x923"
+              parent_comments:
+                type: "string"
+                example: ""
+              is_private:
+                type: "boolean"
+                example: false
+              filename:
+                type: "string"
+                example: "attachment.txt"
+              related_email_id:
+                type: "string"
+                example: "eml-654"
+          Document:
+            type: "object"
+            properties:
+              notes_title:
+                type: "string"
+                example: "Sample Document"
+              createdtime:
+                type: "string"
+                format: "date-time"
+                example: "2023-04-21 10:00:00"
+              modifiedtime:
+                type: "string"
+                format: "date-time"
+                example: "2023-04-21 10:15:00"
+              filename:
+                type: "string"
+                example: "document.pdf"
+              assigned_user_id:
+                type: "string"
+                example: "19x1"
+              notecontent:
+                type: "string"
+                example: "This is a sample document content."
+              filetype:
+                type: "string"
+                example: "application/pdf"
+              filesize:
+                type: "string"
+                example: "1024"
+              filelocationtype:
+                type: "string"
+                example: "I"
+              fileversion:
+                type: "string"
+                example: "1.0"
+              filestatus:
+                type: "string"
+                example: "1"
+              filedownloadcount:
+                type: "string"
+                example: "5"
+              folderid:
+                type: "string"
+                example: "22x1"
+              note_no:
+                type: "string"
+                example: "DOC1"
+              modifiedby:
+                type: "string"
+                example: "19x1"
+              source:
+                type: "string"
+                example: "CRM"
+              starred:
+                type: "boolean"
+                example: false
+              tags:
+                type: "array"
+                items:
+                  type: "string"
+                example: ["tag1", "tag2"]
+              id:
+                type: "string"
+                example: "15x40"
+              imageattachmentids:
+                type: "string"
+                example: "15x41"
+          File:
+            type: "object"
+            properties:
+              fileid:
+                type: "string"
+                example: "file-123"
+              filename:
+                type: "string"
+                example: "example.txt"
+              filetype:
+                type: "string"
+                example: "text/plain"
+              filesize:
+                type: "integer"
+                format: "int32"
+                example: 1024
+              filecontent:
+                type: "string"
+                example: "This is the content of the file."
+          Company:
+            type: object
+            properties:
+              organizationname:
+                type: string
+                example: "Индивидуальный предприниматель Емельянов Сергей Петрович"
+              address:
+                type: string
+                example: "Бульвар Юности, д. 3, кв. 251"
+              city:
+                type: string
+                example: "Чебоксары"
+              state:
+                type: string
+                example: "Чувашия"
+              country:
+                type: string
+                example: "Россия"
+              code:
+                type: string
+                example: "428034"
+              phone:
+                type: string
+                example: "+78432023893"
+              fax:
+                type: string
+                example: "+78352223606"
+              website:
+                type: string
+                example: "https://itvolga.com"
+              logoname:
+                type: string
+                example: "logo.png"
+              logo:
+                type: string
+                example: ''
+              vatid:
+                type: string
+                example: ''
+              inn:
+                type: string
+                example: "212802719116"
+              kpp:
+                type: string
+                example: "0"
+              bankaccount:
+                type: string
+                example: "40802810602500022487"
+              bankname:
+                type: string
+                example: 'ТОЧКА ПАО БАНКА "ФК ОТКРЫТИЕ"'
+              bankid:
+                type: string
+                example: "044525999"
+              corraccount:
+                type: string
+                example: "30101810845250000999"
+              director:
+                type: string
+                example: "Емельянов С.П."
+              bookkeeper:
+                type: string
+                example: "Емельянов С.П."
+              entepreneur:
+                type: string
+                example: "Емельянов Сергей Петрович"
+              entepreneurreg:
+                type: string
+                example: "308213034700026"
+              okpo:
+                type: string
+                example: "0157757201"
+              id:
+                type: string
+                example: "23x1"
+    contentType: yaml
+    _type: api_spec
+  - _id: env_env_7051e4988ba662848196b333737a56823b214220_sub
+    parentId: env_7051e4988ba662848196b333737a56823b214220
+    modified: 1682232639925
+    created: 1681752584168
+    name: OpenAPI env
+    data:
+      scheme: http
+      base_path: /api/v1
+      host: 127.0.0.1:4050
+      URL: http://127.0.0.1:4050/api/v1
+      MAIN_URL: http://127.0.0.1:4050
+      bearerToken: DJWC32V7MAGCRDT27RVTVLPSQA
+      managerId: 19x1
+      moduleName: HelpDesk
+      fileId: 15x46
+    dataPropertyOrder:
+      "&":
+        - scheme
+        - base_path
+        - host
+        - URL
+        - MAIN_URL
+        - bearerToken
+        - managerId
+        - moduleName
+        - fileId
+    color: null
+    isPrivate: false
+    metaSortKey: 1681752584168
+    _type: environment
+  - _id: env_1bfede95dc144997a9155f6e79a3eaa5
+    parentId: env_7051e4988ba662848196b333737a56823b214220
+    modified: 1682232632967
+    created: 1681826841922
+    name: Local
+    data:
+      scheme: http
+      base_path: /api/v1
+      host: 127.0.0.1:4050
+      URL: http://127.0.0.1:4050/api/v1
+      MAIN_URL: http://127.0.0.1:4050
+      bearerToken: OLQDS2TSQFIZJ324MODWT4472Q
+      managerId: 19x1
+      moduleName: HelpDesk
+      ticketId: 17x28
+      fileId: 15x46
+    dataPropertyOrder:
+      "&":
+        - scheme
+        - base_path
+        - host
+        - URL
+        - MAIN_URL
+        - bearerToken
+        - managerId
+        - moduleName
+        - ticketId
+        - fileId
+    color: null
+    isPrivate: false
+    metaSortKey: 1681826841922
+    _type: environment

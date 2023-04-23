@@ -1,0 +1,1085 @@
+openapi: 3.0.0
+info:
+  description: "This is API documentation for Vtiger custmer portal service. This is only client for Vtiger API. This is a place for your customers to see and update tickets, view past quotes and invoices, and share files. The customer portal is a self-service portal where customers can get their business-related questions answered."
+  version: 1.0.2
+  title: Vtiger Go Customer Portal
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: se@sergeyem.ru
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+  - name: user
+    description: Operations with users, mapped to contacts module
+    externalDocs:
+      description: Contacts module
+      url: https://www.vtiger.com/features/contact-management/
+  - name: support
+    description: Technical stuff for analytics and checking portal status
+  - name: manager
+    description: Users module in vtiger, getting info about assigned managers
+  - name: module
+    description: Module informations with all data in it
+  - name: tickets
+    description: Operations with HelpDesk module
+paths:
+  /users:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: Here you can register new contact in portal using activation code
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "emelyanov86@km.ru"
+                password:
+                  type: string
+                  example: "PasswordHere"
+                code:
+                  type: string
+                  example: "1122"
+        description: Passing email and password you can authorize in system and get bearer token
+        required: true
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+  /users/login:
+    post:
+      tags:
+        - user
+      summary: Login in system
+      description: "Here you can get authentication bearer"
+      operationId: loginUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "emelyanov86@km.ru"
+                password:
+                  type: string
+                  example: "PasswordHere"
+        description: Pass needed data to create new user from contact in Vtiger
+        required: true
+      responses:
+        "201":
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Token"
+        "400":
+          description: Invalid username/password supplied
+  /users/restore:
+    post:
+      tags:
+        - user
+      summary: Restore Password
+      description: "Send password restore token to email"
+      operationId: restorePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "emelyanov86@km.ru"
+        description: Pass an email address where you receive an email with token link
+        required: true
+      responses:
+        "201":
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Invalid email supplied
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+  /users/password:
+    put:
+      tags:
+        - user
+      summary: Reset Password
+      description: "Reset password usin password reset token"
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: "FDDD23FDDFKR"
+                password:
+                  type: string
+                  example: "NewPassword"
+        description: Pass a token and new password to update a user
+        required: true
+      responses:
+        "201":
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid token provided
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+  /users/logout:
+    get:
+      tags:
+        - user
+      summary: Logs out current logged in user session
+      description: ""
+      operationId: logoutUser
+      responses:
+        default:
+          description: successful operation
+  /users/my:
+    get:
+      tags:
+        - user
+      summary: Get data about authenticated user
+      description: You must provide an Authorisation header in order to get currenc user data
+      operationId: myUser
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: anonymous access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Anonymous Access"
+                  field:
+                    type: string
+                    example: "crmid"
+                  message:
+                    type: string
+                    example: "Got anonymous user from token or user without crmid"
+  "/managers/{managerId}":
+    get:
+      tags:
+        - manager
+      summary: Find manager by ID
+      description: Returns a single manager
+      operationId: getManagerById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: managerId
+          in: path
+          description: ID of manager to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Manager"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Manager not found
+  "/modules/{moduleName}":
+    get:
+      tags:
+        - module
+      summary: Module Info
+      description: Get all information about module by it name
+      operationId: describeModule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: moduleName
+          in: path
+          description: Name of module to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Module"
+        "400":
+          description: Invalid Name supplied
+        "404":
+          description: Module not found
+        "500":
+          description: Vtiger error response
+  /ping:
+    get:
+      tags:
+        - support
+      summary: Status of application
+      description: Get response with full status of application
+      operationId: ping
+      responses:
+        "200":
+          description: successfull operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+  /company:
+    get:
+      tags:
+        - support
+      summary: Get company data
+      description: All company information stored in company details of Vtiger. Accessable without bearer token.
+      operationId: companyDetails
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+  "/tickets/{ticketId}":
+    get:
+      tags:
+        - tickets
+      summary: Find HelpDesk by ID
+      description: Returns a single ticket
+      operationId: getHelpDeskById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ticketId
+          in: path
+          description: ID of ticket to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HelpDesk"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: HelpDesk not found
+        "403":
+          description: Operation not permitted
+  "/tickets/{ticketId}/comments":
+    get:
+      tags:
+        - tickets
+      summary: Related comments from ticket
+      description: Returns an array of comments from related ticket
+      operationId: getCommentsFromTicket
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ticketId
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Comment"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: HelpDesk not found
+        "403":
+          description: Operation not permitted
+  "/tickets/{ticketId}/documents":
+    get:
+      tags:
+        - tickets
+      summary: Related documents from ticket
+      description: Returns an array of documents from related ticket
+      operationId: getDocumentsFromTicket
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ticketId
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Document"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: HelpDesk not found
+        "403":
+          description: Operation not permitted
+  "/tickets/{ticketId}/file/{fileId}":
+    get:
+      tags:
+        - tickets
+      summary: Get file in Ticket
+      description: Returns an array of documents from related ticket
+      operationId: getFileFromTicket
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fileId
+          in: path
+          description: ID of file
+          required: true
+          schema:
+            type: string
+            format: string
+        - name: ticketId
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/File"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: HelpDesk or file not found
+        "403":
+          description: Operation not permitted
+  "/tickets":
+    get:
+      tags:
+        - tickets
+      summary: Get Tickets
+      description: This endpoint returns a list of tickets based on the provided page number and page size.
+      operationId: getAllTickets
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: The page number to retrieve (default is 1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          description: The number of items per page (default is 20)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/HelpDesk"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid pagination params
+        "403":
+          description: Operation not permitted
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://127.0.0.1:4045/api/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Token
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Anonymous Access"
+              field:
+                type: string
+                example: "crmid"
+              message:
+                type: string
+                example: "Got anonymous user from token or user without crmid"
+  requestBodies:
+    UserArray:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/User"
+      description: List of user object
+      required: true
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        crmid:
+          type: string
+          example: "12x11"
+        firstname:
+          type: string
+          example: "Ivan"
+        lastname:
+          type: string
+          example: "Ivanov"
+        description:
+          type: string
+          example: "This is description of contact"
+        account_id:
+          type: string
+          example: "11x6"
+        account_name:
+          type: string
+          example: "Coca Cola"
+        title:
+          type: string
+          example: "Manager"
+        departmant:
+          type: string
+          example: "Management"
+        created_at:
+          type: string
+          example: "2023-04-17T19:44:08.791999494+02:00"
+        updated_at:
+          type: string
+          example: "2023-04-17T19:44:08.791999494+02:00"
+        is_active:
+          type: boolean
+        mailingcity:
+          type: string
+          example: "Moscow"
+        email:
+          type: string
+          example: "emelyanov86@km.ru"
+        password:
+          type: string
+        mailingstreet:
+          type: string
+          example: "Repina street, 143"
+        mailingcountry:
+          type: string
+          example: "Russia"
+        mailingstate:
+          type: string
+          example: "Chuvashia"
+        image:
+          type: string
+      xml:
+        name: User
+    Manager:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "19x1"
+        user_name:
+          type: string
+          example: "jdoe"
+        first_name:
+          type: string
+          example: "John"
+        last_name:
+          type: string
+          example: "Doe"
+        email2:
+          type: string
+          example: "john.doe@example.com"
+        title:
+          type: string
+          example: "Project Manager"
+        phone_work:
+          type: string
+          example: "+1 555 123456"
+        department:
+          type: string
+          example: "IT Department"
+        description:
+          type: string
+          example: "Responsible for managing IT projects."
+        address_street:
+          type: string
+          example: "123 Main St"
+        address_city:
+          type: string
+          example: "New York"
+        address_state:
+          type: string
+          example: "NY"
+        address_postalcode:
+          type: string
+          example: "10001"
+        address_country:
+          type: string
+          example: "USA"
+        imagename:
+          type: string
+          example: "johndoe.jpg"
+
+    Token:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        token:
+          type: string
+          example: "DSR24DSRDWEFR"
+        expiry:
+          type: string
+          example: "2023-04-17T19:44:08.791999494+02:00"
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+    ValidationResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Key: 'UserSignUpInput.Password' Error:Field validation for 'Password' failed on the 'min' tag"
+        field:
+          type: string
+          example: "Password"
+        error:
+          type: string
+          example: "Validation Error"
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Response was success"
+        success:
+          type: boolean
+          example: true
+    Module:
+      type: object
+      properties:
+        label:
+          type: string
+          example: "Invoices"
+        name:
+          type: string
+          example: "Invoice"
+        createable:
+          type: boolean
+          example: true
+        updateable:
+          type: boolean
+          example: true
+        deleteable:
+          type: boolean
+          example: true
+        retrieveable:
+          type: boolean
+          example: true
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModuleField'
+          example:
+            - name: "subject"
+              label: "Subject"
+              mandatory: true
+              isunique: true
+              nullable: false
+              editable: true
+              default: ""
+            - name: "duedate"
+              label: "Due Date"
+              mandatory: false
+              isunique: false
+              nullable: true
+              editable: true
+              default: "default2"
+        idPrefix:
+          type: string
+          example: "2"
+        isEntity:
+          type: boolean
+          example: true
+        allowDuplicates:
+          type: boolean
+          example: false
+        labelFields:
+          type: string
+          example: "subject"
+    ModuleField:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "invoicestatus"
+        label:
+          type: string
+          example: "Invoice Status"
+        mandatory:
+          type: boolean
+          example: true
+        isunique:
+          type: boolean
+          example: true
+        nullable:
+          type: boolean
+          example: false
+        editable:
+          type: boolean
+          example: true
+        default:
+          type: string
+          example: "Created"
+    HelpDesk:
+      type: object
+      properties:
+        ticket_no:
+          type: string
+          example: TICKET_28
+        assigned_user_id:
+          type: string
+          example: 19x1
+        parent_id:
+          type: string
+          example: 11x329
+        ticketpriorities:
+          type: string
+          example: Normal
+        product_id:
+          type: string
+          example: ''
+        ticketseverities:
+          type: string
+          example: ''
+        ticketstatus:
+          type: string
+          example: Open
+        ticketcategories:
+          type: string
+          example: ''
+        hours:
+          type: number
+          example: 0.00000000
+        days:
+          type: number
+          example: 0.00000000
+        createdtime:
+          type: string
+          format: date-time
+          example: '2017-02-08T10:56:07Z'
+        modifiedtime:
+          type: string
+          format: date-time
+          example: '2018-07-13T18:55:51Z'
+        from_portal:
+          type: string
+          example: '0'
+        modifiedby:
+          type: string
+          example: 19x1
+        ticket_title:
+          type: string
+          example: Problem with emails
+        description:
+          type: string
+          example: They are not attached to client
+        solution:
+          type: string
+          example: Solution not provided yet
+        contact_id:
+          type: string
+          example: ''
+        created_user_id:
+          type: string
+          example: 19x1
+        source:
+          type: string
+          example: IMPORT
+        starred:
+          type: boolean
+          example: false
+        tags:
+          type: array
+          example: ["test1", "test2"]
+        id:
+          type: string
+          example: 17x923
+        label:
+          type: string
+          example: Problem with emails
+    Comment:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "37x123"
+        commentcontent:
+          type: "string"
+          example: "This is a test comment."
+        source:
+          type: "string"
+          example: "CRM"
+        customer:
+          type: "string"
+          example: "11x456"
+        userid:
+          type: "string"
+          example: "19x789"
+        reasontoedit:
+          type: "string"
+          example: "Typo fix"
+        creator:
+          type: "string"
+          example: "19x123"
+        assigned_user_id:
+          type: "string"
+          example: "19x456"
+        createdtime:
+          type: "string"
+          format: "date-time"
+          example: "2023-04-21T10:00:00Z"
+        modifiedtime:
+          type: "string"
+          format: "date-time"
+          example: "2023-04-21T10:15:00Z"
+        related_to:
+          type: "string"
+          example: "17x923"
+        parent_comments:
+          type: "string"
+          example: ""
+        is_private:
+          type: "boolean"
+          example: false
+        filename:
+          type: "string"
+          example: "attachment.txt"
+        related_email_id:
+          type: "string"
+          example: "eml-654"
+    Document:
+      type: "object"
+      properties:
+        notes_title:
+          type: "string"
+          example: "Sample Document"
+        createdtime:
+          type: "string"
+          format: "date-time"
+          example: "2023-04-21 10:00:00"
+        modifiedtime:
+          type: "string"
+          format: "date-time"
+          example: "2023-04-21 10:15:00"
+        filename:
+          type: "string"
+          example: "document.pdf"
+        assigned_user_id:
+          type: "string"
+          example: "19x1"
+        notecontent:
+          type: "string"
+          example: "This is a sample document content."
+        filetype:
+          type: "string"
+          example: "application/pdf"
+        filesize:
+          type: "string"
+          example: "1024"
+        filelocationtype:
+          type: "string"
+          example: "I"
+        fileversion:
+          type: "string"
+          example: "1.0"
+        filestatus:
+          type: "string"
+          example: "1"
+        filedownloadcount:
+          type: "string"
+          example: "5"
+        folderid:
+          type: "string"
+          example: "22x1"
+        note_no:
+          type: "string"
+          example: "DOC1"
+        modifiedby:
+          type: "string"
+          example: "19x1"
+        source:
+          type: "string"
+          example: "CRM"
+        starred:
+          type: "boolean"
+          example: false
+        tags:
+          type: "array"
+          items:
+            type: "string"
+          example: ["tag1", "tag2"]
+        id:
+          type: "string"
+          example: "15x40"
+        imageattachmentids:
+          type: "string"
+          example: "15x41"
+    File:
+      type: "object"
+      properties:
+        fileid:
+          type: "string"
+          example: "file-123"
+        filename:
+          type: "string"
+          example: "example.txt"
+        filetype:
+          type: "string"
+          example: "text/plain"
+        filesize:
+          type: "integer"
+          format: "int32"
+          example: 1024
+        filecontent:
+          type: "string"
+          example: "This is the content of the file."
+    Company:
+      type: object
+      properties:
+        organizationname:
+          type: string
+          example: "Индивидуальный предприниматель Емельянов Сергей Петрович"
+        address:
+          type: string
+          example: "Бульвар Юности, д. 3, кв. 251"
+        city:
+          type: string
+          example: "Чебоксары"
+        state:
+          type: string
+          example: "Чувашия"
+        country:
+          type: string
+          example: "Россия"
+        code:
+          type: string
+          example: "428034"
+        phone:
+          type: string
+          example: "+78432023893"
+        fax:
+          type: string
+          example: "+78352223606"
+        website:
+          type: string
+          example: "https://itvolga.com"
+        logoname:
+          type: string
+          example: "logo.png"
+        logo:
+          type: string
+          example: ''
+        vatid:
+          type: string
+          example: ''
+        inn:
+          type: string
+          example: "212802719116"
+        kpp:
+          type: string
+          example: "0"
+        bankaccount:
+          type: string
+          example: "40802810602500022487"
+        bankname:
+          type: string
+          example: 'ТОЧКА ПАО БАНКА "ФК ОТКРЫТИЕ"'
+        bankid:
+          type: string
+          example: "044525999"
+        corraccount:
+          type: string
+          example: "30101810845250000999"
+        director:
+          type: string
+          example: "Емельянов С.П."
+        bookkeeper:
+          type: string
+          example: "Емельянов С.П."
+        entepreneur:
+          type: string
+          example: "Емельянов Сергей Петрович"
+        entepreneurreg:
+          type: string
+          example: "308213034700026"
+        okpo:
+          type: string
+          example: "0157757201"
+        id:
+          type: string
+          example: "23x1"

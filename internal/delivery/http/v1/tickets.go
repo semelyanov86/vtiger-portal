@@ -8,8 +8,6 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
 	"net/http"
-	"strconv"
-	"strings"
 )
 
 func (h *Handler) initTicketsRoutes(api *gin.RouterGroup) {
@@ -25,24 +23,13 @@ func (h *Handler) initTicketsRoutes(api *gin.RouterGroup) {
 }
 
 func (h *Handler) getTicket(c *gin.Context) {
-	id := c.Param("id")
-	if id == "" {
-		newResponse(c, http.StatusBadRequest, "code is empty")
+	id := h.getAndValidateId(c, "id")
 
+	userModel := h.getValidatedUser(c)
+	if userModel == nil || id == "" {
 		return
 	}
 
-	if !strings.Contains(id, "x") {
-		newResponse(c, http.StatusUnprocessableEntity, "wrong id")
-
-		return
-	}
-
-	userModel := h.services.Context.ContextGetUser(c)
-	if userModel.Crmid == "" || userModel.Id < 1 {
-		anonymousResponse(c)
-		return
-	}
 	ticket, err := h.services.HelpDesk.GetHelpDeskById(c.Request.Context(), id)
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
@@ -56,22 +43,11 @@ func (h *Handler) getTicket(c *gin.Context) {
 }
 
 func (h *Handler) getComments(c *gin.Context) {
-	id := c.Param("id")
-	if id == "" {
-		newResponse(c, http.StatusBadRequest, "code is empty")
+	id := h.getAndValidateId(c, "id")
 
-		return
-	}
+	userModel := h.getValidatedUser(c)
 
-	if !strings.Contains(id, "x") {
-		newResponse(c, http.StatusUnprocessableEntity, "wrong id")
-
-		return
-	}
-
-	userModel := h.services.Context.ContextGetUser(c)
-	if userModel.Crmid == "" || userModel.Id < 1 {
-		anonymousResponse(c)
+	if id == "" || userModel == nil {
 		return
 	}
 
@@ -93,22 +69,11 @@ func (h *Handler) getComments(c *gin.Context) {
 }
 
 func (h *Handler) getDocuments(c *gin.Context) {
-	id := c.Param("id")
-	if id == "" {
-		newResponse(c, http.StatusBadRequest, "code is empty")
+	id := h.getAndValidateId(c, "id")
 
-		return
-	}
+	userModel := h.getValidatedUser(c)
 
-	if !strings.Contains(id, "x") {
-		newResponse(c, http.StatusUnprocessableEntity, "wrong id")
-
-		return
-	}
-
-	userModel := h.services.Context.ContextGetUser(c)
-	if userModel.Crmid == "" || userModel.Id < 1 {
-		anonymousResponse(c)
+	if id == "" || userModel == nil {
 		return
 	}
 
@@ -130,35 +95,12 @@ func (h *Handler) getDocuments(c *gin.Context) {
 }
 
 func (h *Handler) getFile(c *gin.Context) {
-	id := c.Param("id")
-	if id == "" {
-		newResponse(c, http.StatusBadRequest, "code is empty")
+	id := h.getAndValidateId(c, "id")
 
-		return
-	}
+	userModel := h.getValidatedUser(c)
+	fileId := h.getAndValidateId(c, "file")
 
-	if !strings.Contains(id, "x") {
-		newResponse(c, http.StatusUnprocessableEntity, "wrong id")
-
-		return
-	}
-
-	userModel := h.services.Context.ContextGetUser(c)
-	if userModel.Crmid == "" || userModel.Id < 1 {
-		anonymousResponse(c)
-		return
-	}
-
-	fileId := c.Param("file")
-
-	if fileId == "" {
-		newResponse(c, http.StatusBadRequest, "code is empty")
-
-		return
-	}
-	if !strings.Contains(fileId, "x") {
-		newResponse(c, http.StatusUnprocessableEntity, "wrong id")
-
+	if id == "" || userModel == nil || fileId == "" {
 		return
 	}
 
@@ -177,28 +119,11 @@ func (h *Handler) getFile(c *gin.Context) {
 }
 
 func (h *Handler) getAllTickets(c *gin.Context) {
-	userModel := h.services.Context.ContextGetUser(c)
-	if userModel.Crmid == "" || userModel.Id < 1 {
-		anonymousResponse(c)
-		return
-	}
-	if userModel.AccountId == "" {
-		notPermittedResponse(c)
-		return
-	}
-	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
-	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "Invalid page number"})
-		return
-	}
+	userModel := h.getValidatedUser(c)
+	page, size := h.getPageAndSizeParams(c)
 
-	size, err := strconv.Atoi(c.DefaultQuery("size", strconv.Itoa(h.config.Vtiger.Business.DefaultPagination)))
-	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "Invalid page size"})
+	if userModel == nil || page < 0 || size < 0 {
 		return
-	}
-	if size < 1 {
-		size = 100
 	}
 
 	tickets, count, err := h.services.HelpDesk.GetAll(c.Request.Context(), repository.TicketsQueryFilter{
@@ -226,11 +151,11 @@ func (h *Handler) createTicket(c *gin.Context) {
 			return // exit on first error
 		}
 	}
-	userModel := h.services.Context.ContextGetUser(c)
-	if userModel.Crmid == "" || userModel.Id < 1 {
-		anonymousResponse(c)
+	userModel := h.getValidatedUser(c)
+	if userModel == nil {
 		return
 	}
+
 	ticket, err := h.services.HelpDesk.CreateTicket(c.Request.Context(), inp, *userModel)
 	if errors.Is(service.ErrValidation, err) {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "ticketcategories", "message": err.Error()})

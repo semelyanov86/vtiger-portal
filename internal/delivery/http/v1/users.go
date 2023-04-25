@@ -74,9 +74,8 @@ func (h *Handler) signIn(c *gin.Context) {
 }
 
 func (h Handler) getUserInfo(c *gin.Context) {
-	userModel := h.services.Context.ContextGetUser(c)
-	if userModel.Crmid == "" || userModel.Id < 1 {
-		anonymousResponse(c)
+	userModel := h.getValidatedUser(c)
+	if userModel == nil {
 		return
 	}
 	user, err := h.services.Users.GetUserById(c.Request.Context(), userModel.Id)

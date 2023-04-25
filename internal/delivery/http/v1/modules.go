@@ -20,9 +20,8 @@ func (h *Handler) describeModule(c *gin.Context) {
 		return
 	}
 
-	userModel := h.services.Context.ContextGetUser(c)
-	if userModel.Crmid == "" || userModel.Id < 1 {
-		anonymousResponse(c)
+	userModel := h.getValidatedUser(c)
+	if userModel == nil {
 		return
 	}
 	module, err := h.services.Modules.Describe(c.Request.Context(), name)

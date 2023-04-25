@@ -2,9 +2,7 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
@@ -29,33 +27,24 @@ func NewDocuments(repository repository.Document, cache cache.Cache) Documents {
 }
 
 func (d Documents) GetRelated(ctx context.Context, id string) ([]domain.Document, error) {
-	cachedDocumentData, err := d.cache.Get(CacheDocuments + id)
-	if errors.Is(cache.ErrItemNotFound, err) || cachedDocumentData == nil {
-		documentData, err := d.repository.RetrieveFromModule(ctx, id)
-		if err != nil {
-			return documentData, e.Wrap("can not get a documents", err)
-		}
-		cachedValue, err := json.Marshal(documentData)
-		if err != nil {
-			return documentData, err
-		}
-		err = d.cache.Set(CacheDocuments+id, cachedValue, CacheDocumentTtl)
-		if err != nil {
-			return documentData, err
-		}
-		return documentData, nil
-	} else {
-		decodedDocuments := &[]domain.Document{}
-		err = json.Unmarshal(cachedDocumentData, decodedDocuments)
-		if err != nil {
-			if jsonErr, ok := err.(*json.SyntaxError); ok {
-				problemPart := cachedDocumentData[jsonErr.Offset-10 : jsonErr.Offset+10]
+	documents := &[]domain.Document{}
+	err := GetFromCache[*[]domain.Document](CacheDocuments+id, documents, d.cache)
+	if err == nil {
+		return *documents, nil
+	}
 
-				err = fmt.Errorf("%w ~ error near '%s' (offset %d)", err, problemPart, jsonErr.Offset)
-			}
-			return *decodedDocuments, e.Wrap("can not convert caches data to documents", err)
+	if errors.Is(cache.ErrItemNotFound, err) {
+		documentsData, err := d.repository.RetrieveFromModule(ctx, id)
+		if err != nil {
+			return documentsData, e.Wrap("can not get a documents", err)
 		}
-		return *decodedDocuments, nil
+		err = StoreInCache[*[]domain.Document](CacheDocuments+id, &documentsData, CacheDocumentTtl, d.cache)
+		if err != nil {
+			return documentsData, err
+		}
+		return documentsData, nil
+	} else {
+		return *documents, e.Wrap("can not convert caches data to documents", err)
 	}
 }
 

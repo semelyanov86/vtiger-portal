@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
@@ -11,6 +13,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/email"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"sync"
+	"time"
 )
 
 //go:generate mockgen -source=service.go -destination=mocks/mock.go
@@ -62,4 +65,33 @@ type CommentServiceInterface interface {
 type DocumentServiceInterface interface {
 	GetRelated(ctx context.Context, id string) ([]domain.Document, error)
 	GetFile(ctx context.Context, id string, relatedId string) (vtiger.File, error)
+}
+
+type SupportedTypes interface {
+	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document
+}
+
+func GetFromCache[T SupportedTypes](key string, dest T, c cache.Cache) error {
+	cachedData, err := c.Get(key)
+	if err != nil || cachedData == nil {
+		return cache.ErrItemNotFound
+	}
+
+	err = json.Unmarshal(cachedData, dest)
+	if err != nil {
+		if jsonErr, ok := err.(*json.SyntaxError); ok {
+			problemPart := cachedData[jsonErr.Offset-10 : jsonErr.Offset+10]
+			return fmt.Errorf("%w ~ error near '%s' (offset %d)", err, problemPart, jsonErr.Offset)
+		}
+		return err
+	}
+	return nil
+}
+
+func StoreInCache[T SupportedTypes](key string, value T, ttl time.Duration, c cache.Cache) error {
+	data, err := json.Marshal(value)
+	if err != nil {
+		return err
+	}
+	return c.Set(key, data, int64(ttl))
 }

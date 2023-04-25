@@ -2,9 +2,7 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
@@ -37,33 +35,24 @@ func NewHelpDeskService(repository repository.HelpDesk, cache cache.Cache, comme
 }
 
 func (h HelpDesk) GetHelpDeskById(ctx context.Context, id string) (domain.HelpDesk, error) {
-	cachedTicketData, err := h.cache.Get(id)
-	if errors.Is(cache.ErrItemNotFound, err) || cachedTicketData == nil {
-		ticketData, err := h.retrieveHelpDesk(ctx, id)
-		if err != nil {
-			return domain.HelpDesk{}, e.Wrap("can not get a helpdesk", err)
-		}
-		cachedValue, err := json.Marshal(ticketData)
-		if err != nil {
-			return domain.HelpDesk{}, err
-		}
-		err = h.cache.Set(id, cachedValue, CacheHelpDeskTtl)
-		if err != nil {
-			return domain.HelpDesk{}, err
-		}
-		return ticketData, nil
-	} else {
-		decodedTicket := &domain.HelpDesk{}
-		err = json.Unmarshal(cachedTicketData, decodedTicket)
-		if err != nil {
-			if jsonErr, ok := err.(*json.SyntaxError); ok {
-				problemPart := cachedTicketData[jsonErr.Offset-10 : jsonErr.Offset+10]
+	helpDesk := &domain.HelpDesk{}
+	err := GetFromCache[*domain.HelpDesk](id, helpDesk, h.cache)
+	if err == nil {
+		return *helpDesk, nil
+	}
 
-				err = fmt.Errorf("%w ~ error near '%s' (offset %d)", err, problemPart, jsonErr.Offset)
-			}
-			return domain.HelpDesk{}, e.Wrap("can not convert caches data to helpdesk", err)
+	if errors.Is(cache.ErrItemNotFound, err) {
+		helpDeskData, err := h.retrieveHelpDesk(ctx, id)
+		if err != nil {
+			return helpDeskData, e.Wrap("can not get a helpDesk", err)
 		}
-		return *decodedTicket, nil
+		err = StoreInCache[*domain.HelpDesk](id, &helpDeskData, CacheHelpDeskTtl, h.cache)
+		if err != nil {
+			return helpDeskData, err
+		}
+		return helpDeskData, nil
+	} else {
+		return *helpDesk, e.Wrap("can not convert caches data to helpDesk", err)
 	}
 }
 

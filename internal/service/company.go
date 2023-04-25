@@ -2,9 +2,7 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
@@ -28,33 +26,24 @@ func NewCompanyService(repository repository.Company, cache cache.Cache) Company
 }
 
 func (c Company) GetCompany(ctx context.Context) (domain.Company, error) {
-	cachedCompanyData, err := c.cache.Get(CacheCompany)
-	if errors.Is(cache.ErrItemNotFound, err) || cachedCompanyData == nil {
+	company := &domain.Company{}
+	err := GetFromCache[*domain.Company](CacheCompany, company, c.cache)
+	if err == nil {
+		return *company, nil
+	}
+
+	if errors.Is(cache.ErrItemNotFound, err) {
 		companyData, err := c.retrieveCompany(ctx)
 		if err != nil {
 			return domain.Company{}, e.Wrap("can not get a company", err)
 		}
-		cachedValue, err := json.Marshal(companyData)
-		if err != nil {
-			return domain.Company{}, err
-		}
-		err = c.cache.Set(CacheCompany, cachedValue, CacheManagerTtl)
+		err = StoreInCache[*domain.Company](CacheCompany, &companyData, CacheManagerTtl, c.cache)
 		if err != nil {
 			return domain.Company{}, err
 		}
 		return companyData, nil
 	} else {
-		decodedCompany := &domain.Company{}
-		err = json.Unmarshal(cachedCompanyData, decodedCompany)
-		if err != nil {
-			if jsonErr, ok := err.(*json.SyntaxError); ok {
-				problemPart := cachedCompanyData[jsonErr.Offset-10 : jsonErr.Offset+10]
-
-				err = fmt.Errorf("%w ~ error near '%s' (offset %d)", err, problemPart, jsonErr.Offset)
-			}
-			return domain.Company{}, e.Wrap("can not convert caches data to company", err)
-		}
-		return *decodedCompany, nil
+		return domain.Company{}, e.Wrap("can not convert caches data to company", err)
 	}
 }
 

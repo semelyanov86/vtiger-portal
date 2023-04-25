@@ -2,9 +2,7 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
@@ -26,33 +24,24 @@ func NewManagerService(repository repository.Managers, cache cache.Cache) Manage
 }
 
 func (m ManagerService) GetManagerById(ctx context.Context, id string) (domain.Manager, error) {
-	cachedManagerData, err := m.cache.Get(id)
-	if errors.Is(cache.ErrItemNotFound, err) || cachedManagerData == nil {
+	manager := &domain.Manager{}
+	err := GetFromCache[*domain.Manager](id, manager, m.cache)
+	if err == nil {
+		return *manager, nil
+	}
+
+	if errors.Is(cache.ErrItemNotFound, err) {
 		managerData, err := m.retrieveManager(ctx, id)
 		if err != nil {
-			return domain.Manager{}, e.Wrap("can not get a manager", err)
+			return managerData, e.Wrap("can not get a manager", err)
 		}
-		cachedValue, err := json.Marshal(managerData)
+		err = StoreInCache[*domain.Manager](id, &managerData, CacheManagerTtl, m.cache)
 		if err != nil {
-			return domain.Manager{}, err
-		}
-		err = m.cache.Set(id, cachedValue, CacheManagerTtl)
-		if err != nil {
-			return domain.Manager{}, err
+			return managerData, err
 		}
 		return managerData, nil
 	} else {
-		decodedManager := &domain.Manager{}
-		err = json.Unmarshal(cachedManagerData, decodedManager)
-		if err != nil {
-			if jsonErr, ok := err.(*json.SyntaxError); ok {
-				problemPart := cachedManagerData[jsonErr.Offset-10 : jsonErr.Offset+10]
-
-				err = fmt.Errorf("%w ~ error near '%s' (offset %d)", err, problemPart, jsonErr.Offset)
-			}
-			return domain.Manager{}, e.Wrap("can not convert caches data to manager", err)
-		}
-		return *decodedManager, nil
+		return *manager, e.Wrap("can not convert caches data to manager", err)
 	}
 }
 

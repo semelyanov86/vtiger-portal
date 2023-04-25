@@ -2,9 +2,7 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
@@ -26,33 +24,24 @@ func NewModulesService(repository repository.Modules, cache cache.Cache) Modules
 }
 
 func (m ModulesService) Describe(ctx context.Context, name string) (vtiger.Module, error) {
-	cachedModuleData, err := m.cache.Get(name)
-	if errors.Is(cache.ErrItemNotFound, err) || cachedModuleData == nil {
+	module := &vtiger.Module{}
+	err := GetFromCache[*vtiger.Module](name, module, m.cache)
+	if err == nil {
+		return *module, nil
+	}
+
+	if errors.Is(cache.ErrItemNotFound, err) {
 		moduleData, err := m.retrieveModule(ctx, name)
 		if err != nil {
-			return vtiger.Module{}, e.Wrap("can not get a module "+name, err)
+			return moduleData, e.Wrap("can not get a module", err)
 		}
-		cachedValue, err := json.Marshal(moduleData)
+		err = StoreInCache[*vtiger.Module](name, &moduleData, CacheModulesTtl, m.cache)
 		if err != nil {
-			return vtiger.Module{}, err
-		}
-		err = m.cache.Set(name, cachedValue, CacheModulesTtl)
-		if err != nil {
-			return vtiger.Module{}, err
+			return moduleData, err
 		}
 		return moduleData, nil
 	} else {
-		decodedModule := &vtiger.Module{}
-		err = json.Unmarshal(cachedModuleData, decodedModule)
-		if err != nil {
-			if jsonErr, ok := err.(*json.SyntaxError); ok {
-				problemPart := cachedModuleData[jsonErr.Offset-10 : jsonErr.Offset+10]
-
-				err = fmt.Errorf("%w ~ error near '%s' (offset %d)", err, problemPart, jsonErr.Offset)
-			}
-			return vtiger.Module{}, e.Wrap("can not convert caches data to manager", err)
-		}
-		return *decodedModule, nil
+		return *module, e.Wrap("can not convert caches data to module", err)
 	}
 }
 

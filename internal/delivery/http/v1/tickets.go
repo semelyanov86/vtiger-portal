@@ -16,6 +16,7 @@ func (h *Handler) initTicketsRoutes(api *gin.RouterGroup) {
 		tickets.GET("/", h.getAllTickets)
 		tickets.POST("/", h.createTicket)
 		tickets.GET("/:id", h.getTicket)
+		tickets.PUT("/:id", h.updateTicket)
 		tickets.GET("/:id/comments", h.getComments)
 		tickets.GET("/:id/documents", h.getDocuments)
 		tickets.GET("/:id/file/:file", h.getFile)
@@ -166,4 +167,34 @@ func (h *Handler) createTicket(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, ticket)
+}
+
+func (h *Handler) updateTicket(c *gin.Context) {
+	var inp service.CreateTicketInput
+	if err := c.BindJSON(&inp); err != nil {
+		for _, fieldErr := range err.(validator.ValidationErrors) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": fieldErr.Field(), "message": fieldErr.Error()})
+			return // exit on first error
+		}
+	}
+	id := h.getAndValidateId(c, "id")
+	userModel := h.getValidatedUser(c)
+	if userModel == nil || id == "" {
+		return
+	}
+
+	ticket, err := h.services.HelpDesk.UpdateTicket(c.Request.Context(), inp, id, *userModel)
+	if errors.Is(service.ErrValidation, err) {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "ticketcategories", "message": err.Error()})
+		return
+	}
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusAccepted, ticket)
 }

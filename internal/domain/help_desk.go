@@ -146,6 +146,10 @@ func (h HelpDesk) ConvertToMap() (map[string]any, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	tags := ""
+	if len(h.Tags) > 0 {
+		tags = strings.Join(h.Tags, ",")
+	}
+	result["tags"] = tags
 	return result, nil
 }

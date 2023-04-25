@@ -583,3 +583,81 @@ func TestHandler_createTicket(t *testing.T) {
 		})
 	}
 }
+
+func TestHandler_updateTicket(t *testing.T) {
+	type mockRepositoryModule func(r *mock_repository.MockModules)
+
+	otherUser := repository.MockedUser
+	otherUser.AccountId = "11x223"
+
+	tests := []struct {
+		name         string
+		mockModule   mockRepositoryModule
+		userModel    *domain.User
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name: "Ticket updated",
+			mockModule: func(r *mock_repository.MockModules) {
+				r.EXPECT().GetModuleInfo(context.Background(), "HelpDesk").Return(vtiger.MockedModule, nil)
+			},
+			statusCode:   http.StatusAccepted,
+			responseBody: `"ticket_no":"TICKET_28"`,
+			userModel:    &repository.MockedUser,
+		},
+		{
+			name: "Update not permitted",
+			mockModule: func(r *mock_repository.MockModules) {
+			},
+			statusCode:   http.StatusForbidden,
+			responseBody: `"error":"Access Not Permitted"`,
+			userModel:    &otherUser,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rc := mock_repository.NewMockComment(c)
+			rd := mock_repository.NewMockDocument(c)
+			rmm := mock_repository.NewMockModules(c)
+			tt.mockModule(rmm)
+
+			commentService := service.NewComments(rc, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+
+			helpDeskService := service.NewHelpDeskService(repository.HelpDeskMockRepository{}, cache.NewMemoryCache(), commentService, documentService, service.NewModulesService(rmm, cache.NewMemoryCache()), config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultUser: "19x1"}}})
+
+			services := &service.Services{HelpDesk: helpDeskService, Comments: commentService, Documents: documentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
+			handler := Handler{services: services}
+
+			// Init Endpoint
+			r := gin.New()
+			r.PUT("/api/v1/tickets/:id", func(c *gin.Context) {
+
+			}, handler.updateTicket)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("PUT", "/api/v1/tickets/17x28",
+				bytes.NewBufferString(`{
+  "ticket_title": "Problem with internet",
+  "ticketpriorities": "Normal",
+  "ticketseverities": "Minor",
+  "ticketcategories": "Big Problem",
+  "description": "There are no internet in my appartment."
+}`))
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}

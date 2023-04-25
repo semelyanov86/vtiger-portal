@@ -100,11 +100,8 @@ type CreateTicketInput struct {
 }
 
 func (h HelpDesk) CreateTicket(ctx context.Context, input CreateTicketInput, user domain.User) (domain.HelpDesk, error) {
-	module, err := h.module.Describe(ctx, "HelpDesk")
 	var helpDesk domain.HelpDesk
-	if err != nil {
-		return domain.HelpDesk{}, e.Wrap("can not get module info", err)
-	}
+
 	helpDesk.TicketTitle = input.TicketTitle
 	helpDesk.AssignedUserID = h.config.Vtiger.Business.DefaultUser
 	helpDesk.TicketPriorities = input.Ticketpriorities
@@ -115,6 +112,20 @@ func (h HelpDesk) CreateTicket(ctx context.Context, input CreateTicketInput, use
 	helpDesk.ContactID = user.Crmid
 	helpDesk.FromPortal = true
 	helpDesk.Source = "PORTAL"
+
+	err := h.validateInputFields(ctx, &helpDesk)
+	if err != nil {
+		return helpDesk, err
+	}
+
+	return h.repository.Create(ctx, helpDesk)
+}
+
+func (h HelpDesk) validateInputFields(ctx context.Context, helpDesk *domain.HelpDesk) error {
+	module, err := h.module.Describe(ctx, "HelpDesk")
+	if err != nil {
+		return e.Wrap("can not get module info", err)
+	}
 	var fields = module.Fields
 	for _, field := range fields {
 		switch field.Name {
@@ -122,17 +133,50 @@ func (h HelpDesk) CreateTicket(ctx context.Context, input CreateTicketInput, use
 			helpDesk.TicketStatus = field.Type.DefaultValue
 		case "ticketseverities":
 			if !field.Type.IsPicklistExist(helpDesk.TicketSeverities) {
-				return helpDesk, e.Wrap("Wrong value for field ticketseverities", ErrValidation)
+				return e.Wrap("Wrong value for field ticketseverities", ErrValidation)
 			}
 		case "ticketpriorities":
 			if !field.Type.IsPicklistExist(helpDesk.TicketPriorities) {
-				return helpDesk, e.Wrap("Wrong value for field ticketpriorities", ErrValidation)
+				return e.Wrap("Wrong value for field ticketpriorities", ErrValidation)
 			}
 		case "ticketcategories":
 			if !field.Type.IsPicklistExist(helpDesk.TicketCategories) {
-				return helpDesk, e.Wrap("Wrong value for field ticketcategories", ErrValidation)
+				return e.Wrap("Wrong value for field ticketcategories", ErrValidation)
 			}
 		}
 	}
-	return h.repository.Create(ctx, helpDesk)
+	return nil
+}
+
+func (h HelpDesk) UpdateTicket(ctx context.Context, input CreateTicketInput, id string, user domain.User) (domain.HelpDesk, error) {
+	ticket, err := h.retrieveHelpDesk(ctx, id)
+	if err != nil {
+		return ticket, e.Wrap("can not retrieve helpdesk during update", err)
+	}
+	if user.AccountId != ticket.ParentID {
+		return domain.HelpDesk{}, ErrOperationNotPermitted
+	}
+	if input.TicketTitle != "" {
+		ticket.TicketTitle = input.TicketTitle
+	}
+	if input.Description != "" {
+		ticket.Description = input.Description
+	}
+	if input.Ticketpriorities != "" {
+		ticket.TicketPriorities = input.Ticketpriorities
+	}
+	if input.Ticketseverities != "" {
+		ticket.TicketSeverities = input.Ticketseverities
+	}
+
+	err = h.validateInputFields(ctx, &ticket)
+	if err != nil {
+		return ticket, err
+	}
+	ticket, err = h.repository.Update(ctx, ticket)
+	if err != nil {
+		return ticket, err
+	}
+	err = StoreInCache[*domain.HelpDesk](id, &ticket, CacheHelpDeskTtl, h.cache)
+	return ticket, err
 }

@@ -50,6 +50,7 @@ type HelpDesk interface {
 	GetAll(ctx context.Context, filter TicketsQueryFilter) ([]domain.HelpDesk, error)
 	Count(ctx context.Context, client string) (int, error)
 	Create(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error)
+	Update(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error)
 }
 
 type Comment interface {

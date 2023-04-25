@@ -9,7 +9,7 @@ type HelpDeskMockRepository struct {
 }
 
 func (m HelpDeskMockRepository) RetrieveById(ctx context.Context, id string) (domain.HelpDesk, error) {
-	return domain.HelpDesk{}, nil
+	return domain.MockedHelpDesk, nil
 }
 
 func (m HelpDeskMockRepository) GetAll(ctx context.Context, filter TicketsQueryFilter) ([]domain.HelpDesk, error) {
@@ -21,5 +21,9 @@ func (m HelpDeskMockRepository) Count(ctx context.Context, client string) (int, 
 }
 
 func (m HelpDeskMockRepository) Create(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error) {
+	return domain.MockedHelpDesk, nil
+}
+
+func (m HelpDeskMockRepository) Update(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error) {
 	return domain.MockedHelpDesk, nil
 }

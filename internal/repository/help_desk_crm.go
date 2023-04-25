@@ -86,3 +86,16 @@ func (m HelpDeskCrm) Create(ctx context.Context, ticket domain.HelpDesk) (domain
 	}
 	return domain.ConvertMapToHelpDesk(result.Result)
 }
+
+func (m HelpDeskCrm) Update(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error) {
+	ticketMap, err := ticket.ConvertToMap()
+	if err != nil {
+		return ticket, e.Wrap("can not convert to map", err)
+	}
+
+	result, err := m.vtiger.Update(ctx, ticketMap)
+	if err != nil {
+		return ticket, e.Wrap("can send update map to vtiger", err)
+	}
+	return domain.ConvertMapToHelpDesk(result.Result)
+}

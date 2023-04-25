@@ -265,7 +265,6 @@ func (c VtigerConnector) Update(ctx context.Context, data map[string]any) (*Vtig
 	}
 
 	webRequest := NewWebRequest(c.connection)
-
 	// send a request to retrieve a record
 	resp, err := webRequest.SendObject(ctx, "update", sessionID, "", data)
 	if err != nil {

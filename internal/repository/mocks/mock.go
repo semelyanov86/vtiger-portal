@@ -442,6 +442,21 @@ func (mr *MockHelpDeskMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockHelpDesk)(nil).RetrieveById), ctx, id)
 }
 
+// Update mocks base method.
+func (m *MockHelpDesk) Update(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, ticket)
+	ret0, _ := ret[0].(domain.HelpDesk)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockHelpDeskMockRecorder) Update(ctx, ticket interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockHelpDesk)(nil).Update), ctx, ticket)
+}
+
 // MockComment is a mock of Comment interface.
 type MockComment struct {
 	ctrl     *gomock.Controller

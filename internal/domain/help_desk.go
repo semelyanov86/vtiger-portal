@@ -1,8 +1,8 @@
 package domain
 
 import (
-	"encoding/json"
 	"errors"
+	"github.com/semelyanov86/vtiger-portal/internal/utils"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"strconv"
 	"strings"
@@ -136,15 +136,9 @@ func ConvertMapToHelpDesk(m map[string]any) (HelpDesk, error) {
 }
 
 func (h HelpDesk) ConvertToMap() (map[string]any, error) {
-	var result map[string]interface{}
-	data, err := json.Marshal(h)
+	result, err := utils.ConvertStructToMap(h)
 	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(data, &result)
-	if err != nil {
-		return nil, err
+		return result, err
 	}
 	tags := ""
 	if len(h.Tags) > 0 {

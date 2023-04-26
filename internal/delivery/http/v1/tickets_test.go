@@ -661,3 +661,60 @@ func TestHandler_updateTicket(t *testing.T) {
 		})
 	}
 }
+
+func TestHandler_addCommentToTicket(t *testing.T) {
+
+	tests := []struct {
+		name         string
+		userModel    *domain.User
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name:         "Comment added",
+			statusCode:   http.StatusCreated,
+			responseBody: `"commentcontent":"This is a test comment."`,
+			userModel:    &repository.MockedUser,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rc := repository.NewCommentMock()
+			rd := mock_repository.NewMockDocument(c)
+			rmm := mock_repository.NewMockModules(c)
+
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+
+			helpDeskService := service.NewHelpDeskService(repository.HelpDeskMockRepository{}, cache.NewMemoryCache(), commentService, documentService, service.NewModulesService(rmm, cache.NewMemoryCache()), config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultUser: "19x1"}}})
+
+			services := &service.Services{HelpDesk: helpDeskService, Comments: commentService, Documents: documentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
+			handler := Handler{services: services}
+
+			// Init Endpoint
+			r := gin.New()
+			r.POST("/api/v1/tickets/:id/comments", func(c *gin.Context) {
+
+			}, handler.addComment)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("POST", "/api/v1/tickets/17x28/comments",
+				bytes.NewBufferString(`{
+  "commentcontent": "This is a test comment."
+}`))
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}

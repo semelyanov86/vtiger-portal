@@ -18,6 +18,7 @@ func (h *Handler) initTicketsRoutes(api *gin.RouterGroup) {
 		tickets.GET("/:id", h.getTicket)
 		tickets.PUT("/:id", h.updateTicket)
 		tickets.GET("/:id/comments", h.getComments)
+		tickets.POST("/:id/comments", h.addComment)
 		tickets.GET("/:id/documents", h.getDocuments)
 		tickets.GET("/:id/file/:file", h.getFile)
 	}
@@ -67,6 +68,37 @@ func (h *Handler) getComments(c *gin.Context) {
 		Page:  1,
 		Size:  100,
 	})
+}
+
+type createCommentInput struct {
+	Commentcontent string `json:"commentcontent" binding:"required"`
+}
+
+func (h *Handler) addComment(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+
+	userModel := h.getValidatedUser(c)
+
+	if id == "" || userModel == nil {
+		return
+	}
+	var inp createCommentInput
+	if err := c.BindJSON(&inp); err != nil {
+		for _, fieldErr := range err.(validator.ValidationErrors) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": fieldErr.Field(), "message": fieldErr.Error()})
+			return // exit on first error
+		}
+	}
+	comment, err := h.services.HelpDesk.AddComment(c.Request.Context(), inp.Commentcontent, id, *userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusCreated, comment)
 }
 
 func (h *Handler) getDocuments(c *gin.Context) {

@@ -36,7 +36,7 @@ var ErrOperationNotPermitted = errors.New("you are not permitted to view this re
 func NewServices(repos repository.Repositories, email email.Sender, wg *sync.WaitGroup, config config.Config, cache cache.Cache) *Services {
 	emailService := *NewEmailsService(email, config.Email, cache)
 	companyService := NewCompanyService(repos.Company, cache)
-	commentsService := NewComments(repos.Comments, cache)
+	commentsService := NewComments(repos.Comments, cache, config)
 	documentService := NewDocuments(repos.Documents, cache)
 	modulesService := NewModulesService(repos.Modules, cache)
 	return &Services{
@@ -60,6 +60,7 @@ type ContextServiceInterface interface {
 
 type CommentServiceInterface interface {
 	GetRelated(ctx context.Context, id string) ([]domain.Comment, error)
+	Create(ctx context.Context, content string, related string, userId string) (domain.Comment, error)
 }
 
 type DocumentServiceInterface interface {

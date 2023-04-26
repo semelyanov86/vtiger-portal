@@ -55,6 +55,7 @@ type HelpDesk interface {
 
 type Comment interface {
 	RetrieveFromModule(ctx context.Context, id string) ([]domain.Comment, error)
+	Create(ctx context.Context, comment domain.Comment) (domain.Comment, error)
 }
 
 type Document interface {

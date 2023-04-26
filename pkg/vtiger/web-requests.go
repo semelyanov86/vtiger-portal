@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/octoper/go-ray"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"io"
 	"net/http"
@@ -99,7 +98,7 @@ func (w WebRequests) SendObject(ctx context.Context, operation string, session s
 		"elementType": {elementType},
 	}
 	reqBody := strings.NewReader(form.Encode())
-	ray.Ray(reqBody, string(jsonObject))
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, w.config.Url, reqBody)
 
 	if err != nil {

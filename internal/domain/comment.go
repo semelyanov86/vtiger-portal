@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"github.com/semelyanov86/vtiger-portal/internal/utils"
 	"time"
 )
 
@@ -82,4 +83,8 @@ func ConvertMapToComment(m map[string]any) Comment {
 	}
 
 	return comment
+}
+
+func (c Comment) ConvertToMap() (map[string]any, error) {
+	return utils.ConvertStructToMap(c)
 }

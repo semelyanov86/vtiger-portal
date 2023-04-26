@@ -88,6 +88,21 @@ func (m *MockCommentServiceInterface) EXPECT() *MockCommentServiceInterfaceMockR
 	return m.recorder
 }
 
+// Create mocks base method.
+func (m *MockCommentServiceInterface) Create(ctx context.Context, content, related, userId string) (domain.Comment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, content, related, userId)
+	ret0, _ := ret[0].(domain.Comment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockCommentServiceInterfaceMockRecorder) Create(ctx, content, related, userId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCommentServiceInterface)(nil).Create), ctx, content, related, userId)
+}
+
 // GetRelated mocks base method.
 func (m *MockCommentServiceInterface) GetRelated(ctx context.Context, id string) ([]domain.Comment, error) {
 	m.ctrl.T.Helper()

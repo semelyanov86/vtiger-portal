@@ -35,3 +35,16 @@ func (c CommentCrm) RetrieveFromModule(ctx context.Context, id string) ([]domain
 	}
 	return comments, nil
 }
+
+func (c CommentCrm) Create(ctx context.Context, comment domain.Comment) (domain.Comment, error) {
+	commentMap, err := comment.ConvertToMap()
+	if err != nil {
+		return comment, e.Wrap("can not convert to map", err)
+	}
+	result, err := c.vtiger.Create(ctx, "ModComments", commentMap)
+	if err != nil {
+		return comment, e.Wrap("can not create comment", err)
+	}
+	newComment := domain.ConvertMapToComment(result.Result)
+	return newComment, nil
+}

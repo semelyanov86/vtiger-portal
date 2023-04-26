@@ -71,6 +71,17 @@ func (h HelpDesk) GetRelatedComments(ctx context.Context, id string, companyId s
 	return h.comment.GetRelated(ctx, id)
 }
 
+func (h HelpDesk) AddComment(ctx context.Context, content string, related string, userModel domain.User) (domain.Comment, error) {
+	helpDesk, err := h.GetHelpDeskById(ctx, related)
+	if err != nil {
+		return domain.Comment{}, err
+	}
+	if helpDesk.ParentID != userModel.AccountId {
+		return domain.Comment{}, ErrOperationNotPermitted
+	}
+	return h.comment.Create(ctx, content, related, userModel.Crmid)
+}
+
 func (h HelpDesk) GetRelatedDocuments(ctx context.Context, id string, companyId string) ([]domain.Document, error) {
 	helpDesk, err := h.GetHelpDeskById(ctx, id)
 	if err != nil {

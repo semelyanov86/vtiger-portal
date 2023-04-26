@@ -159,7 +159,7 @@ func (h *Handler) getAllTickets(c *gin.Context) {
 		return
 	}
 
-	tickets, count, err := h.services.HelpDesk.GetAll(c.Request.Context(), repository.TicketsQueryFilter{
+	tickets, count, err := h.services.HelpDesk.GetAll(c.Request.Context(), repository.PaginationQueryFilter{
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,

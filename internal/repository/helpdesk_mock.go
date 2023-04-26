@@ -12,7 +12,7 @@ func (m HelpDeskMockRepository) RetrieveById(ctx context.Context, id string) (do
 	return domain.MockedHelpDesk, nil
 }
 
-func (m HelpDeskMockRepository) GetAll(ctx context.Context, filter TicketsQueryFilter) ([]domain.HelpDesk, error) {
+func (m HelpDeskMockRepository) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.HelpDesk, error) {
 	return []domain.HelpDesk{}, nil
 }
 

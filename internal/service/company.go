@@ -37,7 +37,7 @@ func (c Company) GetCompany(ctx context.Context) (domain.Company, error) {
 		if err != nil {
 			return domain.Company{}, e.Wrap("can not get a company", err)
 		}
-		err = StoreInCache[*domain.Company](CacheCompany, &companyData, CacheManagerTtl, c.cache)
+		err = StoreInCache[*domain.Company](CacheCompany, &companyData, CacheCompanyTtl, c.cache)
 		if err != nil {
 			return domain.Company{}, err
 		}

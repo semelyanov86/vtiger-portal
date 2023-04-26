@@ -47,7 +47,7 @@ type Company interface {
 
 type HelpDesk interface {
 	RetrieveById(ctx context.Context, id string) (domain.HelpDesk, error)
-	GetAll(ctx context.Context, filter TicketsQueryFilter) ([]domain.HelpDesk, error)
+	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.HelpDesk, error)
 	Count(ctx context.Context, client string) (int, error)
 	Create(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error)
 	Update(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error)
@@ -63,9 +63,21 @@ type Document interface {
 	RetrieveFile(ctx context.Context, id string) (vtiger.File, error)
 }
 
+type Faq interface {
+	GetAllFaqs(ctx context.Context, filter PaginationQueryFilter) ([]domain.Faq, error)
+	Count(ctx context.Context, client string) (int, error)
+}
+
+type PaginationQueryFilter struct {
+	Page     int
+	PageSize int
+	Client   string
+}
+
 var ErrRecordNotFound = errors.New("record not found")
 var ErrEditConflict = errors.New("edit conflict")
 var ErrWrongCrmId = errors.New("wrong crm id")
+var ErrCanNotParseCountObject = errors.New("can not parse count object")
 
 type Repositories struct {
 	Users     Users
@@ -77,6 +89,7 @@ type Repositories struct {
 	HelpDesk  HelpDesk
 	Comments  Comment
 	Documents Document
+	Faqs      Faq
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -90,5 +103,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		HelpDesk:  NewHelpDeskCrm(config, cache),
 		Comments:  NewCommentCrm(config, cache),
 		Documents: NewDocumentCrm(config, cache),
+		Faqs:      NewFaqsCrm(config, cache),
 	}
 }

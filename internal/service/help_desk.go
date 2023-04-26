@@ -93,7 +93,7 @@ func (h HelpDesk) GetRelatedDocuments(ctx context.Context, id string, companyId 
 	return h.document.GetRelated(ctx, id)
 }
 
-func (h HelpDesk) GetAll(ctx context.Context, filter repository.TicketsQueryFilter) ([]domain.HelpDesk, int, error) {
+func (h HelpDesk) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.HelpDesk, int, error) {
 	tickets, err := h.repository.GetAll(ctx, filter)
 	if err != nil {
 		return tickets, 0, err

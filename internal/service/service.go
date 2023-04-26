@@ -29,6 +29,7 @@ type Services struct {
 	HelpDesk  HelpDesk
 	Comments  Comments
 	Documents DocumentServiceInterface
+	Faqs      Faqs
 }
 
 var ErrOperationNotPermitted = errors.New("you are not permitted to view this record")
@@ -50,6 +51,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		HelpDesk:  NewHelpDeskService(repos.HelpDesk, cache, commentsService, documentService, modulesService, config),
 		Comments:  commentsService,
 		Documents: documentService,
+		Faqs:      NewFaqsService(repos.Faqs, cache, modulesService, config),
 	}
 }
 

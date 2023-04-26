@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"errors"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
@@ -15,14 +14,6 @@ type HelpDeskCrm struct {
 	vtiger vtiger.VtigerConnector
 	config config.Config
 }
-
-type TicketsQueryFilter struct {
-	Page     int
-	PageSize int
-	Client   string
-}
-
-var ErrCanNotParseCountObject = errors.New("can not parse count object")
 
 func NewHelpDeskCrm(config config.Config, cache cache.Cache) HelpDeskCrm {
 	return HelpDeskCrm{
@@ -39,7 +30,7 @@ func (m HelpDeskCrm) RetrieveById(ctx context.Context, id string) (domain.HelpDe
 	return domain.ConvertMapToHelpDesk(result.Result)
 }
 
-func (m HelpDeskCrm) GetAll(ctx context.Context, filter TicketsQueryFilter) ([]domain.HelpDesk, error) {
+func (m HelpDeskCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.HelpDesk, error) {
 	// Calculate the offset for the given page number and page size
 	offset := (filter.Page - 1) * filter.PageSize
 	query := "SELECT * FROM HelpDesk WHERE parent_id = " + filter.Client + " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"

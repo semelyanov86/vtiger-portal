@@ -413,7 +413,7 @@ func (mr *MockHelpDeskMockRecorder) Create(ctx, ticket interface{}) *gomock.Call
 }
 
 // GetAll mocks base method.
-func (m *MockHelpDesk) GetAll(ctx context.Context, filter repository.TicketsQueryFilter) ([]domain.HelpDesk, error) {
+func (m *MockHelpDesk) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.HelpDesk, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
 	ret0, _ := ret[0].([]domain.HelpDesk)
@@ -561,4 +561,57 @@ func (m *MockDocument) RetrieveFromModule(ctx context.Context, id string) ([]dom
 func (mr *MockDocumentMockRecorder) RetrieveFromModule(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveFromModule", reflect.TypeOf((*MockDocument)(nil).RetrieveFromModule), ctx, id)
+}
+
+// MockFaq is a mock of Faq interface.
+type MockFaq struct {
+	ctrl     *gomock.Controller
+	recorder *MockFaqMockRecorder
+}
+
+// MockFaqMockRecorder is the mock recorder for MockFaq.
+type MockFaqMockRecorder struct {
+	mock *MockFaq
+}
+
+// NewMockFaq creates a new mock instance.
+func NewMockFaq(ctrl *gomock.Controller) *MockFaq {
+	mock := &MockFaq{ctrl: ctrl}
+	mock.recorder = &MockFaqMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockFaq) EXPECT() *MockFaqMockRecorder {
+	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockFaq) Count(ctx context.Context, client string) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, client)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockFaqMockRecorder) Count(ctx, client interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockFaq)(nil).Count), ctx, client)
+}
+
+// GetAllFaqs mocks base method.
+func (m *MockFaq) GetAllFaqs(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Faq, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllFaqs", ctx, filter)
+	ret0, _ := ret[0].([]domain.Faq)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllFaqs indicates an expected call of GetAllFaqs.
+func (mr *MockFaqMockRecorder) GetAllFaqs(ctx, filter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllFaqs", reflect.TypeOf((*MockFaq)(nil).GetAllFaqs), ctx, filter)
 }

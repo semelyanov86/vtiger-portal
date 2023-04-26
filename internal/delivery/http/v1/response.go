@@ -15,7 +15,7 @@ type DataResponse[T DataResponseModules] struct {
 }
 
 type DataResponseModules interface {
-	domain.Comment | domain.HelpDesk | domain.Document
+	domain.Comment | domain.HelpDesk | domain.Document | domain.Faq
 }
 
 type response struct {

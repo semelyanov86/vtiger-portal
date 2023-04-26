@@ -226,7 +226,7 @@ func TestHandler_getAllTickets(t *testing.T) {
 			name:    "Tickets received",
 			postfix: "?page=1&size=20",
 			mockTicket: func(r *mock_repository.MockHelpDesk) {
-				r.EXPECT().GetAll(context.Background(), repository.TicketsQueryFilter{
+				r.EXPECT().GetAll(context.Background(), repository.PaginationQueryFilter{
 					Page:     1,
 					PageSize: 20,
 					Client:   "11x1",

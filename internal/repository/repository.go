@@ -68,6 +68,10 @@ type Faq interface {
 	Count(ctx context.Context, client string) (int, error)
 }
 
+type Invoice interface {
+	RetrieveById(ctx context.Context, id string) (domain.Invoice, error)
+}
+
 type PaginationQueryFilter struct {
 	Page     int
 	PageSize int
@@ -90,6 +94,7 @@ type Repositories struct {
 	Comments  Comment
 	Documents Document
 	Faqs      Faq
+	Invoice   Invoice
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -104,5 +109,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		Comments:  NewCommentCrm(config, cache),
 		Documents: NewDocumentCrm(config, cache),
 		Faqs:      NewFaqsCrm(config, cache),
+		Invoice:   NewInvoiceCrm(config, cache),
 	}
 }

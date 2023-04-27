@@ -30,6 +30,7 @@ type Services struct {
 	Comments  Comments
 	Documents DocumentServiceInterface
 	Faqs      Faqs
+	Invoices  Invoices
 }
 
 var ErrOperationNotPermitted = errors.New("you are not permitted to view this record")
@@ -52,6 +53,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		Comments:  commentsService,
 		Documents: documentService,
 		Faqs:      NewFaqsService(repos.Faqs, cache, modulesService, config),
+		Invoices:  NewInvoiceService(repos.Invoice, cache, modulesService, config),
 	}
 }
 
@@ -71,7 +73,7 @@ type DocumentServiceInterface interface {
 }
 
 type SupportedTypes interface {
-	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document
+	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice
 }
 
 func GetFromCache[T SupportedTypes](key string, dest T, c cache.Cache) error {

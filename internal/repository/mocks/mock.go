@@ -615,3 +615,41 @@ func (mr *MockFaqMockRecorder) GetAllFaqs(ctx, filter interface{}) *gomock.Call 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllFaqs", reflect.TypeOf((*MockFaq)(nil).GetAllFaqs), ctx, filter)
 }
+
+// MockInvoice is a mock of Invoice interface.
+type MockInvoice struct {
+	ctrl     *gomock.Controller
+	recorder *MockInvoiceMockRecorder
+}
+
+// MockInvoiceMockRecorder is the mock recorder for MockInvoice.
+type MockInvoiceMockRecorder struct {
+	mock *MockInvoice
+}
+
+// NewMockInvoice creates a new mock instance.
+func NewMockInvoice(ctrl *gomock.Controller) *MockInvoice {
+	mock := &MockInvoice{ctrl: ctrl}
+	mock.recorder = &MockInvoiceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockInvoice) EXPECT() *MockInvoiceMockRecorder {
+	return m.recorder
+}
+
+// RetrieveById mocks base method.
+func (m *MockInvoice) RetrieveById(ctx context.Context, id string) (domain.Invoice, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveById", ctx, id)
+	ret0, _ := ret[0].(domain.Invoice)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveById indicates an expected call of RetrieveById.
+func (mr *MockInvoiceMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockInvoice)(nil).RetrieveById), ctx, id)
+}

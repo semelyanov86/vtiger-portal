@@ -49,3 +49,12 @@ func (h Invoices) GetInvoiceById(ctx context.Context, id string) (domain.Invoice
 		return *invoice, e.Wrap("can not convert caches data to invoice", err)
 	}
 }
+
+func (h Invoices) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Invoice, int, error) {
+	invoices, err := h.repository.GetAll(ctx, filter)
+	if err != nil {
+		return invoices, 0, err
+	}
+	count, err := h.repository.Count(ctx, filter.Client)
+	return invoices, count, err
+}

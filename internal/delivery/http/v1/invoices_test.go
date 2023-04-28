@@ -29,7 +29,7 @@ func TestHandler_receiveInvoiceById(t *testing.T) {
 		responseBody string
 	}{
 		{
-			name: "Ticket received",
+			name: "Invoice received",
 			id:   "2x53",
 			mockInvoice: func(r *mock_repository.MockInvoice) {
 				r.EXPECT().RetrieveById(context.Background(), "2x53").Return(domain.Invoice{
@@ -96,6 +96,88 @@ func TestHandler_receiveInvoiceById(t *testing.T) {
 			// Create Request
 			w := httptest.NewRecorder()
 			req := httptest.NewRequest("GET", "/api/v1/invoices/"+tt.id,
+				nil)
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}
+
+func TestHandler_getAllInvoices(t *testing.T) {
+	type mockRepositoryInvoice func(r *mock_repository.MockInvoice)
+
+	tests := []struct {
+		name         string
+		postfix      string
+		mockInvoice  mockRepositoryInvoice
+		userModel    *domain.User
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name: "Invoices received",
+			mockInvoice: func(r *mock_repository.MockInvoice) {
+				r.EXPECT().GetAll(context.Background(), repository.PaginationQueryFilter{
+					Page:     1,
+					PageSize: 20,
+					Client:   "11x1",
+				}).Return([]domain.Invoice{
+					{Description: "This is test description",
+						AccountID: "11x1"},
+				}, nil)
+				r.EXPECT().Count(context.Background(), "11x1").Return(1, nil)
+			},
+			statusCode:   http.StatusOK,
+			responseBody: `"description":"This is test description"`,
+			userModel:    &repository.MockedUser,
+		},
+		{
+			name: "Anonymous Access",
+			mockInvoice: func(r *mock_repository.MockInvoice) {
+			},
+			statusCode:   http.StatusUnauthorized,
+			responseBody: `"error":"Anonymous Access",`,
+			userModel:    domain.AnonymousUser,
+		},
+		{
+			name:    "Wrong Pagination",
+			postfix: "?page=notknown&size=smth",
+			mockInvoice: func(r *mock_repository.MockInvoice) {
+			},
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `Invalid page number`,
+			userModel:    &repository.MockedUser,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rm := mock_repository.NewMockInvoice(c)
+			tt.mockInvoice(rm)
+
+			invoiceService := service.NewInvoiceService(rm, cache.NewMemoryCache(), service.ModulesService{}, config.Config{})
+
+			services := &service.Services{Invoices: invoiceService, Context: service.MockedContextService{MockedUser: tt.userModel}}
+			handler := Handler{services: services, config: &config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultPagination: 20}}}}
+
+			// Init Endpoint
+			r := gin.New()
+			r.GET("/api/v1/invoices", func(c *gin.Context) {
+
+			}, handler.getAllInvoices)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("GET", "/api/v1/invoices"+tt.postfix,
 				nil)
 
 			// Make Request

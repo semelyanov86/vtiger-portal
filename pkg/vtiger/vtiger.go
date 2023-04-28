@@ -9,6 +9,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -26,6 +27,8 @@ var ErrResponseError = errors.New("response error from vtiger code 3")
 var ErrNoCacheKey = errors.New("code 8 There is no key for index in cache")
 
 var ErrWrongCredentials = errors.New("invalid credentials due to auth")
+
+var ErrCanNotParseCountObject = errors.New("can not parse count object")
 
 type VtigerConnector struct {
 	cache      cache.Cache
@@ -301,6 +304,27 @@ func (c VtigerConnector) Create(ctx context.Context, element string, data map[st
 	vtigerResponse := &VtigerResponse[map[string]any]{}
 
 	return processVtigerResponse[map[string]any](resp, vtigerResponse)
+}
+
+func (c VtigerConnector) Count(ctx context.Context, module string, filters map[string]string) (int, error) {
+	query := "SELECT COUNT(*) FROM " + module + " WHERE "
+	for field, value := range filters {
+		query += field + " = '" + value + "'"
+	}
+	query += ";"
+	result, err := c.Query(ctx, query)
+	if err != nil {
+		return 0, e.Wrap("can not execute query "+query+", got error: "+result.Error.Message, err)
+	}
+	countObject := result.Result[0]
+	if countObject == nil {
+		return 0, ErrCanNotParseCountObject
+	}
+	count, err := strconv.Atoi(countObject["count"].(string))
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }
 
 func (c VtigerConnector) getToken() (SessionData, error) {

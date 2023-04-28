@@ -86,8 +86,8 @@ type Invoice struct {
 	ShippingHandlingSHTax1 InvoiceFloat    `json:"shipping_&_handling_shtax1"`
 	ShippingHandlingSHTax2 InvoiceFloat    `json:"shipping_&_handling_shtax2"`
 	ShippingHandlingSHTax3 InvoiceFloat    `json:"shipping_&_handling_shtax3"`
-	LineItems              []LineItem      `json:"LineItems"`
-	LineItemsFinalDetails  map[string]any  `json:"LineItems_FinalDetails"`
+	LineItems              []LineItem      `json:"LineItems,omitempty"`
+	LineItemsFinalDetails  map[string]any  `json:"LineItems_FinalDetails,omitempty"`
 }
 
 type InvoiceDate time.Time

@@ -7,6 +7,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
+	"strconv"
 )
 
 type InvoiceCrm struct {
@@ -27,4 +28,29 @@ func (m InvoiceCrm) RetrieveById(ctx context.Context, id string) (domain.Invoice
 		return domain.Invoice{}, e.Wrap("can not retrieve invoice desk with id "+id+" got error:"+result.Error.Message, err)
 	}
 	return domain.ConvertMapToInvoice(result.Result)
+}
+
+func (m InvoiceCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Invoice, error) {
+	// Calculate the offset for the given page number and page size
+	offset := (filter.Page - 1) * filter.PageSize
+	query := "SELECT * FROM Invoice WHERE account_id = " + filter.Client + " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
+	invoices := make([]domain.Invoice, 0)
+	result, err := m.vtiger.Query(ctx, query)
+	if err != nil {
+		return invoices, e.Wrap("can not execute query "+query+", got error: "+result.Error.Message, err)
+	}
+	for _, data := range result.Result {
+		invoice, err := domain.ConvertMapToInvoice(data)
+		if err != nil {
+			return invoices, e.Wrap("can not convert map to invoice", err)
+		}
+		invoices = append(invoices, invoice)
+	}
+	return invoices, nil
+}
+
+func (m InvoiceCrm) Count(ctx context.Context, client string) (int, error) {
+	body := make(map[string]string)
+	body["account_id"] = client
+	return m.vtiger.Count(ctx, "Invoice", body)
 }

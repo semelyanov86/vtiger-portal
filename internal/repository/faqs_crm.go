@@ -41,19 +41,8 @@ func (f FaqsCrm) GetAllFaqs(ctx context.Context, filter PaginationQueryFilter) (
 	return faqs, nil
 }
 
-func (f FaqsCrm) Count(ctx context.Context, client string) (int, error) {
-	query := "SELECT COUNT(*) FROM Faq WHERE faqstatus = 'Published';"
-	result, err := f.vtiger.Query(ctx, query)
-	if err != nil {
-		return 0, e.Wrap("can not execute query "+query+", got error: "+result.Error.Message, err)
-	}
-	countObject := result.Result[0]
-	if countObject == nil {
-		return 0, ErrCanNotParseCountObject
-	}
-	count, err := strconv.Atoi(countObject["count"].(string))
-	if err != nil {
-		return 0, err
-	}
-	return count, nil
+func (f FaqsCrm) Count(ctx context.Context, _ string) (int, error) {
+	body := make(map[string]string)
+	body["faqstatus"] = "Published"
+	return f.vtiger.Count(ctx, "Faq", body)
 }

@@ -639,6 +639,36 @@ func (m *MockInvoice) EXPECT() *MockInvoiceMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockInvoice) Count(ctx context.Context, client string) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, client)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockInvoiceMockRecorder) Count(ctx, client interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockInvoice)(nil).Count), ctx, client)
+}
+
+// GetAll mocks base method.
+func (m *MockInvoice) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Invoice, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
+	ret0, _ := ret[0].([]domain.Invoice)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAll indicates an expected call of GetAll.
+func (mr *MockInvoiceMockRecorder) GetAll(ctx, filter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockInvoice)(nil).GetAll), ctx, filter)
+}
+
 // RetrieveById mocks base method.
 func (m *MockInvoice) RetrieveById(ctx context.Context, id string) (domain.Invoice, error) {
 	m.ctrl.T.Helper()

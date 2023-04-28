@@ -50,20 +50,9 @@ func (m HelpDeskCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) (
 }
 
 func (m HelpDeskCrm) Count(ctx context.Context, client string) (int, error) {
-	query := "SELECT COUNT(*) FROM HelpDesk WHERE parent_id = " + client + ";"
-	result, err := m.vtiger.Query(ctx, query)
-	if err != nil {
-		return 0, e.Wrap("can not execute query "+query+", got error: "+result.Error.Message, err)
-	}
-	countObject := result.Result[0]
-	if countObject == nil {
-		return 0, ErrCanNotParseCountObject
-	}
-	count, err := strconv.Atoi(countObject["count"].(string))
-	if err != nil {
-		return 0, err
-	}
-	return count, nil
+	body := make(map[string]string)
+	body["parent_id"] = client
+	return m.vtiger.Count(ctx, "HelpDesk", body)
 }
 
 func (m HelpDeskCrm) Create(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error) {

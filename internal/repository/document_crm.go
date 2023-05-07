@@ -37,7 +37,7 @@ func (d DocumentCrm) RetrieveFromModule(ctx context.Context, id string) ([]domai
 func (d DocumentCrm) RetrieveFile(ctx context.Context, id string) (vtiger.File, error) {
 	result, err := d.vtiger.RetrieveFiles(ctx, id)
 	if err != nil {
-		return vtiger.File{}, e.Wrap(result.Error.Message, err)
+		return vtiger.File{}, e.Wrap("can not get file with id "+id, err)
 	}
 	if len(result.Result) == 0 {
 		return vtiger.File{}, nil

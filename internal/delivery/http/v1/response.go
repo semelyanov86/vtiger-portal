@@ -14,8 +14,12 @@ type DataResponse[T DataResponseModules] struct {
 	Size  int `json:"size"`
 }
 
+type AloneDataResponse[T DataResponseModules] struct {
+	Data T `json:"data"`
+}
+
 type DataResponseModules interface {
-	domain.Comment | domain.HelpDesk | domain.Document | domain.Faq | domain.Invoice
+	domain.Comment | domain.HelpDesk | domain.Document | domain.Faq | domain.Invoice | domain.Company | domain.User
 }
 
 type response struct {

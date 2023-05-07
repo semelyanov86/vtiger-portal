@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"net/http"
 	"strings"
 )
@@ -32,5 +33,8 @@ func (h *Handler) getCompany(c *gin.Context) {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, company)
+	resp := AloneDataResponse[domain.Company]{
+		Data: company,
+	}
+	c.JSON(http.StatusOK, resp)
 }

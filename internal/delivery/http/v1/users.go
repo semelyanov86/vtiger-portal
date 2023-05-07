@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
 	"net/http"
@@ -83,7 +84,10 @@ func (h Handler) getUserInfo(c *gin.Context) {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, user)
+	res := AloneDataResponse[domain.User]{
+		Data: *user,
+	}
+	c.JSON(http.StatusOK, res)
 }
 
 func (h Handler) sendRestoreToken(c *gin.Context) {

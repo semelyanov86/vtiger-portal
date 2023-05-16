@@ -23,6 +23,12 @@ tags:
     description: Module informations with all data in it
   - name: tickets
     description: Operations with HelpDesk module
+  - name: faq
+    description: Frequently asked questions
+  - name: invoice
+    description: Endpoints for getting invoices
+  - name: service-contracts
+    description: Service contracts data
 paths:
   /users:
     post:
@@ -351,6 +357,67 @@ paths:
           description: HelpDesk not found
         "403":
           description: Operation not permitted
+    put:
+      tags:
+        - tickets
+      summary: Update ticket
+      description: Allows authorized user update ticket.
+      operationId: updateTicket
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ticketId
+          in: path
+          description: ID of ticket to update
+          required: true
+          schema:
+            type: string
+            format: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ticket_title:
+                  description: Title of ticket
+                  type: string
+                  example: "Problem with internet"
+                ticketpriorities:
+                  description: Proirity of ticket
+                  type: string
+                  example: "Normal"
+                ticketseverities:
+                  description: Severity of ticket
+                  type: string
+                  example: "Minor"
+                ticketcategories:
+                  description: Category of ticket
+                  type: string
+                  example: "Big Problem"
+                description:
+                  description: Some description of ticket
+                  type: string
+                  example: "There are no internet in my appartment."
+      responses:
+        "202":
+          description: Ticket updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HelpDesk"
+        "400":
+          description: Invalid ID supplied
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        "404":
+          description: HelpDesk or file not found
+        "403":
+          description: Operation not permitted
   "/tickets/{ticketId}/comments":
     get:
       tags:
@@ -389,6 +456,45 @@ paths:
                   size:
                     type: number
                     example: 100
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: HelpDesk not found
+        "403":
+          description: Operation not permitted
+    post:
+      tags:
+        - tickets
+      summary: Add comment
+      description: Create new comment, attached to current ticket
+      operationId: addCommentToTicket
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ticketId
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+            format: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                commentcontent:
+                  description: Comment content
+                  type: string
+                  example: "Please fix problem ASAP"
+      responses:
+        "201":
+          description: comment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
         "400":
           description: Invalid ID supplied
         "404":
@@ -578,6 +684,168 @@ paths:
                     example: 100
         "400":
           description: Invalid pagination params
+        "403":
+          description: Operation not permitted
+  "/faqs":
+    get:
+      tags:
+        - faq
+      summary: Get All Faqs
+      description: This endpoint returns a list of frequently asked questions based on the provided page number and page size.
+      operationId: getAllFaqs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: The page number to retrieve (default is 1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          description: The number of items per page (default is 20)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Faq"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid pagination params
+        "403":
+          description: Operation not permitted
+  "/invoices":
+    get:
+      tags:
+        - invoice
+      summary: Get Invoices
+      description: This endpoint returns a list of invoices based on the provided page number and page size.
+      operationId: getAllInvoices
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: The page number to retrieve (default is 1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          description: The number of items per page (default is 20)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/InvoiceShort"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid pagination params
+        "403":
+          description: Operation not permitted
+  "/invoices/{invoiceId}":
+    get:
+      tags:
+        - invoice
+      summary: Find Invoice by id
+      description: Returns a single Invoice
+      operationId: getInvoiceById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: invoiceId
+          in: path
+          description: ID of invoice to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Invoice not found
+        "403":
+          description: Operation not permitted
+  "/service-contracts/{scId}":
+    get:
+      tags:
+        - service-contracts
+      summary: Find Service Contract by ID
+      description: Returns a single service contract
+      operationId: getServiceContractById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: scId
+          in: path
+          description: ID of service contract to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceContract"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: ServiceContract not found
         "403":
           description: Operation not permitted
 externalDocs:
@@ -1063,6 +1331,45 @@ components:
         filecontent:
           type: "string"
           example: "This is the content of the file."
+    Faq:
+      type: object
+      properties:
+        product_id:
+          type: string
+          example: "16x18"
+        id:
+          type: string
+          example: "6x50"
+        faqcategories:
+          type: string
+          example: "General"
+        faqstatus:
+          type: string
+          example: "Published"
+        question:
+          type: string
+          example: "What is your name?"
+        faq_answer:
+          type: string
+          example: "My name is Sergey"
+        createdtime:
+          type: string
+          format: date-time
+          example: "2023-04-25 12:34:56"
+        modifiedtime:
+          type: string
+          format: date-time
+          example: "2023-04-26 12:34:56"
+        starred:
+          type: boolean
+          example: false
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+            - "products"
+            - "services"
     Company:
       type: object
       properties:
@@ -1138,3 +1445,490 @@ components:
         id:
           type: string
           example: "23x1"
+    Invoice:
+      type: object
+      properties:
+        subject:
+          type: string
+          example: Some laptops
+        salesorder_id:
+          type: string
+          example: "16x5"
+        customerno:
+          type: string
+          example: "customer-1"
+        contact_id:
+          type: string
+          example: 12x11
+        invoicedate:
+          type: string
+          format: date
+          example: 2023-04-26
+        duedate:
+          type: string
+          format: date
+          example: 2023-05-01
+        vtiger_purchaseorder:
+          type: string
+          example: "12x15"
+        txtAdjustment:
+          type: number
+          example: 0
+        salescommission:
+          type: number
+          example: 0
+        exciseduty:
+          type: number
+          example: 0.000
+        hdnSubTotal:
+          type: number
+          example: 1015.00000000
+        hdnGrandTotal:
+          type: number
+          example: 1289.05
+        hdnTaxType:
+          type: string
+          example: group
+        hdnDiscountPercent:
+          type: string
+          example: "15"
+        hdnDiscountAmount:
+          type: string
+          example: "18"
+        hdnS_H_Amount:
+          type: number
+          example: 0.00000000
+        account_id:
+          type: string
+          example: 11x6
+        invoicestatus:
+          type: string
+          example: "Created"
+        assigned_user_id:
+          type: string
+          example: 19x1
+        createdtime:
+          type: string
+          format: date-time
+          example: "2023-04-26 18:07:57"
+        modifiedtime:
+          type: string
+          format: date-time
+          example: "2023-04-26 18:07:57"
+        modifiedby:
+          type: string
+          example: 19x1
+        currency_id:
+          type: string
+          example: 21x1
+        conversion_rate:
+          type: number
+          example: 1.000
+        bill_street:
+          type: string
+          example: Bulvar Yunosti 3
+        ship_street:
+          type: string
+          example: Bulvar Yunosti 3
+        bill_city:
+          type: string
+          example: Cheboksary
+        ship_city:
+          type: string
+          example: Cheboksary
+        bill_state:
+          type: string
+          example: Chuvashia
+        ship_state:
+          type: string
+          example: Chuvashia
+        bill_code:
+          type: string
+          example: "428010"
+        ship_code:
+          type: string
+          example: "428010"
+        bill_country:
+          type: string
+          example: Russia
+        ship_country:
+          type: string
+          example: Russia
+        bill_pobox:
+          type: string
+          example: ""
+        ship_pobox:
+          type: string
+          example: ""
+        description:
+          type: string
+          example: "Some description"
+        terms_conditions:
+          type: string
+          example: "- Unless otherwise agreed in writing by the supplier all invoices are payable within thirty (30) days of the date of invoice in the currency of the invoice drawn on a bank based in India or by such other method as is agreed in advance by the Supplier."
+        invoice_no:
+          type: string
+          example: "INV1"
+        pre_tax_total:
+          type: number
+          example: 1015.00000000
+        received:
+          type: number
+          example: 0.00000000
+        balance:
+          type: number
+          example: 1289.05000000
+        hdnS_H_Percent:
+          type: number
+          example: 0.00000000
+        potential_id:
+          type: string
+          example: "5x18"
+        source:
+          type: string
+          example: CRM
+        starred:
+          type: boolean
+          example: false
+        tags:
+          type: string
+          example: "test1,test2"
+        region_id:
+          type: string
+          example: "0"
+        id:
+          type: string
+          example: 2x53
+        label:
+          type: string
+          example: Some laptops
+        shipping_&_handling:
+          type: number
+          example: 0
+        shipping_&_handling_shtax1:
+          type: number
+          example: 4.500
+        shipping_&_handling_shtax2:
+          type: number
+          example: 10.000
+        shipping_&_handling_shtax3:
+          type: number
+          example: 12.500
+        LineItems:
+          type: array
+          items:
+            type: object
+            properties:
+              parent_id:
+                type: string
+                example: 2xArray
+              productid:
+                type: string
+                example: 14x10
+              sequence_no:
+                type: number
+                example: 1
+              quantity:
+                type: number
+                example: 1.000
+              listprice:
+                type: number
+                example: 1000.00000000
+              discount_percent:
+                type: string
+                example: ""
+              discount_amount:
+                type: string
+                example: ""
+              comment:
+                type: string
+                example: "Some comment"
+              description:
+                type: string
+                example: "Some description"
+              incrementondel:
+                type: string
+                example: "1"
+              tax1:
+                type: number
+                example: 4.500
+              tax2:
+                type: number
+                example: 10.000
+              tax3:
+                type: number
+                example: 12.500
+              image:
+                type: string
+                example: ""
+              purchase_cost:
+                type: number
+                example: 500.00000000
+              margin:
+                type: number
+                example: 500.00000000
+              id:
+                type: string
+                example: 33x4
+              product_name:
+                type: string
+                example: Laptop HP
+              entity_type:
+                type: string
+                example: Products
+              deleted:
+                type: string
+                example: "0"
+        productid:
+          type: string
+          example: 14x10
+        LineItems_FinalDetails:
+          type: object
+    InvoiceShort:
+      type: object
+      properties:
+        subject:
+          type: string
+          example: Some laptops
+        salesorder_id:
+          type: string
+          example: "16x5"
+        customerno:
+          type: string
+          example: "customer-1"
+        contact_id:
+          type: string
+          example: 12x11
+        invoicedate:
+          type: string
+          format: date
+          example: 2023-04-26
+        duedate:
+          type: string
+          format: date
+          example: 2023-05-01
+        vtiger_purchaseorder:
+          type: string
+          example: "12x15"
+        txtAdjustment:
+          type: number
+          example: 0
+        salescommission:
+          type: number
+          example: 0
+        exciseduty:
+          type: number
+          example: 0.000
+        hdnSubTotal:
+          type: number
+          example: 1015.00000000
+        hdnGrandTotal:
+          type: number
+          example: 1289.05
+        hdnTaxType:
+          type: string
+          example: group
+        hdnDiscountPercent:
+          type: string
+          example: "15"
+        hdnDiscountAmount:
+          type: string
+          example: "18"
+        hdnS_H_Amount:
+          type: number
+          example: 0.00000000
+        account_id:
+          type: string
+          example: 11x6
+        invoicestatus:
+          type: string
+          example: "Created"
+        assigned_user_id:
+          type: string
+          example: 19x1
+        createdtime:
+          type: string
+          format: date-time
+          example: "2023-04-26 18:07:57"
+        modifiedtime:
+          type: string
+          format: date-time
+          example: "2023-04-26 18:07:57"
+        modifiedby:
+          type: string
+          example: 19x1
+        currency_id:
+          type: string
+          example: 21x1
+        conversion_rate:
+          type: number
+          example: 1.000
+        bill_street:
+          type: string
+          example: Bulvar Yunosti 3
+        ship_street:
+          type: string
+          example: Bulvar Yunosti 3
+        bill_city:
+          type: string
+          example: Cheboksary
+        ship_city:
+          type: string
+          example: Cheboksary
+        bill_state:
+          type: string
+          example: Chuvashia
+        ship_state:
+          type: string
+          example: Chuvashia
+        bill_code:
+          type: string
+          example: "428010"
+        ship_code:
+          type: string
+          example: "428010"
+        bill_country:
+          type: string
+          example: Russia
+        ship_country:
+          type: string
+          example: Russia
+        bill_pobox:
+          type: string
+          example: ""
+        ship_pobox:
+          type: string
+          example: ""
+        description:
+          type: string
+          example: "Some description"
+        terms_conditions:
+          type: string
+          example: "- Unless otherwise agreed in writing by the supplier all invoices are payable within thirty (30) days of the date of invoice in the currency of the invoice drawn on a bank based in India or by such other method as is agreed in advance by the Supplier."
+        invoice_no:
+          type: string
+          example: "INV1"
+        pre_tax_total:
+          type: number
+          example: 1015.00000000
+        received:
+          type: number
+          example: 0.00000000
+        balance:
+          type: number
+          example: 1289.05000000
+        hdnS_H_Percent:
+          type: number
+          example: 0.00000000
+        potential_id:
+          type: string
+          example: "5x18"
+        source:
+          type: string
+          example: CRM
+        starred:
+          type: boolean
+          example: false
+        tags:
+          type: string
+          example: "test1,test2"
+        region_id:
+          type: string
+          example: "0"
+        id:
+          type: string
+          example: 2x53
+        label:
+          type: string
+          example: Some laptops
+        shipping_&_handling:
+          type: number
+          example: 0
+        shipping_&_handling_shtax1:
+          type: number
+          example: 4.500
+        shipping_&_handling_shtax2:
+          type: number
+          example: 10.000
+        shipping_&_handling_shtax3:
+          type: number
+          example: 12.500
+    ServiceContract:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "24x59"
+        assigned_user_id:
+          type: string
+          example: "19x1"
+        start_date:
+          type: string
+          format: date-time
+          example: "2023-05-01T00:00:00Z"
+        end_date:
+          type: string
+          format: date-time
+          example: "2023-12-31T00:00:00Z"
+        sc_related_to:
+          type: string
+          example: "12x11"
+        tracking_unit:
+          type: string
+          example: "hours"
+        total_units:
+          type: number
+          format: float
+          example: 1000
+        used_units:
+          type: number
+          format: float
+          example: 200
+        subject:
+          type: string
+          example: "Mocked Service Contract"
+        due_date:
+          type: string
+          format: date-time
+          example: "2023-08-15T00:00:00Z"
+        planned_duration:
+          type: integer
+          example: 120
+        actual_duration:
+          type: integer
+          example: 90
+        contract_status:
+          type: string
+          example: "In Progress"
+        contract_priority:
+          type: string
+          example: "high"
+        contract_type:
+          type: string
+          example: "Support"
+        progress:
+          type: number
+          format: float
+          example: 20
+        contract_no:
+          type: string
+          example: "SERCON2"
+        created_time:
+          type: string
+          format: date-time
+          example: "2023-04-25T00:00:00Z"
+        modified_time:
+          type: string
+          format: date-time
+          example: "2023-04-30T00:00:00Z"
+        starred:
+          type: boolean
+          example: false
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["tag1", "tag2"]
+        label:
+          type: string
+          example: "Label-A"

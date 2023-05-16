@@ -683,3 +683,56 @@ func (mr *MockInvoiceMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Cal
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockInvoice)(nil).RetrieveById), ctx, id)
 }
+
+// MockServiceContract is a mock of ServiceContract interface.
+type MockServiceContract struct {
+	ctrl     *gomock.Controller
+	recorder *MockServiceContractMockRecorder
+}
+
+// MockServiceContractMockRecorder is the mock recorder for MockServiceContract.
+type MockServiceContractMockRecorder struct {
+	mock *MockServiceContract
+}
+
+// NewMockServiceContract creates a new mock instance.
+func NewMockServiceContract(ctrl *gomock.Controller) *MockServiceContract {
+	mock := &MockServiceContract{ctrl: ctrl}
+	mock.recorder = &MockServiceContractMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockServiceContract) EXPECT() *MockServiceContractMockRecorder {
+	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockServiceContract) Count(ctx context.Context, client string) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, client)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockServiceContractMockRecorder) Count(ctx, client interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockServiceContract)(nil).Count), ctx, client)
+}
+
+// RetrieveById mocks base method.
+func (m *MockServiceContract) RetrieveById(ctx context.Context, id string) (domain.ServiceContract, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveById", ctx, id)
+	ret0, _ := ret[0].(domain.ServiceContract)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveById indicates an expected call of RetrieveById.
+func (mr *MockServiceContractMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockServiceContract)(nil).RetrieveById), ctx, id)
+}

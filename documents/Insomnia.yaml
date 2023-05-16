@@ -1,11 +1,682 @@
 _type: export
 __export_format: 4
-__export_date: 2023-04-23T11:57:26.716Z
+__export_date: 2023-05-16T12:38:50.553Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211debe4cfbb3
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de0ca7a98c
+    modified: 1684240696034
+    created: 1684238814920
+    url: "{{ base_url }}/service-contracts/{{ scId }}"
+    name: Find Service Contract by ID
+    description: >-
+      Here you can get full information about service contract by it's ID.
+      Example response:
+
+
+      ```json
+
+      {
+      	"id": "24x59",
+      	"assigned_user_id": "19x1",
+      	"start_date": "2023-05-15T00:00:00Z",
+      	"end_date": "2023-05-16T00:00:00Z",
+      	"sc_related_to": "12x11",
+      	"tracking_unit": "",
+      	"total_units": 0,
+      	"used_units": 0,
+      	"subject": "Second test contract",
+      	"due_date": "2023-05-18T00:00:00Z",
+      	"planned_duration": 0,
+      	"actual_duration": 0,
+      	"contract_status": "In Progress",
+      	"contract_priority": "High",
+      	"contract_type": "Support",
+      	"progress": 0,
+      	"contract_no": "SERCON2",
+      	"createdtime": "2023-05-16T10:53:22Z",
+      	"modifiedtime": "2023-05-16T10:53:22Z",
+      	"starred": false,
+      	"tags": [
+      		""
+      	],
+      	"label": "Second test contract"
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_e4f8a2815d344b0fb625186a2960d5c4
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_196643013f384a4f97dae96a1a1ff493
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684238814920
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de0ca7a98c
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1684238814952
+    created: 1684238814952
+    name: service-contracts
+    description: Service contracts data
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1684238814953
+    _type: request_group
+  - _id: wrk_66e74e4b495c4404841a78c723c211de
+    parentId: null
+    modified: 1681752522262
+    created: 1681752522262
+    name: Vtiger Customer Portal
+    description: ""
+    scope: design
+    _type: workspace
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de9127d807
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
+    modified: 1682660944164
+    created: 1682659418912
+    url: "{{ base_url }}/invoices"
+    name: Get Invoices
+    description: ""
+    method: GET
+    body: {}
+    parameters:
+      - name: page
+        disabled: true
+        value: "1"
+        id: pair_ffdcb556596e46cbafc3f38b8aa8efa8
+      - name: size
+        disabled: true
+        value: "20"
+        id: pair_7945c57b1f7549428d1c5757539fa58c
+    headers:
+      - id: pair_9e6ce9a150434956bb54f8ef74ccba6f
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_4d19daa7cd3c4bcba449f9a525191bf9
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1682659418912
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1682578163825
+    created: 1682578163825
+    name: invoice
+    description: Endpoints for getting invoices
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1682578163825
+    _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de68d60525
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
+    modified: 1682659419469
+    created: 1682578221793
+    url: "{{ base_url }}/invoices/{{ invoiceId }}"
+    name: Find Invoice by id
+    description: >-
+      Here you can get full invoice details by it's ID.
+
+
+      Example response:
+
+
+      ```json
+
+      {
+      	"subject": "Some laptops",
+      	"salesorder_id": "",
+      	"customerno": "",
+      	"contact_id": "12x11",
+      	"invoicedate": "2023-04-26",
+      	"duedate": "2023-05-01",
+      	"vtiger_purchaseorder": "",
+      	"txtAdjustment": 0,
+      	"salescommission": 0,
+      	"exciseduty": 0,
+      	"hdnSubTotal": 1015,
+      	"hdnGrandTotal": 1289.05,
+      	"hdnTaxType": "group",
+      	"hdnDiscountPercent": "",
+      	"hdnDiscountAmount": "",
+      	"hdnS_H_Amount": 0,
+      	"account_id": "11x6",
+      	"invoicestatus": "",
+      	"assigned_user_id": "19x1",
+      	"createdtime": "2023-04-26 18:07:57",
+      	"modifiedtime": "2023-04-26 18:07:57",
+      	"modifiedby": "19x1",
+      	"currency_id": "21x1",
+      	"conversion_rate": 1,
+      	"bill_street": "Bulvar Yunosti, 3",
+      	"ship_street": "Bulvar Yunosti, 3",
+      	"bill_city": "Cheboksary",
+      	"ship_city": "Cheboksary",
+      	"bill_state": "Chuvashia",
+      	"ship_state": "Chuvashia",
+      	"bill_code": "428010",
+      	"ship_code": "428010",
+      	"bill_country": "Russia",
+      	"ship_country": "Russia",
+      	"bill_pobox": "",
+      	"ship_pobox": "",
+      	"description": "",
+      	"terms_conditions": "- Unless otherwise agreed in writing by the supplier all invoices are payable within thirty (30) days of the date of invoice, in the currency of the invoice, drawn on a bank based in India or by such other method as is agreed in advance by the Supplier.\n\n - All prices are not inclusive of VAT which shall be payable in addition by the Customer at the applicable rate.",
+      	"invoice_no": "INV1",
+      	"pre_tax_total": 1015,
+      	"received": 0,
+      	"balance": 1289.05,
+      	"hdnS_H_Percent": 0,
+      	"potential_id": "",
+      	"source": "CRM",
+      	"starred": false,
+      	"tags": "",
+      	"region_id": "0",
+      	"id": "2x53",
+      	"label": "Some laptops",
+      	"shipping_&_handling": "0",
+      	"shipping_&_handling_shtax1": 4.5,
+      	"shipping_&_handling_shtax2": 10,
+      	"shipping_&_handling_shtax3": 12.5,
+      	"LineItems": [
+      		{
+      			"parent_id": "2xArray",
+      			"productid": "14x10",
+      			"sequence_no": 1,
+      			"quantity": 1,
+      			"listprice": 1000,
+      			"discount_percent": "",
+      			"discount_amount": "",
+      			"comment": "",
+      			"description": "",
+      			"incrementondel": true,
+      			"tax1": 4.5,
+      			"tax2": 10,
+      			"tax3": 12.5,
+      			"image": "",
+      			"purchase_cost": 500,
+      			"margin": 500,
+      			"id": "33x4",
+      			"product_name": "Laptop HP",
+      			"entity_type": "Products",
+      			"deleted": false
+      		},
+      		{
+      			"parent_id": "2xArray",
+      			"productid": "25x52",
+      			"sequence_no": 2,
+      			"quantity": 1,
+      			"listprice": 15,
+      			"discount_percent": "",
+      			"discount_amount": "",
+      			"comment": "",
+      			"description": "",
+      			"incrementondel": true,
+      			"tax1": 4.5,
+      			"tax2": 10,
+      			"tax3": 12.5,
+      			"image": "",
+      			"purchase_cost": 0,
+      			"margin": 15,
+      			"id": "33x5",
+      			"product_name": "Cleaning laptop",
+      			"entity_type": "Services",
+      			"deleted": false
+      		}
+      	],
+      	"LineItems_FinalDetails": {
+      		"1": {
+      			"checked_discount_zero1": " checked",
+      			"comment1": "",
+      			"discountTotal1": "0.00",
+      			"discount_amount1": 0,
+      			"discount_percent1": 0,
+      			"entityType1": "Products",
+      			"final_details": {
+      				"adjustment": "0.00",
+      				"chargesAndItsTaxes": {
+      					"1": {
+      						"taxes": {
+      							"1": "4.500",
+      							"2": "10.000",
+      							"3": "12.500"
+      						},
+      						"value": "0"
+      					}
+      				},
+      				"deductTaxes": [],
+      				"deductTaxesTotalAmount": "0.00",
+      				"discountTotal_final": "0.00",
+      				"discount_amount_final": "0.00",
+      				"discount_percentage_final": 0,
+      				"discount_type_final": "zero",
+      				"grandTotal": "1289.05",
+      				"hdnSubTotal": "1015.00",
+      				"preTaxTotal": "1015.00",
+      				"sh_taxes": [
+      					{
+      						"amount": 0,
+      						"compoundon": [],
+      						"method": "Simple",
+      						"percentage": 0,
+      						"regions": [],
+      						"taxid": "1",
+      						"taxlabel": "VAT",
+      						"taxname": "shtax1",
+      						"type": "Fixed"
+      					},
+      					{
+      						"amount": 0,
+      						"compoundon": [],
+      						"method": "Simple",
+      						"percentage": 0,
+      						"regions": [],
+      						"taxid": "2",
+      						"taxlabel": "Sales",
+      						"taxname": "shtax2",
+      						"type": "Fixed"
+      					},
+      					{
+      						"amount": 0,
+      						"compoundon": [],
+      						"method": "Simple",
+      						"percentage": 0,
+      						"regions": [],
+      						"taxid": "3",
+      						"taxlabel": "Service",
+      						"taxname": "shtax3",
+      						"type": "Fixed"
+      					}
+      				],
+      				"shipping_handling_charge": "0.00",
+      				"shtax_totalamount": "0.00",
+      				"tax_totalamount": "274.04",
+      				"taxes": {
+      					"1": {
+      						"amount": 45.67,
+      						"compoundon": [],
+      						"method": "Simple",
+      						"percentage": "4.500",
+      						"regions": [],
+      						"taxid": "1",
+      						"taxlabel": "VAT",
+      						"taxname": "tax1",
+      						"type": "Fixed"
+      					},
+      					"2": {
+      						"amount": "101.50",
+      						"compoundon": [],
+      						"method": "Simple",
+      						"percentage": "10.000",
+      						"regions": [],
+      						"taxid": "2",
+      						"taxlabel": "Sales",
+      						"taxname": "tax2",
+      						"type": "Fixed"
+      					},
+      					"3": {
+      						"amount": 126.87,
+      						"compoundon": [],
+      						"method": "Simple",
+      						"percentage": "12.500",
+      						"regions": [],
+      						"taxid": "3",
+      						"taxlabel": "Service",
+      						"taxname": "tax3",
+      						"type": "Fixed"
+      					}
+      				},
+      				"taxtype": "group",
+      				"totalAfterDiscount": "1015.00"
+      			},
+      			"hdnProductId1": "10",
+      			"hdnProductcode1": "PRO2",
+      			"listPrice1": "1000.00",
+      			"margin1": "500.00",
+      			"netPrice1": "1000.00",
+      			"productDeleted1": false,
+      			"productDescription1": null,
+      			"productName1": "Laptop HP",
+      			"productTotal1": "1000.00",
+      			"purchaseCost1": "500.00",
+      			"qty1": "1",
+      			"qtyInStock1": "499",
+      			"subprod_names1": "",
+      			"subprod_qty_list1": [],
+      			"subproduct_ids1": "",
+      			"taxTotal1": "0.00",
+      			"totalAfterDiscount1": "1000.00",
+      			"unitPrice1": "1000.00"
+      		},
+      		"2": {
+      			"checked_discount_zero2": " checked",
+      			"comment2": "",
+      			"delRow2": "Del",
+      			"discountTotal2": "0.00",
+      			"discount_amount2": 0,
+      			"discount_percent2": 0,
+      			"entityType2": "Services",
+      			"hdnProductId2": "52",
+      			"hdnProductcode2": "SER1",
+      			"listPrice2": "15.00",
+      			"margin2": "15.00",
+      			"netPrice2": "15.00",
+      			"productDeleted2": false,
+      			"productDescription2": null,
+      			"productName2": "Cleaning laptop",
+      			"productTotal2": "15.00",
+      			"purchaseCost2": "0.00",
+      			"qty2": "1",
+      			"qtyInStock2": "NA",
+      			"subproduct_ids2": "",
+      			"taxTotal2": "0.00",
+      			"totalAfterDiscount2": "15.00",
+      			"unitPrice2": "15.00"
+      		}
+      	}
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1682578221793
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de590cffc0
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211dee75bc045
+    modified: 1682660893388
+    created: 1682529682947
+    url: "{{ base_url }}/faqs"
+    name: Get All Faqs
+    description: |-
+      Here you can get all FAQs from vtiger.
+
+      Example response:
+      ```json
+      {
+      	"data": [
+      		{
+      			"product_id": "",
+      			"id": "6x49",
+      			"faqcategories": "General",
+      			"faqstatus": "Published",
+      			"question": "How to write text?",
+      			"faq_answer": "Just write it and that is it",
+      			"createdtime": "2023-04-26T16:43:32Z",
+      			"modifiedtime": "2023-04-26T16:43:32Z",
+      			"starred": false,
+      			"tags": [
+      				""
+      			]
+      		},
+      		{
+      			"product_id": "",
+      			"id": "6x50",
+      			"faqcategories": "General",
+      			"faqstatus": "Published",
+      			"question": "What is your name?",
+      			"faq_answer": "My name is sergey!!",
+      			"createdtime": "2023-04-26T16:43:53Z",
+      			"modifiedtime": "2023-04-26T16:43:53Z",
+      			"starred": false,
+      			"tags": [
+      				""
+      			]
+      		}
+      	],
+      	"count": 2,
+      	"page": 1,
+      	"size": 20
+      }
+      ```
+    method: GET
+    body: {}
+    parameters:
+      - name: page
+        disabled: true
+        value: "1"
+        id: pair_6ba29562780446e5a70b238008cb3d50
+      - name: size
+        disabled: true
+        value: "20"
+        id: pair_5d77c17d02154269b0acdc2b458ef56f
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1682529682947
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211dee75bc045
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1682529682973
+    created: 1682529682973
+    name: faq
+    description: Frequently asked questions
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1682529682973
+    _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de29bcffbf
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
+    modified: 1682529769590
+    created: 1682489644953
+    url: "{{ base_url }}/tickets/{{ ticketId }}/comments"
+    name: Add comment
+    description: >-
+      To add a new comment to ticket, just need to send a POST request to this
+      endpoint. In body you need to pass only comment content. Example request:
+
+
+      ```json
+
+      {
+        "commentcontent": "Please fix problem ASAP"
+      }
+
+      ```
+
+
+      As a result you will get a newly created comment:
+
+
+      ```json
+
+      {
+      	"id": "32x48",
+      	"commentcontent": "Please fix problem ASAP",
+      	"source": "PORTAL",
+      	"customer": "12x11",
+      	"userid": "",
+      	"reasontoedit": "",
+      	"creator": "19x1",
+      	"assigned_user_id": "19x1",
+      	"createdtime": "2023-04-26T06:36:02Z",
+      	"modifiedtime": "2023-04-26T06:36:02Z",
+      	"related_to": "17x28",
+      	"parent_comments": "",
+      	"is_private": false,
+      	"filename": "",
+      	"related_email_id": "0"
+      }
+
+      ```
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "commentcontent": "Please fix problem ASAP"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_3f49f4b24a954a6a9cf01e99ec908408
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1682489644953
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1682098348631
+    created: 1682098348631
+    name: tickets
+    description: Operations with HelpDesk module
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1682098348631
+    _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211deb8d9c1dc
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
+    modified: 1682487624539
+    created: 1682426774797
+    url: "{{ base_url }}/tickets/{{ ticketId }}"
+    name: Update ticket
+    description: >-
+      To update ticket, you need to send PUT request and pass ticket ID. Note,
+      that you can pass only those fields you want to change.
+
+
+      Example request body:
+
+      ```json
+
+      {
+        "ticket_title": "Neew new mouse changes",
+        "ticketpriorities": "Normal",
+        "ticketseverities": "Minor",
+        "ticketcategories": "Big Problem",
+        "description": "Current mouse not working"
+      }
+
+      ```
+
+
+      Example response with status 202:
+
+      ```json
+
+      {
+      	"ticket_no": "TT3",
+      	"assigned_user_id": "19x1",
+      	"parent_id": "11x6",
+      	"ticketpriorities": "Normal",
+      	"product_id": "",
+      	"ticketseverities": "Minor",
+      	"ticketstatus": "Open",
+      	"ticketcategories": "Big Problem",
+      	"hours": 2,
+      	"days": 0,
+      	"createdtime": "2023-03-15T14:54:01Z",
+      	"modifiedtime": "2023-04-25T18:25:20Z",
+      	"from_portal": false,
+      	"modifiedby": "19x1",
+      	"ticket_title": "Neew new mouse changes",
+      	"description": "Current mouse not working",
+      	"solution": "Some solution",
+      	"contact_id": "12x11",
+      	"created_user_id": "",
+      	"source": "CRM",
+      	"starred": false,
+      	"tags": [
+      		"test1",
+      		"test2"
+      	],
+      	"id": "17x28",
+      	"label": "Neew new mouse changes"
+      }
+
+      ```
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "ticket_title": "Neew new mouse changes",
+          "ticketpriorities": "Normal",
+          "ticketseverities": "Minor",
+          "ticketcategories": "Big Problem",
+          "description": "Current mouse not working"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_8902278f1ddf46c0b704e345b31553df
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1682426774797
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211ded66e0308
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1682251034319
+    modified: 1682401317405
     created: 1682250708675
     url: "{{ base_url }}/tickets"
     name: Create new ticket
@@ -83,27 +754,9 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1682098348631
-    created: 1682098348631
-    name: tickets
-    description: Operations with HelpDesk module
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1682098348631
-    _type: request_group
-  - _id: wrk_66e74e4b495c4404841a78c723c211de
-    parentId: null
-    modified: 1681752522262
-    created: 1681752522262
-    name: Vtiger Customer Portal
-    description: ""
-    scope: design
-    _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deb8795f33
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1682232610388
+    modified: 1682425976976
     created: 1682232473773
     url: "{{ base_url }}/tickets/{{ ticketId }}/documents"
     name: Related documents from ticket
@@ -127,7 +780,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de793d958d
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1682236042212
+    modified: 1682402543241
     created: 1682232473771
     url: "{{ base_url }}/tickets/{{ ticketId }}/file/{{ fileId }}"
     name: Get file in Ticket
@@ -151,7 +804,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de46f4f7b3
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1682174927901
+    modified: 1682768984767
     created: 1682171278798
     url: "{{ base_url }}/tickets"
     name: Get Tickets
@@ -257,7 +910,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deeb2dc7bf
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1682171279330
+    modified: 1682402529391
     created: 1682145840383
     url: "{{ base_url }}/tickets/{{ ticketId }}/comments"
     name: Related comments from ticket
@@ -316,7 +969,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dee9835bc2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1682145840869
+    modified: 1682445647036
     created: 1682098348610
     url: "{{ base_url }}/tickets/{{ ticketId }}"
     name: Find HelpDesk by ID
@@ -374,7 +1027,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de01c821a8
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211defbd34a2b
-    modified: 1682250709221
+    modified: 1682489645446
     created: 1682057273135
     url: "{{ base_url }}/modules/{{ moduleName }}"
     name: Module Info
@@ -719,7 +1372,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deaa5108ed
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de1a8565a9
-    modified: 1682246266586
+    modified: 1682404423191
     created: 1682010335863
     url: "{{ base_url }}/managers/{{ managerId }}"
     name: Find manager by ID
@@ -781,7 +1434,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de816b2196
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de5bdcd3c0
-    modified: 1682092428365
+    modified: 1683460823883
     created: 1682089127951
     url: "{{ base_url }}/company"
     name: Get company data
@@ -908,7 +1561,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de051cf8c0
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1682092745582
+    modified: 1683371854698
     created: 1682092427875
     url: "{{ base_url }}/users/password"
     name: Reset Password
@@ -996,7 +1649,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de75ca1604
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1682092606435
+    modified: 1683468961727
     created: 1682002384617
     url: "{{ base_url }}/users/restore"
     name: Restore Password
@@ -1039,7 +1692,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de94b9a1a1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1682236484462
+    modified: 1684238815477
     created: 1681838399470
     url: "{{ base_url }}/users/my"
     name: Get data about authenticated user
@@ -1150,7 +1803,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de00ac9da2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1682010433337
+    modified: 1683468861702
     created: 1681827520782
     url: "{{ base_url }}/users/login"
     name: Login in system
@@ -1237,7 +1890,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211defe3d55d0
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1682001735558
+    modified: 1683453519352
     created: 1681752584137
     url: "{{ base_url }}/users"
     name: Create user
@@ -1360,10 +2013,10 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1682251033807
+    modified: 1684240695554
     created: 1681752522263
     fileName: Vtiger Customer Portal
-    contents: >
+    contents: >-
       openapi: 3.0.0
 
       info:
@@ -1390,6 +2043,12 @@ resources:
           description: Module informations with all data in it
         - name: tickets
           description: Operations with HelpDesk module
+        - name: faq
+          description: Frequently asked questions
+        - name: invoice
+          description: Endpoints for getting invoices
+        - name: service-contracts
+          description: Service contracts data
       paths:
         /users:
           post:
@@ -1718,6 +2377,67 @@ resources:
                 description: HelpDesk not found
               "403":
                 description: Operation not permitted
+          put:
+              tags:
+                - tickets
+              summary: Update ticket
+              description: Allows authorized user update ticket.
+              operationId: updateTicket
+              security:
+                - bearerAuth: []
+              parameters:
+                - name: ticketId
+                  in: path
+                  description: ID of ticket to update
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        ticket_title:
+                          description: Title of ticket
+                          type: string
+                          example: "Problem with internet"
+                        ticketpriorities:
+                          description: Proirity of ticket
+                          type: string
+                          example: "Normal"
+                        ticketseverities:
+                          description: Severity of ticket
+                          type: string
+                          example: "Minor"
+                        ticketcategories:
+                          description: Category of ticket
+                          type: string
+                          example: "Big Problem"
+                        description:
+                          description: Some description of ticket
+                          type: string
+                          example: "There are no internet in my appartment."
+              responses:
+                "202":
+                  description: Ticket updated
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/HelpDesk"                
+                "400":
+                  description: Invalid ID supplied
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "404":
+                  description: HelpDesk or file not found
+                "403":
+                  description: Operation not permitted
         "/tickets/{ticketId}/comments":
           get:
             tags:
@@ -1756,6 +2476,45 @@ resources:
                         size:
                           type: number
                           example: 100                  
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: HelpDesk not found
+              "403":
+                description: Operation not permitted
+          post:
+            tags:
+              - tickets
+            summary: Add comment
+            description: Create new comment, attached to current ticket
+            operationId: addCommentToTicket
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: ticketId
+                in: path
+                description: ID of ticket
+                required: true
+                schema:
+                  type: string
+                  format: string
+            requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        commentcontent:
+                          description: Comment content
+                          type: string
+                          example: "Please fix problem ASAP"
+            responses:
+              "201":
+                description: comment created
+                content:
+                  application/json:
+                      schema:
+                        $ref: "#/components/schemas/Comment"         
               "400":
                 description: Invalid ID supplied
               "404":
@@ -1945,6 +2704,168 @@ resources:
                           example: 100
               "400":
                 description: Invalid pagination params
+              "403":
+                description: Operation not permitted
+        "/faqs":
+          get:
+              tags:
+                - faq
+              summary: Get All Faqs
+              description: This endpoint returns a list of frequently asked questions based on the provided page number and page size.
+              operationId: getAllFaqs
+              security:
+                - bearerAuth: []
+              parameters:
+                - name: page
+                  in: query
+                  description: The page number to retrieve (default is 1)
+                  required: false
+                  schema:
+                    type: integer
+                    format: int32
+                    default: 1
+                - name: size
+                  in: query
+                  description: The number of items per page (default is 20)
+                  required: false
+                  schema:
+                    type: integer
+                    format: int32
+                    default: 20
+              responses:
+                "200":
+                  description: successful operation
+                  content:
+                    application/json:
+                      schema:
+                        type: object
+                        properties:
+                          data:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/Faq"
+                          count:
+                            type: number
+                            example: 100
+                          page:
+                            type: number
+                            example: 1
+                          size:
+                            type: number
+                            example: 100
+                "400":
+                  description: Invalid pagination params
+                "403":
+                  description: Operation not permitted
+        "/invoices":
+          get:
+            tags:
+              - invoice
+            summary: Get Invoices
+            description: This endpoint returns a list of invoices based on the provided page number and page size.
+            operationId: getAllInvoices
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: page
+                in: query
+                description: The page number to retrieve (default is 1)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 1
+              - name: size
+                in: query
+                description: The number of items per page (default is 20)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 20
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/InvoiceShort"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid pagination params
+              "403":
+                description: Operation not permitted
+        "/invoices/{invoiceId}":
+          get:
+            tags:
+              - invoice
+            summary: Find Invoice by id
+            description: Returns a single Invoice
+            operationId: getInvoiceById
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: invoiceId
+                in: path
+                description: ID of invoice to return
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/Invoice"
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Invoice not found
+              "403":
+                description: Operation not permitted
+        "/service-contracts/{scId}":
+          get:
+            tags:
+              - service-contracts
+            summary: Find Service Contract by ID
+            description: Returns a single service contract
+            operationId: getServiceContractById
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: scId
+                in: path
+                description: ID of service contract to return
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/ServiceContract"
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: ServiceContract not found
               "403":
                 description: Operation not permitted
       externalDocs:
@@ -2430,6 +3351,45 @@ resources:
               filecontent:
                 type: "string"
                 example: "This is the content of the file."
+          Faq:
+            type: object
+            properties:
+              product_id:
+                type: string
+                example: "16x18"
+              id:
+                type: string
+                example: "6x50"
+              faqcategories:
+                type: string
+                example: "General"
+              faqstatus:
+                type: string
+                example: "Published"
+              question:
+                type: string
+                example: "What is your name?"
+              faq_answer:
+                type: string
+                example: "My name is Sergey"
+              createdtime:
+                type: string
+                format: date-time
+                example: "2023-04-25 12:34:56"
+              modifiedtime:
+                type: string
+                format: date-time
+                example: "2023-04-26 12:34:56"
+              starred:
+                type: boolean
+                example: false
+              tags:
+                type: array
+                items:
+                  type: string
+                example:
+                  - "products"
+                  - "services"
           Company:
             type: object
             properties:
@@ -2505,6 +3465,493 @@ resources:
               id:
                 type: string
                 example: "23x1"
+          Invoice:
+            type: object
+            properties:
+              subject: 
+                type: string
+                example: Some laptops
+              salesorder_id: 
+                type: string
+                example: "16x5"
+              customerno: 
+                type: string
+                example: "customer-1"
+              contact_id: 
+                type: string
+                example: 12x11
+              invoicedate: 
+                type: string
+                format: date
+                example: 2023-04-26
+              duedate: 
+                type: string
+                format: date
+                example: 2023-05-01
+              vtiger_purchaseorder: 
+                type: string
+                example: "12x15"
+              txtAdjustment: 
+                type: number
+                example: 0
+              salescommission: 
+                type: number
+                example: 0
+              exciseduty: 
+                type: number
+                example: 0.000
+              hdnSubTotal: 
+                type: number
+                example: 1015.00000000
+              hdnGrandTotal: 
+                type: number
+                example: 1289.05
+              hdnTaxType: 
+                type: string
+                example: group
+              hdnDiscountPercent: 
+                type: string
+                example: "15"
+              hdnDiscountAmount: 
+                type: string
+                example: "18"
+              hdnS_H_Amount: 
+                type: number
+                example: 0.00000000
+              account_id: 
+                type: string
+                example: 11x6
+              invoicestatus: 
+                type: string
+                example: "Created"
+              assigned_user_id: 
+                type: string
+                example: 19x1
+              createdtime: 
+                type: string
+                format: date-time
+                example: "2023-04-26 18:07:57"
+              modifiedtime: 
+                type: string
+                format: date-time
+                example: "2023-04-26 18:07:57"
+              modifiedby: 
+                type: string
+                example: 19x1
+              currency_id: 
+                type: string
+                example: 21x1
+              conversion_rate: 
+                type: number
+                example: 1.000
+              bill_street: 
+                type: string
+                example: Bulvar Yunosti 3
+              ship_street: 
+                type: string
+                example: Bulvar Yunosti 3
+              bill_city: 
+                type: string
+                example: Cheboksary
+              ship_city: 
+                type: string
+                example: Cheboksary
+              bill_state: 
+                type: string
+                example: Chuvashia
+              ship_state: 
+                type: string
+                example: Chuvashia
+              bill_code: 
+                type: string
+                example: "428010"
+              ship_code: 
+                type: string
+                example: "428010"
+              bill_country: 
+                type: string
+                example: Russia
+              ship_country: 
+                type: string
+                example: Russia
+              bill_pobox: 
+                type: string
+                example: ""
+              ship_pobox: 
+                type: string
+                example: ""
+              description: 
+                type: string
+                example: "Some description"
+              terms_conditions: 
+                type: string
+                example: "- Unless otherwise agreed in writing by the supplier all invoices are payable within thirty (30) days of the date of invoice in the currency of the invoice drawn on a bank based in India or by such other method as is agreed in advance by the Supplier."
+              invoice_no: 
+                type: string
+                example: "INV1"
+              pre_tax_total: 
+                type: number
+                example: 1015.00000000
+              received: 
+                type: number
+                example: 0.00000000
+              balance: 
+                type: number
+                example: 1289.05000000
+              hdnS_H_Percent: 
+                type: number
+                example: 0.00000000
+              potential_id: 
+                type: string
+                example: "5x18"
+              source: 
+                type: string
+                example: CRM
+              starred: 
+                type: boolean
+                example: false
+              tags: 
+                type: string
+                example: "test1,test2"
+              region_id: 
+                type: string
+                example: "0"
+              id: 
+                type: string
+                example: 2x53
+              label: 
+                type: string
+                example: Some laptops
+              shipping_&_handling: 
+                type: number
+                example: 0
+              shipping_&_handling_shtax1: 
+                type: number
+                example: 4.500
+              shipping_&_handling_shtax2: 
+                type: number
+                example: 10.000
+              shipping_&_handling_shtax3: 
+                type: number
+                example: 12.500
+              LineItems: 
+                type: array
+                items: 
+                  type: object
+                  properties: 
+                    parent_id: 
+                      type: string
+                      example: 2xArray
+                    productid: 
+                      type: string
+                      example: 14x10
+                    sequence_no: 
+                      type: number
+                      example: 1
+                    quantity: 
+                      type: number
+                      example: 1.000
+                    listprice: 
+                      type: number
+                      example: 1000.00000000
+                    discount_percent: 
+                      type: string
+                      example: ""
+                    discount_amount: 
+                      type: string
+                      example: ""
+                    comment: 
+                      type: string
+                      example: "Some comment"
+                    description: 
+                      type: string
+                      example: "Some description"
+                    incrementondel: 
+                      type: string
+                      example: "1"
+                    tax1: 
+                      type: number
+                      example: 4.500
+                    tax2: 
+                      type: number
+                      example: 10.000
+                    tax3: 
+                      type: number
+                      example: 12.500
+                    image: 
+                      type: string
+                      example: ""
+                    purchase_cost: 
+                      type: number
+                      example: 500.00000000
+                    margin: 
+                      type: number
+                      example: 500.00000000
+                    id: 
+                      type: string
+                      example: 33x4
+                    product_name: 
+                      type: string
+                      example: Laptop HP
+                    entity_type: 
+                      type: string
+                      example: Products
+                    deleted: 
+                      type: string
+                      example: "0"
+              productid: 
+                type: string
+                example: 14x10
+              LineItems_FinalDetails: 
+                type: object
+          InvoiceShort:
+            type: object
+            properties:
+              subject: 
+                type: string
+                example: Some laptops
+              salesorder_id: 
+                type: string
+                example: "16x5"
+              customerno: 
+                type: string
+                example: "customer-1"
+              contact_id: 
+                type: string
+                example: 12x11
+              invoicedate: 
+                type: string
+                format: date
+                example: 2023-04-26
+              duedate: 
+                type: string
+                format: date
+                example: 2023-05-01
+              vtiger_purchaseorder: 
+                type: string
+                example: "12x15"
+              txtAdjustment: 
+                type: number
+                example: 0
+              salescommission: 
+                type: number
+                example: 0
+              exciseduty: 
+                type: number
+                example: 0.000
+              hdnSubTotal: 
+                type: number
+                example: 1015.00000000
+              hdnGrandTotal: 
+                type: number
+                example: 1289.05
+              hdnTaxType: 
+                type: string
+                example: group
+              hdnDiscountPercent: 
+                type: string
+                example: "15"
+              hdnDiscountAmount: 
+                type: string
+                example: "18"
+              hdnS_H_Amount: 
+                type: number
+                example: 0.00000000
+              account_id: 
+                type: string
+                example: 11x6
+              invoicestatus: 
+                type: string
+                example: "Created"
+              assigned_user_id: 
+                type: string
+                example: 19x1
+              createdtime: 
+                type: string
+                format: date-time
+                example: "2023-04-26 18:07:57"
+              modifiedtime: 
+                type: string
+                format: date-time
+                example: "2023-04-26 18:07:57"
+              modifiedby: 
+                type: string
+                example: 19x1
+              currency_id: 
+                type: string
+                example: 21x1
+              conversion_rate: 
+                type: number
+                example: 1.000
+              bill_street: 
+                type: string
+                example: Bulvar Yunosti 3
+              ship_street: 
+                type: string
+                example: Bulvar Yunosti 3
+              bill_city: 
+                type: string
+                example: Cheboksary
+              ship_city: 
+                type: string
+                example: Cheboksary
+              bill_state: 
+                type: string
+                example: Chuvashia
+              ship_state: 
+                type: string
+                example: Chuvashia
+              bill_code: 
+                type: string
+                example: "428010"
+              ship_code: 
+                type: string
+                example: "428010"
+              bill_country: 
+                type: string
+                example: Russia
+              ship_country: 
+                type: string
+                example: Russia
+              bill_pobox: 
+                type: string
+                example: ""
+              ship_pobox: 
+                type: string
+                example: ""
+              description: 
+                type: string
+                example: "Some description"
+              terms_conditions: 
+                type: string
+                example: "- Unless otherwise agreed in writing by the supplier all invoices are payable within thirty (30) days of the date of invoice in the currency of the invoice drawn on a bank based in India or by such other method as is agreed in advance by the Supplier."
+              invoice_no: 
+                type: string
+                example: "INV1"
+              pre_tax_total: 
+                type: number
+                example: 1015.00000000
+              received: 
+                type: number
+                example: 0.00000000
+              balance: 
+                type: number
+                example: 1289.05000000
+              hdnS_H_Percent: 
+                type: number
+                example: 0.00000000
+              potential_id: 
+                type: string
+                example: "5x18"
+              source: 
+                type: string
+                example: CRM
+              starred: 
+                type: boolean
+                example: false
+              tags: 
+                type: string
+                example: "test1,test2"
+              region_id: 
+                type: string
+                example: "0"
+              id: 
+                type: string
+                example: 2x53
+              label: 
+                type: string
+                example: Some laptops
+              shipping_&_handling: 
+                type: number
+                example: 0
+              shipping_&_handling_shtax1: 
+                type: number
+                example: 4.500
+              shipping_&_handling_shtax2: 
+                type: number
+                example: 10.000
+              shipping_&_handling_shtax3: 
+                type: number
+                example: 12.500
+          ServiceContract:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "24x59"
+                  assigned_user_id:
+                    type: string
+                    example: "19x1"
+                  start_date:
+                    type: string
+                    format: date-time
+                    example: "2023-05-01T00:00:00Z"
+                  end_date:
+                    type: string
+                    format: date-time
+                    example: "2023-12-31T00:00:00Z"
+                  sc_related_to:
+                    type: string
+                    example: "12x11"
+                  tracking_unit:
+                    type: string
+                    example: "hours"
+                  total_units:
+                    type: number
+                    format: float
+                    example: 1000
+                  used_units:
+                    type: number
+                    format: float
+                    example: 200
+                  subject:
+                    type: string
+                    example: "Mocked Service Contract"
+                  due_date:
+                    type: string
+                    format: date-time
+                    example: "2023-08-15T00:00:00Z"
+                  planned_duration:
+                    type: integer
+                    example: 120
+                  actual_duration:
+                    type: integer
+                    example: 90
+                  contract_status:
+                    type: string
+                    example: "In Progress"
+                  contract_priority:
+                    type: string
+                    example: "high"
+                  contract_type:
+                    type: string
+                    example: "Support"
+                  progress:
+                    type: number
+                    format: float
+                    example: 20
+                  contract_no:
+                    type: string
+                    example: "SERCON2"
+                  created_time:
+                    type: string
+                    format: date-time
+                    example: "2023-04-25T00:00:00Z"
+                  modified_time:
+                    type: string
+                    format: date-time
+                    example: "2023-04-30T00:00:00Z"
+                  starred:
+                    type: boolean
+                    example: false
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                    example: ["tag1", "tag2"]
+                  label:
+                    type: string
+                    example: "Label-A"
     contentType: yaml
     _type: api_spec
   - _id: env_env_7051e4988ba662848196b333737a56823b214220_sub
@@ -2539,7 +3986,7 @@ resources:
     _type: environment
   - _id: env_1bfede95dc144997a9155f6e79a3eaa5
     parentId: env_7051e4988ba662848196b333737a56823b214220
-    modified: 1682232632967
+    modified: 1684238850142
     created: 1681826841922
     name: Local
     data:
@@ -2548,11 +3995,13 @@ resources:
       host: 127.0.0.1:4050
       URL: http://127.0.0.1:4050/api/v1
       MAIN_URL: http://127.0.0.1:4050
-      bearerToken: OLQDS2TSQFIZJ324MODWT4472Q
+      bearerToken: KZMMLO27L46FV5LY5VPTKCEQWM
       managerId: 19x1
       moduleName: HelpDesk
       ticketId: 17x28
       fileId: 15x46
+      invoiceId: 2x53
+      scId: 24x59
     dataPropertyOrder:
       "&":
         - scheme
@@ -2565,6 +4014,8 @@ resources:
         - moduleName
         - ticketId
         - fileId
+        - invoiceId
+        - scId
     color: null
     isPrivate: false
     metaSortKey: 1681826841922

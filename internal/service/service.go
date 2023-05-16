@@ -19,18 +19,19 @@ import (
 //go:generate mockgen -source=service.go -destination=mocks/mock.go
 
 type Services struct {
-	Users     UsersService
-	Emails    EmailService
-	Tokens    TokensService
-	Context   ContextServiceInterface
-	Managers  ManagerService
-	Modules   ModulesService
-	Company   Company
-	HelpDesk  HelpDesk
-	Comments  Comments
-	Documents DocumentServiceInterface
-	Faqs      Faqs
-	Invoices  Invoices
+	Users            UsersService
+	Emails           EmailService
+	Tokens           TokensService
+	Context          ContextServiceInterface
+	Managers         ManagerService
+	Modules          ModulesService
+	Company          Company
+	HelpDesk         HelpDesk
+	Comments         Comments
+	Documents        DocumentServiceInterface
+	Faqs             Faqs
+	Invoices         Invoices
+	ServiceContracts ServiceContracts
 }
 
 var ErrOperationNotPermitted = errors.New("you are not permitted to view this record")
@@ -42,18 +43,19 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 	documentService := NewDocuments(repos.Documents, cache)
 	modulesService := NewModulesService(repos.Modules, cache)
 	return &Services{
-		Users:     NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens, repos.Documents),
-		Emails:    *NewEmailsService(email, config.Email, cache),
-		Tokens:    NewTokensService(repos.Tokens, repos.Users, emailService, config, companyService),
-		Context:   NewContextService(),
-		Managers:  NewManagerService(repos.Managers, cache),
-		Modules:   modulesService,
-		Company:   companyService,
-		HelpDesk:  NewHelpDeskService(repos.HelpDesk, cache, commentsService, documentService, modulesService, config),
-		Comments:  commentsService,
-		Documents: documentService,
-		Faqs:      NewFaqsService(repos.Faqs, cache, modulesService, config),
-		Invoices:  NewInvoiceService(repos.Invoice, cache, modulesService, config),
+		Users:            NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens, repos.Documents),
+		Emails:           *NewEmailsService(email, config.Email, cache),
+		Tokens:           NewTokensService(repos.Tokens, repos.Users, emailService, config, companyService),
+		Context:          NewContextService(),
+		Managers:         NewManagerService(repos.Managers, cache),
+		Modules:          modulesService,
+		Company:          companyService,
+		HelpDesk:         NewHelpDeskService(repos.HelpDesk, cache, commentsService, documentService, modulesService, config),
+		Comments:         commentsService,
+		Documents:        documentService,
+		Faqs:             NewFaqsService(repos.Faqs, cache, modulesService, config),
+		Invoices:         NewInvoiceService(repos.Invoice, cache, modulesService, config),
+		ServiceContracts: NewServiceContractsService(repos.ServiceContract, cache, documentService, modulesService, config),
 	}
 }
 
@@ -73,7 +75,7 @@ type DocumentServiceInterface interface {
 }
 
 type SupportedTypes interface {
-	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice
+	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract
 }
 
 func GetFromCache[T SupportedTypes](key string, dest T, c cache.Cache) error {

@@ -74,6 +74,11 @@ type Invoice interface {
 	Count(ctx context.Context, client string) (int, error)
 }
 
+type ServiceContract interface {
+	RetrieveById(ctx context.Context, id string) (domain.ServiceContract, error)
+	Count(ctx context.Context, client string) (int, error)
+}
+
 type PaginationQueryFilter struct {
 	Page     int
 	PageSize int
@@ -86,31 +91,33 @@ var ErrWrongCrmId = errors.New("wrong crm id")
 var ErrCanNotParseCountObject = errors.New("can not parse count object")
 
 type Repositories struct {
-	Users     Users
-	UsersCrm  UsersCrm
-	Tokens    *TokensRepo
-	Managers  Managers
-	Modules   ModulesCrm
-	Company   Company
-	HelpDesk  HelpDesk
-	Comments  Comment
-	Documents Document
-	Faqs      Faq
-	Invoice   Invoice
+	Users           Users
+	UsersCrm        UsersCrm
+	Tokens          *TokensRepo
+	Managers        Managers
+	Modules         ModulesCrm
+	Company         Company
+	HelpDesk        HelpDesk
+	Comments        Comment
+	Documents       Document
+	Faqs            Faq
+	Invoice         Invoice
+	ServiceContract ServiceContract
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
 	return &Repositories{
-		Users:     NewUsersRepo(db),
-		UsersCrm:  NewUsersVtiger(config, cache),
-		Tokens:    NewTokensRepo(db),
-		Managers:  NewManagersCrm(config, cache),
-		Modules:   NewModulesCrm(config, cache),
-		Company:   NewCompanyCrm(config, cache),
-		HelpDesk:  NewHelpDeskCrm(config, cache),
-		Comments:  NewCommentCrm(config, cache),
-		Documents: NewDocumentCrm(config, cache),
-		Faqs:      NewFaqsCrm(config, cache),
-		Invoice:   NewInvoiceCrm(config, cache),
+		Users:           NewUsersRepo(db),
+		UsersCrm:        NewUsersVtiger(config, cache),
+		Tokens:          NewTokensRepo(db),
+		Managers:        NewManagersCrm(config, cache),
+		Modules:         NewModulesCrm(config, cache),
+		Company:         NewCompanyCrm(config, cache),
+		HelpDesk:        NewHelpDeskCrm(config, cache),
+		Comments:        NewCommentCrm(config, cache),
+		Documents:       NewDocumentCrm(config, cache),
+		Faqs:            NewFaqsCrm(config, cache),
+		Invoice:         NewInvoiceCrm(config, cache),
+		ServiceContract: NewServiceContractCrm(config, cache),
 	}
 }

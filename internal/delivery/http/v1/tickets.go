@@ -163,6 +163,7 @@ func (h *Handler) getAllTickets(c *gin.Context) {
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,
+		Contact:  userModel.Crmid,
 	})
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())

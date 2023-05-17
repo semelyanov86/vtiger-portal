@@ -51,3 +51,12 @@ func (s ServiceContracts) GetServiceContractById(ctx context.Context, id string)
 		return *serviceContract, e.Wrap("can not convert caches data to serviceContract", err)
 	}
 }
+
+func (s ServiceContracts) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.ServiceContract, int, error) {
+	serviceContracts, err := s.repository.GetAll(ctx, filter)
+	if err != nil {
+		return serviceContracts, 0, err
+	}
+	count, err := s.repository.Count(ctx, filter.Client, filter.Contact)
+	return serviceContracts, count, err
+}

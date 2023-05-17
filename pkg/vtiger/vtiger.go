@@ -309,8 +309,10 @@ func (c VtigerConnector) Create(ctx context.Context, element string, data map[st
 func (c VtigerConnector) Count(ctx context.Context, module string, filters map[string]string) (int, error) {
 	query := "SELECT COUNT(*) FROM " + module + " WHERE "
 	for field, value := range filters {
-		query += field + " = '" + value + "'"
+		field = strings.TrimPrefix(field, "_")
+		query += field + " = '" + value + "' OR "
 	}
+	query = strings.TrimSuffix(query, " OR ")
 	query += ";"
 	result, err := c.Query(ctx, query)
 	if err != nil {

@@ -708,18 +708,33 @@ func (m *MockServiceContract) EXPECT() *MockServiceContractMockRecorder {
 }
 
 // Count mocks base method.
-func (m *MockServiceContract) Count(ctx context.Context, client string) (int, error) {
+func (m *MockServiceContract) Count(ctx context.Context, client, contact string) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Count", ctx, client)
+	ret := m.ctrl.Call(m, "Count", ctx, client, contact)
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Count indicates an expected call of Count.
-func (mr *MockServiceContractMockRecorder) Count(ctx, client interface{}) *gomock.Call {
+func (mr *MockServiceContractMockRecorder) Count(ctx, client, contact interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockServiceContract)(nil).Count), ctx, client)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockServiceContract)(nil).Count), ctx, client, contact)
+}
+
+// GetAll mocks base method.
+func (m *MockServiceContract) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.ServiceContract, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
+	ret0, _ := ret[0].([]domain.ServiceContract)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAll indicates an expected call of GetAll.
+func (mr *MockServiceContractMockRecorder) GetAll(ctx, filter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockServiceContract)(nil).GetAll), ctx, filter)
 }
 
 // RetrieveById mocks base method.

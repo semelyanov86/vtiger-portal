@@ -104,3 +104,94 @@ func TestHandler_getServiceContractById(t *testing.T) {
 		})
 	}
 }
+
+func TestHandler_getAllServiceContracts(t *testing.T) {
+	type mockRepositorySc func(r *mock_repository.MockServiceContract)
+	wrongIdUser := repository.MockedUser
+	wrongIdUser.AccountId = ""
+
+	tests := []struct {
+		name         string
+		postfix      string
+		mockSc       mockRepositorySc
+		userModel    *domain.User
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name:    "Service Contracts received",
+			postfix: "?page=1&size=20",
+			mockSc: func(r *mock_repository.MockServiceContract) {
+				r.EXPECT().GetAll(context.Background(), repository.PaginationQueryFilter{
+					Page:     1,
+					PageSize: 20,
+					Client:   "11x1",
+					Contact:  "12x11",
+				}).Return([]domain.ServiceContract{domain.MockedServiceContract}, nil)
+				r.EXPECT().Count(context.Background(), "11x1", "12x11").Return(1, nil)
+			},
+			statusCode:   http.StatusOK,
+			responseBody: `"subject":"Mocked Service Contract"`,
+			userModel:    &repository.MockedUser,
+		},
+		{
+			name:    "Anonymous Access",
+			postfix: "?page=1&size=20",
+			mockSc: func(r *mock_repository.MockServiceContract) {
+			},
+			statusCode:   http.StatusUnauthorized,
+			responseBody: `"error":"Anonymous Access",`,
+			userModel:    domain.AnonymousUser,
+		}, {
+			name:    "Wrong ID",
+			postfix: "?page=1&size=20",
+			mockSc: func(r *mock_repository.MockServiceContract) {
+			},
+			statusCode:   http.StatusForbidden,
+			responseBody: `Access Not Permitted`,
+			userModel:    &wrongIdUser,
+		}, {
+			name:    "Wrong Pagination",
+			postfix: "?page=notknown&size=smth",
+			mockSc: func(r *mock_repository.MockServiceContract) {
+			},
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `Invalid page number`,
+			userModel:    &repository.MockedUser,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rm := mock_repository.NewMockServiceContract(c)
+			tt.mockSc(rm)
+
+			scService := service.NewServiceContractsService(rm, cache.NewMemoryCache(), mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
+
+			services := &service.Services{ServiceContracts: scService, Context: service.MockedContextService{MockedUser: tt.userModel}}
+			handler := Handler{services: services, config: &config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultPagination: 20}}}}
+
+			// Init Endpoint
+			r := gin.New()
+			r.GET("/api/v1/service-contracts", func(c *gin.Context) {
+
+			}, handler.getAllServiceContracts)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("GET", "/api/v1/service-contracts"+tt.postfix,
+				nil)
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}

@@ -76,13 +76,15 @@ type Invoice interface {
 
 type ServiceContract interface {
 	RetrieveById(ctx context.Context, id string) (domain.ServiceContract, error)
-	Count(ctx context.Context, client string) (int, error)
+	Count(ctx context.Context, client string, contact string) (int, error)
+	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.ServiceContract, error)
 }
 
 type PaginationQueryFilter struct {
 	Page     int
 	PageSize int
 	Client   string
+	Contact  string
 }
 
 var ErrRecordNotFound = errors.New("record not found")

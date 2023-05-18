@@ -80,6 +80,14 @@ type ServiceContract interface {
 	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.ServiceContract, error)
 }
 
+type Currency interface {
+	RetrieveById(ctx context.Context, id string) (domain.Currency, error)
+}
+
+type Product interface {
+	RetrieveById(ctx context.Context, id string) (domain.Product, error)
+}
+
 type PaginationQueryFilter struct {
 	Page     int
 	PageSize int
@@ -105,6 +113,8 @@ type Repositories struct {
 	Faqs            Faq
 	Invoice         Invoice
 	ServiceContract ServiceContract
+	Currency        CurrencyCrm
+	Product         ProductCrm
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -121,5 +131,7 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		Faqs:            NewFaqsCrm(config, cache),
 		Invoice:         NewInvoiceCrm(config, cache),
 		ServiceContract: NewServiceContractCrm(config, cache),
+		Currency:        NewCurrencyCrm(config, cache),
+		Product:         NewProductCrm(config, cache),
 	}
 }

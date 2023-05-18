@@ -1,11 +1,276 @@
 _type: export
 __export_format: 4
-__export_date: 2023-05-16T12:38:50.553Z
+__export_date: 2023-05-18T09:32:30.745Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de8114b41b
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de38a00715
+    modified: 1684402314129
+    created: 1684400189086
+    url: "{{ base_url }}/products"
+    name: Get Products
+    description: >-
+      Allows to get list of all product with pagination and filter params.
+      Accepted filter:
+
+      * filter[discontinued] - accept boolean. Should we get not active products or not.
+    method: GET
+    body: {}
+    parameters:
+      - name: page
+        disabled: true
+        value: "1"
+        id: pair_a02b2009dd8440ef8cf2b910efedfca7
+      - name: size
+        disabled: true
+        value: "20"
+        id: pair_d236621dadb64bb8afe8e9f8387761b5
+      - name: filter[discontinued]
+        disabled: true
+        value: "true"
+        id: pair_c483262fd8ba47d685db57a5c927bcd2
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684400189086
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de38a00715
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1684400189124
+    created: 1684400189124
+    name: product
+    description: Product data from vtiger
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1684400189124
+    _type: request_group
+  - _id: wrk_66e74e4b495c4404841a78c723c211de
+    parentId: null
+    modified: 1681752522262
+    created: 1681752522262
+    name: Vtiger Customer Portal
+    description: ""
+    scope: design
+    _type: workspace
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211deee15caf7
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de38a00715
+    modified: 1684402320778
+    created: 1684400189085
+    url: "{{ base_url }}/products/{{ productId }}"
+    name: Find Product by ID
+    description: |-
+      Allows to get product by it's ID.
+
+      Example response:
+
+      ```json
+      {
+      	"productname": "Keyboard Logitech",
+      	"product_no": "PRO1",
+      	"productcode": "KEY-112",
+      	"discontinued": true,
+      	"manufacturer": "MetBeat Corp",
+      	"productcategory": "Hardware",
+      	"sales_start_date": "2022-09-18T00:00:00Z",
+      	"sales_end_date": "2023-05-31T00:00:00Z",
+      	"start_date": "2023-05-14T00:00:00Z",
+      	"expiry_date": "2023-06-01T00:00:00Z",
+      	"website": "https://itvolga.com",
+      	"vendor_id": "",
+      	"mfr_part_no": "224-ffre",
+      	"vendor_part_no": "22--RRR",
+      	"serial_no": "3423-21234-324",
+      	"productsheet": "Some Sheet",
+      	"glacct": "302-Rental-Income",
+      	"createdtime": "2022-09-19T09:57:19Z",
+      	"modifiedtime": "2023-05-18T07:09:24Z",
+      	"unit_price": 50.5,
+      	"commissionrate": 2,
+      	"taxclass": "",
+      	"usageunit": "Each",
+      	"qty_per_unit": 6.4,
+      	"qtyinstock": 100.6,
+      	"reorderlevel": 0,
+      	"assigned_user_id": "19x1",
+      	"qtyindemand": 0,
+      	"description": "fg sfgsagfdsfg sfgsfgsg",
+      	"purchase_cost": 500,
+      	"starred": false,
+      	"id": "14x9",
+      	"imageattachmentids": "14x62",
+      	"label": "Keyboard Logitech",
+      	"currency1": 50.5,
+      	"currency_id": "21x1",
+      	"currency": {
+      		"id": "21x1",
+      		"currency_name": "Euro",
+      		"currency_code": "EUR",
+      		"currency_symbol": "€",
+      		"conversion_rate": 0,
+      		"currency_status": "Active",
+      		"defaultid": "-11",
+      		"deleted": false
+      	},
+      	"imagecontent": ""
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_ec11eec3fda14b98818d4d1ed407dcf0
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_ecd9e51c5bd6496db165b5a29d8f117d
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684400189085
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211dea4c3e151
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de0ca7a98c
+    modified: 1684400189657
+    created: 1684330548698
+    url: "{{ base_url }}/service-contracts"
+    name: Get All Service contracts
+    description: >-
+      This endpoint allows to get all service contracts based on pagination
+      params
+
+
+      Example response:
+
+
+      ```json
+
+      {
+      	"data": [
+      		{
+      			"id": "24x58",
+      			"assigned_user_id": "19x1",
+      			"start_date": "2023-05-14T00:00:00Z",
+      			"end_date": "0001-01-01T00:00:00Z",
+      			"sc_related_to": "11x6",
+      			"tracking_unit": "Hours",
+      			"total_units": 0,
+      			"used_units": 0,
+      			"subject": "Some test service contract",
+      			"due_date": "2023-05-18T00:00:00Z",
+      			"planned_duration": 0,
+      			"actual_duration": 0,
+      			"contract_status": "In Planning",
+      			"contract_priority": "Normal",
+      			"contract_type": "",
+      			"progress": 0,
+      			"contract_no": "SERCON1",
+      			"createdtime": "2023-05-16T10:52:46Z",
+      			"modifiedtime": "2023-05-16T10:52:46Z",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"label": ""
+      		},
+      		{
+      			"id": "24x59",
+      			"assigned_user_id": "19x1",
+      			"start_date": "2023-05-15T00:00:00Z",
+      			"end_date": "2023-05-16T00:00:00Z",
+      			"sc_related_to": "12x11",
+      			"tracking_unit": "",
+      			"total_units": 0,
+      			"used_units": 0,
+      			"subject": "Second test contract",
+      			"due_date": "2023-05-18T00:00:00Z",
+      			"planned_duration": 0,
+      			"actual_duration": 0,
+      			"contract_status": "In Progress",
+      			"contract_priority": "High",
+      			"contract_type": "Support",
+      			"progress": 0,
+      			"contract_no": "SERCON2",
+      			"createdtime": "2023-05-16T10:53:22Z",
+      			"modifiedtime": "2023-05-16T10:53:22Z",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"label": ""
+      		}
+      	],
+      	"count": 2,
+      	"page": 1,
+      	"size": 20
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters:
+      - name: page
+        disabled: true
+        value: "1"
+        id: pair_22f16a2ba6134e0faba2833f3ccac3fa
+      - name: size
+        disabled: true
+        value: "20"
+        id: pair_248ad9504e9c4ef7a89dc5e0c67b8648
+    headers:
+      - id: pair_c838895e60434023a52e2c44ae178a9e
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_38e2dc454f3b40e29cce41e6b9fcb997
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684330548698
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de0ca7a98c
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1684238814952
+    created: 1684238814952
+    name: service-contracts
+    description: Service contracts data
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1684238814953
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211debe4cfbb3
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de0ca7a98c
-    modified: 1684240696034
+    modified: 1684330549262
     created: 1684238814920
     url: "{{ base_url }}/service-contracts/{{ scId }}"
     name: Find Service Contract by ID
@@ -69,24 +334,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de0ca7a98c
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684238814952
-    created: 1684238814952
-    name: service-contracts
-    description: Service contracts data
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1684238814953
-    _type: request_group
-  - _id: wrk_66e74e4b495c4404841a78c723c211de
-    parentId: null
-    modified: 1681752522262
-    created: 1681752522262
-    name: Vtiger Customer Portal
-    description: ""
-    scope: design
-    _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9127d807
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
     modified: 1682660944164
@@ -2013,7 +2260,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684240695554
+    modified: 1684401044547
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -2049,6 +2296,8 @@ resources:
           description: Endpoints for getting invoices
         - name: service-contracts
           description: Service contracts data
+        - name: product
+          description: Product data from vtiger
       paths:
         /users:
           post:
@@ -2866,6 +3115,144 @@ resources:
                 description: Invalid ID supplied
               "404":
                 description: ServiceContract not found
+              "403":
+                description: Operation not permitted
+        "/products":
+          get:
+            tags:
+              - product
+            summary: Get Products
+            description: This endpoint returns a list of products based on the provided page number and page size and filter params.
+            operationId: getAllProducts
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: page
+                in: query
+                description: The page number to retrieve (default is 1)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 1
+              - name: size
+                in: query
+                description: The number of items per page (default is 20)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 20
+              - name: filter[discontinued]
+                in: query
+                description: Filter products by their discontinued status (e.g., filter[discontinued]=false)
+                required: false
+                schema:
+                  type: boolean
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Product"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid pagination params
+              "403":
+                description: Operation not permitted
+        "/products/{productId}":
+          get:
+            tags:
+              - product
+            summary: Find Product by ID
+            description: Returns a single product
+            operationId: getProductById
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: productId
+                in: path
+                description: ID of product to return
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/Product"
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Product not found
+              "403":
+                description: Operation not permitted
+        "/service-contracts":
+          get:
+            tags:
+              - service-contracts
+            summary: Get All Service Contracts
+            description: This endpoint returns a list of service contracts based on the provided page number and page size.
+            operationId: getAllServiceContracts
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: page
+                in: query
+                description: The page number to retrieve (default is 1)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 1
+              - name: size
+                in: query
+                description: The number of items per page (default is 20)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 20
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/ServiceContract"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid pagination params
               "403":
                 description: Operation not permitted
       externalDocs:
@@ -3952,6 +4339,155 @@ resources:
                   label:
                     type: string
                     example: "Label-A"
+          Product:
+            type: object
+            properties:
+              productname:
+                type: string
+                example: "Example Product"
+              product_no:
+                type: string
+                example: "PRO1"
+              productcode:
+                type: string
+                example: "ABC123"
+              discontinued:
+                type: boolean
+                example: false
+              manufacturer:
+                type: string
+                example: "MetBeat Corp"
+              productcategory:
+                type: string
+                example: "Hardware"
+              sales_start_date:
+                type: string
+                format: date-time
+                example: "2023-01-01T09:57:19Z"
+              sales_end_date:
+                type: string
+                format: date-time
+                example: "2023-12-31T09:57:19Z"
+              start_date:
+                type: string
+                format: date-time
+                example: "2023-01-01T09:57:19Z"
+              expiry_date:
+                type: string
+                format: date-time
+                example: "2023-12-31T09:57:19Z"
+              website:
+                type: string
+                example: "https://example.com/product"
+              vendor_id:
+                type: string
+                example: "V123"
+              mfr_part_no:
+                type: string
+                example: "MFR-123"
+              vendor_part_no:
+                type: string
+                example: "VENDOR-456"
+              serial_no:
+                type: string
+                example: "SN-789"
+              productsheet:
+                type: string
+                example: "https://example.com/product/sheet.pdf"
+              glacct:
+                type: string
+                example: "302-Rental-Income"
+              createdtime:
+                type: string
+                format: date-time
+                example: "2023-05-18T09:57:19Z"
+              modifiedtime:
+                type: string
+                format: date-time
+                example: "2023-05-18T09:57:19Z"
+              unit_price:
+                type: number
+                example: 10.99
+              commissionrate:
+                type: number
+                example: 0.05
+              taxclass:
+                type: string
+                example: ""
+              usageunit:
+                type: string
+                example: "Each"
+              qty_per_unit:
+                type: number
+                example: 1.0
+              qtyinstock:
+                type: number
+                example: 100.0
+              reorderlevel:
+                type: integer
+                example: 50
+              assigned_user_id:
+                type: string
+                example: "19x1"
+              qtyindemand:
+                type: integer
+                example: 10
+              description:
+                type: string
+                example: "Example product description"
+              purchase_cost:
+                type: number
+                example: 50.0
+              starred:
+                type: boolean
+                example: true
+              id:
+                type: string
+                example: "14x9"
+              imageattachmentids:
+                type: string
+                example: "14x62"
+              label:
+                type: string
+                example: "Featured"
+              currency1:
+                type: number
+                example: 100.0
+              currency_id:
+                type: string
+                example: "21x11"
+              currency:
+                $ref: "#/components/schemas/Currency"
+              imagecontent:
+                type: string
+          Currency:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "21x1"
+              currency_name:
+                type: string
+                example: "Euro"
+              currency_code:
+                type: string
+                example: "EUR"
+              currency_symbol:
+                type: string
+                example: "€"
+              conversion_rate:
+                type: number
+                format: float
+                example: 1.0
+              currency_status:
+                type: string
+                example: "Active"
+              defaultid:
+                type: string
+                example: "-11"
+              deleted:
+                type: boolean
+                example: false
     contentType: yaml
     _type: api_spec
   - _id: env_env_7051e4988ba662848196b333737a56823b214220_sub
@@ -3986,7 +4522,7 @@ resources:
     _type: environment
   - _id: env_1bfede95dc144997a9155f6e79a3eaa5
     parentId: env_7051e4988ba662848196b333737a56823b214220
-    modified: 1684238850142
+    modified: 1684400224259
     created: 1681826841922
     name: Local
     data:
@@ -4002,6 +4538,7 @@ resources:
       fileId: 15x46
       invoiceId: 2x53
       scId: 24x59
+      productId: 14x9
     dataPropertyOrder:
       "&":
         - scheme
@@ -4016,6 +4553,7 @@ resources:
         - fileId
         - invoiceId
         - scId
+        - productId
     color: null
     isPrivate: false
     metaSortKey: 1681826841922

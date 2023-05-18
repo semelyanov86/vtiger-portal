@@ -29,6 +29,8 @@ tags:
     description: Endpoints for getting invoices
   - name: service-contracts
     description: Service contracts data
+  - name: product
+    description: Product data from vtiger
 paths:
   /users:
     post:
@@ -846,6 +848,144 @@ paths:
           description: Invalid ID supplied
         "404":
           description: ServiceContract not found
+        "403":
+          description: Operation not permitted
+  "/products":
+    get:
+      tags:
+        - product
+      summary: Get Products
+      description: This endpoint returns a list of products based on the provided page number and page size and filter params.
+      operationId: getAllProducts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: The page number to retrieve (default is 1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          description: The number of items per page (default is 20)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: filter[discontinued]
+          in: query
+          description: Filter products by their discontinued status (e.g., filter[discontinued]=false)
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid pagination params
+        "403":
+          description: Operation not permitted
+  "/products/{productId}":
+    get:
+      tags:
+        - product
+      summary: Find Product by ID
+      description: Returns a single product
+      operationId: getProductById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: productId
+          in: path
+          description: ID of product to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Product not found
+        "403":
+          description: Operation not permitted
+  "/service-contracts":
+    get:
+      tags:
+        - service-contracts
+      summary: Get All Service Contracts
+      description: This endpoint returns a list of service contracts based on the provided page number and page size.
+      operationId: getAllServiceContracts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: The page number to retrieve (default is 1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          description: The number of items per page (default is 20)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ServiceContract"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid pagination params
         "403":
           description: Operation not permitted
 externalDocs:
@@ -1932,3 +2072,152 @@ components:
         label:
           type: string
           example: "Label-A"
+    Product:
+      type: object
+      properties:
+        productname:
+          type: string
+          example: "Example Product"
+        product_no:
+          type: string
+          example: "PRO1"
+        productcode:
+          type: string
+          example: "ABC123"
+        discontinued:
+          type: boolean
+          example: false
+        manufacturer:
+          type: string
+          example: "MetBeat Corp"
+        productcategory:
+          type: string
+          example: "Hardware"
+        sales_start_date:
+          type: string
+          format: date-time
+          example: "2023-01-01T09:57:19Z"
+        sales_end_date:
+          type: string
+          format: date-time
+          example: "2023-12-31T09:57:19Z"
+        start_date:
+          type: string
+          format: date-time
+          example: "2023-01-01T09:57:19Z"
+        expiry_date:
+          type: string
+          format: date-time
+          example: "2023-12-31T09:57:19Z"
+        website:
+          type: string
+          example: "https://example.com/product"
+        vendor_id:
+          type: string
+          example: "V123"
+        mfr_part_no:
+          type: string
+          example: "MFR-123"
+        vendor_part_no:
+          type: string
+          example: "VENDOR-456"
+        serial_no:
+          type: string
+          example: "SN-789"
+        productsheet:
+          type: string
+          example: "https://example.com/product/sheet.pdf"
+        glacct:
+          type: string
+          example: "302-Rental-Income"
+        createdtime:
+          type: string
+          format: date-time
+          example: "2023-05-18T09:57:19Z"
+        modifiedtime:
+          type: string
+          format: date-time
+          example: "2023-05-18T09:57:19Z"
+        unit_price:
+          type: number
+          example: 10.99
+        commissionrate:
+          type: number
+          example: 0.05
+        taxclass:
+          type: string
+          example: ""
+        usageunit:
+          type: string
+          example: "Each"
+        qty_per_unit:
+          type: number
+          example: 1.0
+        qtyinstock:
+          type: number
+          example: 100.0
+        reorderlevel:
+          type: integer
+          example: 50
+        assigned_user_id:
+          type: string
+          example: "19x1"
+        qtyindemand:
+          type: integer
+          example: 10
+        description:
+          type: string
+          example: "Example product description"
+        purchase_cost:
+          type: number
+          example: 50.0
+        starred:
+          type: boolean
+          example: true
+        id:
+          type: string
+          example: "14x9"
+        imageattachmentids:
+          type: string
+          example: "14x62"
+        label:
+          type: string
+          example: "Featured"
+        currency1:
+          type: number
+          example: 100.0
+        currency_id:
+          type: string
+          example: "21x11"
+        currency:
+          $ref: "#/components/schemas/Currency"
+        imagecontent:
+          type: string
+    Currency:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "21x1"
+        currency_name:
+          type: string
+          example: "Euro"
+        currency_code:
+          type: string
+          example: "EUR"
+        currency_symbol:
+          type: string
+          example: "€"
+        conversion_rate:
+          type: number
+          format: float
+          example: 1.0
+        currency_status:
+          type: string
+          example: "Active"
+        defaultid:
+          type: string
+          example: "-11"
+        deleted:
+          type: boolean
+          example: false

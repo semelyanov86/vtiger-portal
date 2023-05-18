@@ -751,3 +751,79 @@ func (mr *MockServiceContractMockRecorder) RetrieveById(ctx, id interface{}) *go
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockServiceContract)(nil).RetrieveById), ctx, id)
 }
+
+// MockCurrency is a mock of Currency interface.
+type MockCurrency struct {
+	ctrl     *gomock.Controller
+	recorder *MockCurrencyMockRecorder
+}
+
+// MockCurrencyMockRecorder is the mock recorder for MockCurrency.
+type MockCurrencyMockRecorder struct {
+	mock *MockCurrency
+}
+
+// NewMockCurrency creates a new mock instance.
+func NewMockCurrency(ctrl *gomock.Controller) *MockCurrency {
+	mock := &MockCurrency{ctrl: ctrl}
+	mock.recorder = &MockCurrencyMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockCurrency) EXPECT() *MockCurrencyMockRecorder {
+	return m.recorder
+}
+
+// RetrieveById mocks base method.
+func (m *MockCurrency) RetrieveById(ctx context.Context, id string) (domain.Currency, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveById", ctx, id)
+	ret0, _ := ret[0].(domain.Currency)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveById indicates an expected call of RetrieveById.
+func (mr *MockCurrencyMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockCurrency)(nil).RetrieveById), ctx, id)
+}
+
+// MockProduct is a mock of Product interface.
+type MockProduct struct {
+	ctrl     *gomock.Controller
+	recorder *MockProductMockRecorder
+}
+
+// MockProductMockRecorder is the mock recorder for MockProduct.
+type MockProductMockRecorder struct {
+	mock *MockProduct
+}
+
+// NewMockProduct creates a new mock instance.
+func NewMockProduct(ctrl *gomock.Controller) *MockProduct {
+	mock := &MockProduct{ctrl: ctrl}
+	mock.recorder = &MockProductMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockProduct) EXPECT() *MockProductMockRecorder {
+	return m.recorder
+}
+
+// RetrieveById mocks base method.
+func (m *MockProduct) RetrieveById(ctx context.Context, id string) (domain.Product, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveById", ctx, id)
+	ret0, _ := ret[0].(domain.Product)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveById indicates an expected call of RetrieveById.
+func (mr *MockProductMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockProduct)(nil).RetrieveById), ctx, id)
+}

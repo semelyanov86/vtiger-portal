@@ -32,6 +32,8 @@ type Services struct {
 	Faqs             Faqs
 	Invoices         Invoices
 	ServiceContracts ServiceContracts
+	Currencies       CurrencyService
+	Products         ProductService
 }
 
 var ErrOperationNotPermitted = errors.New("you are not permitted to view this record")
@@ -42,6 +44,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 	commentsService := NewComments(repos.Comments, cache, config)
 	documentService := NewDocuments(repos.Documents, cache)
 	modulesService := NewModulesService(repos.Modules, cache)
+	currencyService := NewCurrencyService(repos.Currency, cache)
 	return &Services{
 		Users:            NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens, repos.Documents),
 		Emails:           *NewEmailsService(email, config.Email, cache),
@@ -56,6 +59,8 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		Faqs:             NewFaqsService(repos.Faqs, cache, modulesService, config),
 		Invoices:         NewInvoiceService(repos.Invoice, cache, modulesService, config),
 		ServiceContracts: NewServiceContractsService(repos.ServiceContract, cache, documentService, modulesService, config),
+		Currencies:       currencyService,
+		Products:         NewProductService(repos.Product, cache, currencyService, repos.Documents, modulesService, config),
 	}
 }
 
@@ -75,7 +80,7 @@ type DocumentServiceInterface interface {
 }
 
 type SupportedTypes interface {
-	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract
+	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract | *domain.Currency | *domain.Product
 }
 
 func GetFromCache[T SupportedTypes](key string, dest T, c cache.Cache) error {

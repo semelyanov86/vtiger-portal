@@ -19,7 +19,7 @@ type AloneDataResponse[T DataResponseModules] struct {
 }
 
 type DataResponseModules interface {
-	domain.Comment | domain.HelpDesk | domain.Document | domain.Faq | domain.Invoice | domain.Company | domain.User | domain.ServiceContract
+	domain.Comment | domain.HelpDesk | domain.Document | domain.Faq | domain.Invoice | domain.Company | domain.User | domain.ServiceContract | domain.Product
 }
 
 type response struct {

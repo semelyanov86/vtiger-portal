@@ -813,6 +813,36 @@ func (m *MockProduct) EXPECT() *MockProductMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockProduct) Count(ctx context.Context, filters map[string]any) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, filters)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockProductMockRecorder) Count(ctx, filters interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockProduct)(nil).Count), ctx, filters)
+}
+
+// GetAll mocks base method.
+func (m *MockProduct) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Product, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
+	ret0, _ := ret[0].([]domain.Product)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAll indicates an expected call of GetAll.
+func (mr *MockProductMockRecorder) GetAll(ctx, filter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockProduct)(nil).GetAll), ctx, filter)
+}
+
 // RetrieveById mocks base method.
 func (m *MockProduct) RetrieveById(ctx context.Context, id string) (domain.Product, error) {
 	m.ctrl.T.Helper()

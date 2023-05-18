@@ -86,6 +86,8 @@ type Currency interface {
 
 type Product interface {
 	RetrieveById(ctx context.Context, id string) (domain.Product, error)
+	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Product, error)
+	Count(ctx context.Context, filters map[string]any) (int, error)
 }
 
 type PaginationQueryFilter struct {
@@ -93,6 +95,7 @@ type PaginationQueryFilter struct {
 	PageSize int
 	Client   string
 	Contact  string
+	Filters  map[string]any
 }
 
 var ErrRecordNotFound = errors.New("record not found")

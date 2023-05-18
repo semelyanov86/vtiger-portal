@@ -32,6 +32,26 @@ func NewProductService(repository repository.Product, cache cache.Cache, currenc
 	}
 }
 
+func (p ProductService) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Product, int, error) {
+	products, err := p.repository.GetAll(ctx, filter)
+	if err != nil {
+		return products, 0, err
+	}
+	count, err := p.repository.Count(ctx, filter.Filters)
+	if err != nil {
+		return products, count, err
+	}
+	fullProducts := make([]domain.Product, len(products))
+	for i, product := range products {
+		newProduct, err := p.GetProductById(ctx, product.Id)
+		if err != nil {
+			return fullProducts, count, e.Wrap("can not get product with id "+product.Id, err)
+		}
+		fullProducts[i] = newProduct
+	}
+	return fullProducts, count, err
+}
+
 func (p ProductService) GetProductById(ctx context.Context, id string) (domain.Product, error) {
 	product := &domain.Product{}
 	err := GetFromCache[*domain.Product](id, product, p.cache)

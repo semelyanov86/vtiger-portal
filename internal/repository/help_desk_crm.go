@@ -37,7 +37,7 @@ func (m HelpDeskCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) (
 	tickets := make([]domain.HelpDesk, 0)
 	result, err := m.vtiger.Query(ctx, query)
 	if err != nil {
-		return tickets, e.Wrap("can not execute query "+query+", got error: "+result.Error.Message, err)
+		return tickets, e.Wrap("can not execute query "+query+", got error", err)
 	}
 	for _, data := range result.Result {
 		ticket, err := domain.ConvertMapToHelpDesk(data)

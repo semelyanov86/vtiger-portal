@@ -58,6 +58,10 @@ func (h Handler) authenticate(c *gin.Context) {
 	}
 
 	user, err := h.services.Users.GetUserByToken(c.Request.Context(), token)
+	if !user.IsActive {
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Not Active", "field": "is_active", "message": "Authorized user is deactivated!"})
+		return
+	}
 	if err != nil {
 		switch {
 		case errors.Is(err, repository.ErrRecordNotFound):

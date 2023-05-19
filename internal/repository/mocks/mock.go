@@ -925,3 +925,71 @@ func (mr *MockServiceMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Cal
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockService)(nil).RetrieveById), ctx, id)
 }
+
+// MockProject is a mock of Project interface.
+type MockProject struct {
+	ctrl     *gomock.Controller
+	recorder *MockProjectMockRecorder
+}
+
+// MockProjectMockRecorder is the mock recorder for MockProject.
+type MockProjectMockRecorder struct {
+	mock *MockProject
+}
+
+// NewMockProject creates a new mock instance.
+func NewMockProject(ctrl *gomock.Controller) *MockProject {
+	mock := &MockProject{ctrl: ctrl}
+	mock.recorder = &MockProjectMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockProject) EXPECT() *MockProjectMockRecorder {
+	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockProject) Count(ctx context.Context, client, contact string) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, client, contact)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockProjectMockRecorder) Count(ctx, client, contact interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockProject)(nil).Count), ctx, client, contact)
+}
+
+// GetAll mocks base method.
+func (m *MockProject) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Project, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
+	ret0, _ := ret[0].([]domain.Project)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAll indicates an expected call of GetAll.
+func (mr *MockProjectMockRecorder) GetAll(ctx, filter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockProject)(nil).GetAll), ctx, filter)
+}
+
+// RetrieveById mocks base method.
+func (m *MockProject) RetrieveById(ctx context.Context, id string) (domain.Project, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveById", ctx, id)
+	ret0, _ := ret[0].(domain.Project)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveById indicates an expected call of RetrieveById.
+func (mr *MockProjectMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockProject)(nil).RetrieveById), ctx, id)
+}

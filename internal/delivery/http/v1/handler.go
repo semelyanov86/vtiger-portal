@@ -35,6 +35,7 @@ func (h *Handler) Init(api *gin.RouterGroup) {
 		h.initServiceContractsRoutes(v1)
 		h.initProductsRoutes(v1)
 		h.initServicesRoutes(v1)
+		h.initProjectsRoutes(v1)
 	}
 }
 

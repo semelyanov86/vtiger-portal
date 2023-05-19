@@ -1,11 +1,447 @@
 _type: export
 __export_format: 4
-__export_date: 2023-05-19T11:26:44.078Z
+__export_date: 2023-05-19T12:57:48.007Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de09d91eb1
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1684500341984
+    created: 1684500052656
+    url: "{{ base_url }}/projects/{{ projectId }}"
+    name: Find Project by ID
+    description: |-
+      Allows to retrieve project by it's ID
+
+      Example response:
+      ```json
+      {
+      	"data": {
+      		"projectname": "Website development",
+      		"startdate": "2023-04-30T00:00:00Z",
+      		"targetenddate": "2023-05-04T00:00:00Z",
+      		"actualenddate": "2023-05-31T00:00:00Z",
+      		"projectstatus": "prospecting",
+      		"projecttype": "administrative",
+      		"linktoaccountscontacts": "11x6",
+      		"project_no": "PROJ1",
+      		"targetbudget": "111000fdf fdgfd",
+      		"projecturl": "https://sergeyem.ru",
+      		"projectpriority": "normal",
+      		"progress": "10%",
+      		"isconvertedfrompotential": false,
+      		"potentialid": "13x14",
+      		"created_time": "2023-04-28T06:03:56Z",
+      		"modified_time": "2023-05-19T11:40:13Z",
+      		"assigned_user_id": "19x1",
+      		"description": "This is test project",
+      		"source": "",
+      		"starred": false,
+      		"tags": [
+      			""
+      		],
+      		"id": "29x54",
+      		"label": "Website development"
+      	}
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_90b36b777d734ee58135bda99ecb3489
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_9cc79ef1d82040d296cccd573f4a84b8
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684500052708
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1684500052715
+    created: 1684500052715
+    name: project
+    description: Project module in Vtiger CRM
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1684500052715
+    _type: request_group
+  - _id: wrk_66e74e4b495c4404841a78c723c211de
+    parentId: null
+    modified: 1681752522262
+    created: 1681752522262
+    name: Vtiger Customer Portal
+    description: ""
+    scope: design
+    _type: workspace
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de8d9cdc46
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1684500473899
+    created: 1684500052658
+    url: "{{ base_url }}/projects"
+    name: Get Projects
+    description: |-
+      Allows to get list of all projects. Accept also pagination params.
+
+      Example response:
+      ```json
+      {
+      	"data": [
+      		{
+      			"projectname": "Website development",
+      			"startdate": "2023-04-30T00:00:00Z",
+      			"targetenddate": "2023-05-04T00:00:00Z",
+      			"actualenddate": "2023-05-31T00:00:00Z",
+      			"projectstatus": "prospecting",
+      			"projecttype": "administrative",
+      			"linktoaccountscontacts": "11x6",
+      			"project_no": "PROJ1",
+      			"targetbudget": "111000fdf fdgfd",
+      			"projecturl": "https://sergeyem.ru",
+      			"projectpriority": "normal",
+      			"progress": "10%",
+      			"isconvertedfrompotential": false,
+      			"potentialid": "13x14",
+      			"created_time": "2023-04-28T06:03:56Z",
+      			"modified_time": "2023-05-19T12:46:19Z",
+      			"assigned_user_id": "19x1",
+      			"description": "This is test project",
+      			"source": "",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"id": "29x54",
+      			"label": ""
+      		},
+      		{
+      			"projectname": "Documents preparation",
+      			"startdate": "2023-05-02T00:00:00Z",
+      			"targetenddate": "2023-05-05T00:00:00Z",
+      			"actualenddate": "0001-01-01T00:00:00Z",
+      			"projectstatus": "initiated",
+      			"projecttype": "administrative",
+      			"linktoaccountscontacts": "11x6",
+      			"project_no": "PROJ2",
+      			"targetbudget": "133",
+      			"projecturl": "",
+      			"projectpriority": "low",
+      			"progress": "20%",
+      			"isconvertedfrompotential": false,
+      			"potentialid": "",
+      			"created_time": "2023-04-28T06:04:37Z",
+      			"modified_time": "2023-04-28T06:04:37Z",
+      			"assigned_user_id": "19x1",
+      			"description": "This is another test",
+      			"source": "",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"id": "29x55",
+      			"label": ""
+      		}
+      	],
+      	"count": 2,
+      	"page": 1,
+      	"size": 20
+      }
+      ```
+    method: GET
+    body: {}
+    parameters:
+      - name: page
+        disabled: true
+        value: "1"
+        id: pair_491a66276de743d6bcc0320583aafd4c
+      - name: size
+        disabled: true
+        value: "20"
+        id: pair_61d53eb2a1374bf79da28d34c6c3ad7e
+    headers:
+      - id: pair_2eceff9f1a4e4ea6826f6a348aeeb387
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_ebfe9ecb16f142f5831253aa8a47c6db
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684500052658
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211deeb0e336e
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1684500569450
+    created: 1684500052652
+    url: "{{ base_url }}/projects/{{ projectId }}/comments"
+    name: Related comments from project
+    description: |-
+      Get list of comments, attached to project
+
+      Example response:
+      ```json
+      {
+      	"data": [
+      		{
+      			"id": "32x63",
+      			"commentcontent": "This is test comment",
+      			"source": "CRM",
+      			"customer": "",
+      			"userid": "",
+      			"reasontoedit": "",
+      			"creator": "19x1",
+      			"assigned_user_id": "19x1",
+      			"createdtime": "2023-05-19T12:48:41Z",
+      			"modifiedtime": "2023-05-19T12:48:41Z",
+      			"related_to": "29x54",
+      			"parent_comments": "",
+      			"is_private": false,
+      			"filename": "0",
+      			"related_email_id": "0"
+      		}
+      	],
+      	"count": 1,
+      	"page": 1,
+      	"size": 100
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_0d63f10aa45244b7bc8c53826bc4e9e6
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_b581d8515521408daf70527a00672b8f
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684500052652
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de2af8354f
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1684500729356
+    created: 1684500052649
+    url: "{{ base_url }}/projects/{{ projectId }}/comments"
+    name: Add comment
+    description: |-
+      Allows you to add new comment to current project. Example request:
+      ```json
+      {
+        "commentcontent": "Please fix problem ASAP"
+      }
+      ```
+
+      Example response:
+      ```json
+      {
+      	"data": {
+      		"id": "32x65",
+      		"commentcontent": "Tired to wait",
+      		"source": "PORTAL",
+      		"customer": "12x11",
+      		"userid": "",
+      		"reasontoedit": "",
+      		"creator": "19x1",
+      		"assigned_user_id": "19x1",
+      		"createdtime": "2023-05-19T12:52:01Z",
+      		"modifiedtime": "2023-05-19T12:52:01Z",
+      		"related_to": "29x54",
+      		"parent_comments": "",
+      		"is_private": false,
+      		"filename": "",
+      		"related_email_id": "0"
+      	}
+      }
+      ```
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "commentcontent": "Tired to wait"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_07d3909b63d34587910c737a571f1889
+      - id: pair_bf4f4d7a29c24f96beb0076b7691d8dc
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684500052649
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de9e555e50
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1684500984395
+    created: 1684500052645
+    url: "{{ base_url }}/projects/{{ projectId }}/documents"
+    name: Related documents from project
+    description: >-
+      Getting list of all attached documents. Note, in this response there is no
+      content of file. To get content, send separate request.
+
+      ```json
+
+      {
+      	"data": [
+      		{
+      			"notes_title": "getUser",
+      			"createdtime": "2023-05-19T12:53:59Z",
+      			"modifiedtime": "2023-05-19T12:53:59Z",
+      			"filename": "getUser.ts",
+      			"assigned_user_id": "19x1",
+      			"notecontent": "",
+      			"filetype": "text/vnd.qt.linguist",
+      			"filesize": "161",
+      			"filelocationtype": "I",
+      			"fileversion": "",
+      			"filestatus": "1",
+      			"filedownloadcount": "",
+      			"folderid": "22x1",
+      			"note_no": "DOC4",
+      			"modifiedby": "19x1",
+      			"source": "CRM",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"id": "15x66",
+      			"imageattachmentids": "15x67"
+      		}
+      	],
+      	"count": 1,
+      	"page": 1,
+      	"size": 100
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_3fb75483ad4845d9844798ff2a2f57fe
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_b1feb7be623e43bea09279f4ce4348aa
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684500052645
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de258f1317
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1684501038037
+    created: 1684500052642
+    url: "{{ base_url }}/projects/{{ projectId }}/file/15x67"
+    name: Get file in Project
+    description: >-
+      Allows you to download file by it's id.
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"data": {
+      		"fileid": "67",
+      		"filename": "getUser.ts",
+      		"filetype": "text/vnd.qt.linguist",
+      		"filesize": 161,
+      		"filecontents": "aW1wb3J0IHsgYXhpb3MgfSBmcm9tICdAL2xpYi9heGlvcyc7CgppbXBvcnQgeyBBdXRoVXNlciB9IGZyb20gJy4uL3R5cGVzJzsKCmV4cG9ydCBjb25zdCBnZXRVc2VyID0gKCk6IFByb21pc2U8QXV0aFVzZXI+ID0+IHsKICByZXR1cm4gYXhpb3MuZ2V0KCcvYXV0aC9tZScpOwp9Owo="
+      	}
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_f2c8b4c39ad04184b43312c16d609e18
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_6a4f05de86ee41838d28c59e82669414
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684500052642
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de4ae3365e
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de4cf5bc59
-    modified: 1684494870227
+    modified: 1684500102994
     created: 1684494653803
     url: "{{ base_url }}/services"
     name: Get Services
@@ -109,14 +545,6 @@ resources:
     environmentPropertyOrder: null
     metaSortKey: -1684494653836
     _type: request_group
-  - _id: wrk_66e74e4b495c4404841a78c723c211de
-    parentId: null
-    modified: 1681752522262
-    created: 1681752522262
-    name: Vtiger Customer Portal
-    description: ""
-    scope: design
-    _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211decdabdf8b
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de4cf5bc59
     modified: 1684494751219
@@ -2690,7 +3118,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684494653852
+    modified: 1684500102494
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -2736,6 +3164,8 @@ resources:
           description: Product data from vtiger
         - name: service
           description: Endpoints for getting services from Vtiger.
+        - name: project
+          description: Project module in Vtiger CRM
       paths:
         /users:
           post:
@@ -3808,6 +4238,257 @@ resources:
                           example: 100
               "400":
                 description: Invalid pagination params
+              "403":
+                description: Operation not permitted
+        "/projects":
+          get:
+            tags:
+              - project
+            summary: Get Projects
+            description: This endpoint returns a list of projects based on the provided page number and page size.
+            operationId: getAllProjects
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: page
+                in: query
+                description: The page number to retrieve (default is 1)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 1
+              - name: size
+                in: query
+                description: The number of items per page (default is 20)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 20
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Project"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid pagination params
+              "403":
+                description: Operation not permitted
+        "/projects/{projectId}":
+          get:
+            tags:
+              - project
+            summary: Find Project by ID
+            description: Returns a single project
+            operationId: getProjectById
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: projectId
+                in: path
+                description: ID of project to return
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          $ref: "#/components/schemas/Project"
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Project not found
+              "403":
+                description: Operation not permitted
+        "/projects/{projectId}/comments":
+          get:
+            tags:
+              - project
+            summary: Related comments from project
+            description: Returns an array of comments from related project
+            operationId: getCommentsFromProject
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: projectId
+                in: path
+                description: ID of project
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Comment"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100                  
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Project not found
+              "403":
+                description: Operation not permitted
+          post:
+            tags:
+              - project
+            summary: Add comment
+            description: Create new comment, attached to current ticket
+            operationId: addCommentToProject
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: projectId
+                in: path
+                description: ID of project
+                required: true
+                schema:
+                  type: string
+                  format: string
+            requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        commentcontent:
+                          description: Comment content
+                          type: string
+                          example: "Please fix problem ASAP"
+            responses:
+              "201":
+                description: comment created
+                content:
+                  application/json:
+                      schema:
+                        $ref: "#/components/schemas/Comment"         
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Project not found
+              "403":
+                description: Operation not permitted
+        "/projects/{projectId}/documents":
+          get:
+            tags:
+              - project
+            summary: Related documents from project
+            description: Returns an array of documents from related project
+            operationId: getDocumentsFromProject
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: projectId
+                in: path
+                description: ID of project
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Document"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100                  
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Project not found
+              "403":
+                description: Operation not permitted
+        "/projects/{projectId}/file/{fileId}":
+          get:
+            tags:
+              - project
+            summary: Get file in Project
+            description: Returns an array of documents from related project
+            operationId: getFileFromProject
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: fileId
+                in: path
+                description: ID of file
+                required: true
+                schema:
+                  type: string
+                  format: string
+              - name: projectId
+                in: path
+                description: ID of project
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          $ref: "#/components/schemas/File"                
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: HelpDesk or file not found
               "403":
                 description: Operation not permitted
       externalDocs:
@@ -5147,6 +5828,85 @@ resources:
                 example: "Premium Hosting"
               currency:
                 $ref: '#/components/schemas/Currency'
+          Project:
+            type: object
+            properties:
+              projectname:
+                type: string
+                example: "Website Redesign"
+              startdate:
+                type: string
+                format: date-time
+                example: "2023-01-01T00:00:00Z"
+              targetenddate:
+                type: string
+                format: date-time
+                example: "2023-03-31T00:00:00Z"
+              actualenddate:
+                type: string
+                format: date-time
+                example: "2023-03-30T00:00:00Z"
+              projectstatus:
+                type: string
+                example: "prospecting"
+              projecttype:
+                type: string
+                example: "administrative"
+              linktoaccountscontacts:
+                type: string
+                example: "11x6"
+              project_no:
+                type: string
+                example: "PROJ1"
+              targetbudget:
+                type: string
+                example: "10000"
+              projecturl:
+                type: string
+                example: "https://example.com/redesign-project"
+              projectpriority:
+                type: string
+                example: "normal"
+              progress:
+                type: string
+                example: "10%"
+              isconvertedfrompotential:
+                type: boolean
+                example: false
+              potentialid:
+                type: string
+                example: "13x14"
+              created_time:
+                type: string
+                format: date-time
+                example: "2023-01-01T00:00:00Z"
+              modified_time:
+                type: string
+                format: date-time
+                example: "2023-03-30T00:00:00Z"
+              assigned_user_id:
+                type: string
+                example: "19x1"
+              description:
+                type: string
+                example: "Redesign the company website to improve user experience"
+              source:
+                type: string
+                example: "CRM"
+              starred:
+                type: boolean
+                example: false
+              tags:
+                type: array
+                items:
+                  type: string
+                example: ["website", "redesign"]
+              id:
+                type: string
+                example: "29x54"
+              label:
+                type: string
+                example: "Website Redesign"
     contentType: yaml
     _type: api_spec
   - _id: env_env_7051e4988ba662848196b333737a56823b214220_sub
@@ -5181,7 +5941,7 @@ resources:
     _type: environment
   - _id: env_1bfede95dc144997a9155f6e79a3eaa5
     parentId: env_7051e4988ba662848196b333737a56823b214220
-    modified: 1684494673336
+    modified: 1684500126579
     created: 1681826841922
     name: Local
     data:
@@ -5199,6 +5959,7 @@ resources:
       scId: 24x59
       productId: 14x9
       serviceId: 25x52
+      projectId: 29x54
     dataPropertyOrder:
       "&":
         - scheme
@@ -5215,6 +5976,7 @@ resources:
         - scId
         - productId
         - serviceId
+        - projectId
     color: null
     isPrivate: false
     metaSortKey: 1681826841922

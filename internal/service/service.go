@@ -34,6 +34,7 @@ type Services struct {
 	ServiceContracts ServiceContracts
 	Currencies       CurrencyService
 	Products         ProductService
+	Services         ServicesService
 }
 
 var ErrOperationNotPermitted = errors.New("you are not permitted to view this record")
@@ -61,6 +62,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		ServiceContracts: NewServiceContractsService(repos.ServiceContract, cache, documentService, modulesService, config),
 		Currencies:       currencyService,
 		Products:         NewProductService(repos.Product, cache, currencyService, repos.Documents, modulesService, config),
+		Services:         NewServicesService(repos.Service, cache, currencyService, modulesService, config),
 	}
 }
 
@@ -80,7 +82,7 @@ type DocumentServiceInterface interface {
 }
 
 type SupportedTypes interface {
-	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract | *domain.Currency | *domain.Product
+	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract | *domain.Currency | *domain.Product | *domain.Service
 }
 
 func GetFromCache[T SupportedTypes](key string, dest T, c cache.Cache) error {

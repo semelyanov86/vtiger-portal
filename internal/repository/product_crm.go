@@ -33,7 +33,7 @@ func (p ProductCrm) RetrieveById(ctx context.Context, id string) (domain.Product
 func (p ProductCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Product, error) {
 	// Calculate the offset for the given page number and page size
 	offset := (filter.Page - 1) * filter.PageSize
-	isActive := p.getIsActiveFromFilter(filter.Filters)
+	isActive := GetIsActiveFromFilter(filter.Filters)
 	query := "SELECT id FROM Products WHERE discontinued = " + isActive + " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
 	products := make([]domain.Product, 0)
 	result, err := p.vtiger.Query(ctx, query)
@@ -52,14 +52,6 @@ func (p ProductCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([
 
 func (p ProductCrm) Count(ctx context.Context, filters map[string]any) (int, error) {
 	body := make(map[string]string)
-	body["discontinued"] = p.getIsActiveFromFilter(filters)
+	body["discontinued"] = GetIsActiveFromFilter(filters)
 	return p.vtiger.Count(ctx, "Products", body)
-}
-
-func (p ProductCrm) getIsActiveFromFilter(filters map[string]any) string {
-	isActive := "1"
-	if filters["discontinued"] == false || filters["discontinued"] == "false" {
-		isActive = "0"
-	}
-	return isActive
 }

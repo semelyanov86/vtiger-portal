@@ -90,6 +90,12 @@ type Product interface {
 	Count(ctx context.Context, filters map[string]any) (int, error)
 }
 
+type Service interface {
+	RetrieveById(ctx context.Context, id string) (domain.Service, error)
+	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Service, error)
+	Count(ctx context.Context, filters map[string]any) (int, error)
+}
+
 type PaginationQueryFilter struct {
 	Page     int
 	PageSize int
@@ -118,6 +124,7 @@ type Repositories struct {
 	ServiceContract ServiceContract
 	Currency        CurrencyCrm
 	Product         ProductCrm
+	Service         ServicesCrm
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -136,5 +143,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		ServiceContract: NewServiceContractCrm(config, cache),
 		Currency:        NewCurrencyCrm(config, cache),
 		Product:         NewProductCrm(config, cache),
+		Service:         NewServicesCRM(config, cache),
 	}
 }

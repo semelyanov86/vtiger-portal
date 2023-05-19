@@ -133,6 +133,8 @@ func (s UsersService) GetUserById(ctx context.Context, id int64) (*domain.User, 
 		defer cancel()
 		updatedUser, err := s.crm.RetrieveById(ctx2, user.Crmid)
 		updatedUser.Id = id
+		updatedUser.IsActive = user.IsActive
+		updatedUser.Password = user.Password
 		if err != nil {
 			logger.Error(logger.GenerateErrorMessageFromString(err.Error()))
 			return

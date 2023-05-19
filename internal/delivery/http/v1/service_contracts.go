@@ -33,8 +33,11 @@ func (h *Handler) getServiceContract(c *gin.Context) {
 		notPermittedResponse(c)
 		return
 	}
+	res := AloneDataResponse[domain.ServiceContract]{
+		Data: serviceContract,
+	}
 
-	c.JSON(http.StatusOK, serviceContract)
+	c.JSON(http.StatusOK, res)
 }
 
 func (h *Handler) getAllServiceContracts(c *gin.Context) {

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/pkg/logger"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"net/http"
 )
 
@@ -19,7 +20,7 @@ type AloneDataResponse[T DataResponseModules] struct {
 }
 
 type DataResponseModules interface {
-	domain.Comment | domain.HelpDesk | domain.Document | domain.Faq | domain.Invoice | domain.Company | domain.User | domain.ServiceContract | domain.Product
+	domain.Comment | domain.HelpDesk | domain.Document | domain.Faq | domain.Invoice | domain.Company | domain.User | domain.ServiceContract | domain.Product | domain.Manager | vtiger.Module | vtiger.File
 }
 
 type response struct {

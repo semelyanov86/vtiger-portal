@@ -7,6 +7,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"net/http"
 )
 
@@ -41,7 +42,10 @@ func (h *Handler) getTicket(c *gin.Context) {
 		notPermittedResponse(c)
 		return
 	}
-	c.JSON(http.StatusOK, ticket)
+	res := AloneDataResponse[domain.HelpDesk]{
+		Data: ticket,
+	}
+	c.JSON(http.StatusOK, res)
 }
 
 func (h *Handler) getComments(c *gin.Context) {
@@ -148,7 +152,10 @@ func (h *Handler) getFile(c *gin.Context) {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, file)
+	res := AloneDataResponse[vtiger.File]{
+		Data: file,
+	}
+	c.JSON(http.StatusOK, res)
 }
 
 func (h *Handler) getAllTickets(c *gin.Context) {

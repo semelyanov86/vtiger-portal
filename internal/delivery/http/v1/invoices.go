@@ -32,7 +32,10 @@ func (h *Handler) getInvoice(c *gin.Context) {
 		notPermittedResponse(c)
 		return
 	}
-	c.JSON(http.StatusOK, invoice)
+	res := AloneDataResponse[domain.Invoice]{
+		Data: invoice,
+	}
+	c.JSON(http.StatusOK, res)
 }
 
 func (h *Handler) getAllInvoices(c *gin.Context) {

@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"net/http"
 )
 
@@ -26,5 +27,8 @@ func (h *Handler) getById(c *gin.Context) {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, user)
+	res := AloneDataResponse[domain.Manager]{
+		Data: user,
+	}
+	c.JSON(http.StatusOK, res)
 }

@@ -24,12 +24,15 @@ func (h *Handler) getProduct(c *gin.Context) {
 		return
 	}
 
-	ticket, err := h.services.Products.GetProductById(c.Request.Context(), id)
+	product, err := h.services.Products.GetProductById(c.Request.Context(), id)
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, ticket)
+	res := AloneDataResponse[domain.Product]{
+		Data: product,
+	}
+	c.JSON(http.StatusOK, res)
 }
 
 func (h *Handler) getAllProducts(c *gin.Context) {

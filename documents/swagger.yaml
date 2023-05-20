@@ -221,6 +221,57 @@ paths:
       responses:
         default:
           description: successful operation
+  "/users/all":
+    get:
+      tags:
+        - user
+      summary: Get Users From My Company
+      description: This endpoint returns a list vtiger contacts, attached to the same company, as authorized user.
+      operationId: getAllAccountUsers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: The page number to retrieve (default is 1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          description: The number of items per page (default is 20)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid pagination params
+        "403":
+          description: Operation not permitted
   /users/my:
     get:
       tags:

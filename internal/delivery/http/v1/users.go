@@ -18,6 +18,7 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 		users.GET("/my", h.getUserInfo)
 		users.POST("/restore", h.sendRestoreToken)
 		users.PUT("/password", h.resetPassword)
+		users.GET("/all", h.usersFromAccount)
 	}
 }
 
@@ -140,4 +141,30 @@ func (h Handler) resetPassword(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusAccepted, user)
+}
+
+func (h Handler) usersFromAccount(c *gin.Context) {
+	userModel := h.getValidatedUser(c)
+	page, size := h.getPageAndSizeParams(c)
+
+	if userModel == nil || page < 0 || size < 0 {
+		newResponse(c, http.StatusBadRequest, "Wrong token or page size")
+		return
+	}
+	users, count, err := h.services.Users.FindContactsFromAccount(c.Request.Context(), repository.PaginationQueryFilter{
+		Page:     page,
+		PageSize: size,
+		Client:   userModel.AccountId,
+		Contact:  userModel.Crmid,
+	})
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, DataResponse[domain.User]{
+		Data:  users,
+		Count: count,
+		Page:  page,
+		Size:  size,
+	})
 }

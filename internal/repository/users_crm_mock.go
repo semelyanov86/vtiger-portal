@@ -28,3 +28,7 @@ func (receiver UsersCrmMock) RetrieveById(ctx context.Context, id string) (domai
 func (receiver UsersCrmMock) ClearUserCodeField(ctx context.Context, id string) (domain.User, error) {
 	return receiver.user, nil
 }
+
+func (receiver UsersCrmMock) FindContactsInAccount(ctx context.Context, filter PaginationQueryFilter) ([]string, error) {
+	return []string{"17x16"}, nil
+}

@@ -40,6 +40,7 @@ func (h *Handler) getAllProducts(c *gin.Context) {
 	page, size := h.getPageAndSizeParams(c)
 
 	if userModel == nil || page < 0 || size < 0 {
+		newResponse(c, http.StatusBadRequest, "Wrong token or page size")
 		return
 	}
 

@@ -1,11 +1,11 @@
 _type: export
 __export_format: 4
-__export_date: 2023-05-20T07:22:57.797Z
+__export_date: 2023-05-20T14:15:02.086Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deed91bbf7
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1684567294127
+    modified: 1684583594109
     created: 1684566934469
     url: "{{ base_url }}/projects/{{ projectId }}/tasks"
     name: Get Project Tasks
@@ -130,7 +130,7 @@ resources:
     _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de597c735f
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1684567159566
+    modified: 1684590648606
     created: 1684566934462
     url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}/comments"
     name: Project Task Comments
@@ -2948,6 +2948,99 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211dee56f68e2
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1684590892048
+    created: 1684590648088
+    url: "{{ base_url }}/users/all"
+    name: Get Users From My Company
+    description: |-
+      Allows you to get list of vtiger contacts, attached to the same account
+
+      Example response:
+      ```json
+      {
+      	"data": [
+      		{
+      			"id": 0,
+      			"crmid": "12x11",
+      			"firstname": "Sergei",
+      			"lastname": "Emelianov",
+      			"description": "Here is changed description second",
+      			"account_id": "11x6",
+      			"account_name": "",
+      			"title": "Director",
+      			"department": "Management",
+      			"email": "se@sergeyem.ru",
+      			"created_at": "0001-01-01T00:00:00Z",
+      			"updated_at": "0001-01-01T00:00:00Z",
+      			"is_active": false,
+      			"mailingcity": "Cheboksary",
+      			"mailingstreet": "Bulvar Yunosti, 3",
+      			"mailingcountry": "Russia",
+      			"othercountry": "Russia",
+      			"mailingstate": "Chuvashia",
+      			"mailingpobox": "",
+      			"othercity": "Cheboksary",
+      			"otherstate": "Chuvashia",
+      			"mailingzip": "428010",
+      			"otherzip": "428010",
+      			"otherstreet": "Bulvar Yunosti, 3",
+      			"otherpobox": "",
+      			"image": "",
+      			"imageattachmentids": "12x42",
+      			"imagecontent": "",
+      			"phone": "+4915211100235"
+      		}
+      	],
+      	"count": 1,
+      	"page": 1,
+      	"size": 20
+      }
+      ```
+    method: GET
+    body: {}
+    parameters:
+      - name: page
+        disabled: true
+        value: "1"
+        id: pair_2c05910616074fce9ac59f82c5d7f1e0
+      - name: size
+        disabled: true
+        value: "20"
+        id: pair_f2cf2041aa8b4951b29195f6530c5863
+    headers:
+      - id: pair_47af84f5043f4f22a6d698ae3aa2902b
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_7b85a5b6405d420ca6fc3c53aedb744d
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684590648088
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1681752584161
+    created: 1681752584161
+    name: user
+    description: Operations about user
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1681752584161
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de051cf8c0
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
     modified: 1683371854698
@@ -3026,16 +3119,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1681752584161
-    created: 1681752584161
-    name: user
-    description: Operations about user
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1681752584161
-    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de75ca1604
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
     modified: 1684518263402
@@ -3404,7 +3487,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684566934535
+    modified: 1684590648110
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -3632,6 +3715,57 @@ resources:
             responses:
               default:
                 description: successful operation
+        "/users/all":
+          get:
+            tags:
+              - user
+            summary: Get Users From My Company
+            description: This endpoint returns a list vtiger contacts, attached to the same company, as authorized user.
+            operationId: getAllAccountUsers
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: page
+                in: query
+                description: The page number to retrieve (default is 1)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 1
+              - name: size
+                in: query
+                description: The number of items per page (default is 20)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 20
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/User"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid pagination params
+              "403":
+                description: Operation not permitted
         /users/my:
           get:
             tags:

@@ -50,7 +50,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 	currencyService := NewCurrencyService(repos.Currency, cache)
 	projectService := NewProjectsService(repos.Projects, cache, commentsService, documentService, modulesService, config)
 	return &Services{
-		Users:            NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens, repos.Documents),
+		Users:            NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens, repos.Documents, cache),
 		Emails:           *NewEmailsService(email, config.Email, cache),
 		Tokens:           NewTokensService(repos.Tokens, repos.Users, emailService, config, companyService),
 		Context:          NewContextService(),
@@ -87,7 +87,7 @@ type DocumentServiceInterface interface {
 }
 
 type SupportedTypes interface {
-	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract | *domain.Currency | *domain.Product | *domain.Service | *domain.Project | *domain.ProjectTask
+	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract | *domain.Currency | *domain.Product | *domain.Service | *domain.Project | *domain.ProjectTask | *[]domain.User
 }
 
 func GetFromCache[T SupportedTypes](key string, dest T, c cache.Cache) error {

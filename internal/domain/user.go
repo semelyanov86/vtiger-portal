@@ -38,6 +38,7 @@ type User struct {
 	Code               string    `json:"-"`
 	Imageattachmentids string    `json:"imageattachmentids"`
 	Imagecontent       string    `json:"imagecontent"`
+	Phone              string    `json:"phone"`
 }
 
 var AnonymousUser = &User{}
@@ -143,6 +144,8 @@ func ConvertMapToUser(m map[string]any) User {
 			user.Image = v.(string)
 		case "imageattachmentids":
 			user.Imageattachmentids = v.(string)
+		case "phone":
+			user.Phone = v.(string)
 		}
 	}
 

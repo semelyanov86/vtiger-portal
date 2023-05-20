@@ -21,6 +21,7 @@ func (h *Handler) getService(c *gin.Context) {
 
 	userModel := h.getValidatedUser(c)
 	if userModel == nil || id == "" {
+		newResponse(c, http.StatusBadRequest, "Wrong token or page size")
 		return
 	}
 

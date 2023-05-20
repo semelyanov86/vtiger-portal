@@ -6,12 +6,15 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
+	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/logger"
 	"strconv"
 	"sync"
 	"time"
 )
+
+const CacheUsersTTL = 50000
 
 var ErrUserNotFound = errors.New("user not found")
 
@@ -41,10 +44,11 @@ type UsersService struct {
 	company         Company
 	tokenRepository repository.Tokens
 	document        repository.Document
+	cache           cache.Cache
 }
 
-func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface, company Company, tokenRepository repository.Tokens, document repository.Document) UsersService {
-	return UsersService{repo: repo, crm: crm, wg: wg, email: email, company: company, tokenRepository: tokenRepository, document: document}
+func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface, company Company, tokenRepository repository.Tokens, document repository.Document, cache cache.Cache) UsersService {
+	return UsersService{repo: repo, crm: crm, wg: wg, email: email, company: company, tokenRepository: tokenRepository, document: document, cache: cache}
 }
 
 func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput, cfg *config.Config) (*domain.User, error) {
@@ -146,6 +150,40 @@ func (s UsersService) GetUserById(ctx context.Context, id int64) (*domain.User, 
 		}
 	}()
 	return &user, nil
+}
+
+func (s UsersService) FindContactsFromAccount(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.User, int, error) {
+	users := make([]domain.User, 0)
+	err := GetFromCache[*[]domain.User]("account-"+filter.Client, &users, s.cache)
+	if err == nil {
+		return users, len(users), nil
+	}
+	if errors.Is(cache.ErrItemNotFound, err) {
+		ids, err := s.crm.FindContactsInAccount(ctx, filter)
+		if err != nil {
+			return users, 0, err
+		}
+		for _, id := range ids {
+			user, err := s.crm.RetrieveById(ctx, id)
+			if err != nil {
+				return users, len(users), e.Wrap("can not retrieve user with id "+id, err)
+			}
+			if user.Imageattachmentids != "" {
+				file, err := s.document.RetrieveFile(ctx, user.Imageattachmentids)
+				if err == nil && file.Filecontents != "" {
+					user.Imagecontent = file.Filecontents
+				}
+			}
+			users = append(users, user)
+		}
+		err = StoreInCache[*[]domain.User]("account-"+filter.Client, &users, CacheUsersTTL, s.cache)
+		if err != nil {
+			return users, len(users), err
+		}
+		return users, len(users), err
+	} else {
+		return users, len(users), e.Wrap("can not convert caches data to user", err)
+	}
 }
 
 func (s UsersService) ResetUserPassword(ctx context.Context, input PasswordResetInput) (domain.User, error) {

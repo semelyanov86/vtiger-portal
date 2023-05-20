@@ -129,7 +129,7 @@ func TestHandler_createUser(t *testing.T) {
 			tt.mockCrm(rcrm)
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c))
+			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache())
 
 			services := &service.Services{Users: usersService}
 			handler := Handler{services: services, config: &config.Config{}}
@@ -297,7 +297,7 @@ func TestHandler_userInfo(t *testing.T) {
 			rd := repository.NewUsersMock()
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c))
+			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache())
 
 			services := &service.Services{Users: usersService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -457,7 +457,7 @@ func TestHandler_resetPassword(t *testing.T) {
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
 			rc := repository.NewUsersCrmMock(repository.MockedUser)
-			usersService := service.NewUsersService(repository.NewUsersMock(), rc, &wg, service.NewMockEmailService(), companyService, rt, mock_repository.NewMockDocument(c))
+			usersService := service.NewUsersService(repository.NewUsersMock(), rc, &wg, service.NewMockEmailService(), companyService, rt, mock_repository.NewMockDocument(c), cache.NewMemoryCache())
 
 			services := &service.Services{Users: usersService}
 			handler := Handler{services: services}
@@ -478,6 +478,65 @@ func TestHandler_resetPassword(t *testing.T) {
 			// Make Request
 			r.ServeHTTP(w, req)
 
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}
+
+func TestHandler_allUsers(t *testing.T) {
+	tests := []struct {
+		name         string
+		userModel    *domain.User
+		statusCode   int
+		responseBody string
+	}{
+		{
+			name:         "Get all users",
+			statusCode:   http.StatusOK,
+			userModel:    &repository.MockedUser,
+			responseBody: `"email":"emelyanov86@km.ru",`,
+		}, {
+			name:         "Get user if anonymous",
+			statusCode:   http.StatusUnauthorized,
+			userModel:    domain.AnonymousUser,
+			responseBody: `"error":"Anonymous Access",`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var wg sync.WaitGroup
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rc := repository.NewUsersCrmMock(repository.MockedUser)
+
+			rd := repository.NewUsersMock()
+
+			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
+			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache())
+
+			services := &service.Services{Users: usersService, Context: service.MockedContextService{MockedUser: tt.userModel}}
+			handler := Handler{services: services, config: &config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultPagination: 20}}}}
+
+			// Init Endpoint
+			r := gin.New()
+
+			r.GET("/api/v1/users/all", func(c *gin.Context) {
+
+			}, handler.usersFromAccount)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("GET", "/api/v1/users/all", nil)
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			wg.Wait()
 			// Assert
 			assert.Equal(t, tt.statusCode, w.Code)
 			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)

@@ -7,6 +7,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
+	"strconv"
 )
 
 type UsersVtiger struct {
@@ -44,6 +45,21 @@ func (receiver UsersVtiger) RetrieveById(ctx context.Context, id string) (domain
 	}
 	user := domain.ConvertMapToUser(result.Result)
 	return user, nil
+}
+
+func (receiver UsersVtiger) FindContactsInAccount(ctx context.Context, filter PaginationQueryFilter) ([]string, error) {
+	// Calculate the offset for the given page number and page size
+	offset := (filter.Page - 1) * filter.PageSize
+	query := "SELECT id FROM Contacts WHERE account_id = " + filter.Client + " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
+	result, err := receiver.vtiger.Query(ctx, query)
+	ids := make([]string, 0)
+	if err != nil {
+		return nil, e.Wrap("can not execute query "+query+", got error", err)
+	}
+	for _, data := range result.Result {
+		ids = append(ids, data["id"].(string))
+	}
+	return ids, nil
 }
 
 func (receiver UsersVtiger) ClearUserCodeField(ctx context.Context, id string) (domain.User, error) {

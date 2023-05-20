@@ -164,6 +164,21 @@ func (mr *MockUsersCrmMockRecorder) FindByEmail(ctx, email interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmail", reflect.TypeOf((*MockUsersCrm)(nil).FindByEmail), ctx, email)
 }
 
+// FindContactsInAccount mocks base method.
+func (m *MockUsersCrm) FindContactsInAccount(ctx context.Context, filter repository.PaginationQueryFilter) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindContactsInAccount", ctx, filter)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindContactsInAccount indicates an expected call of FindContactsInAccount.
+func (mr *MockUsersCrmMockRecorder) FindContactsInAccount(ctx, filter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindContactsInAccount", reflect.TypeOf((*MockUsersCrm)(nil).FindContactsInAccount), ctx, filter)
+}
+
 // RetrieveById mocks base method.
 func (m *MockUsersCrm) RetrieveById(ctx context.Context, id string) (domain.User, error) {
 	m.ctrl.T.Helper()

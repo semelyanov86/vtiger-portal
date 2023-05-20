@@ -32,6 +32,43 @@ Copy file .envrc.example to .envrc
 
 Use `make run` to build&run project, `make lint` to check code with linter.
 
+## Vtiger Setup
+By default you do not need to do any setup for Vtiger crm. Make sure, you have latest vtiger 7.5 version installed.
+Also make sure that you have FilesRetrieve webservice function installed, in order you want to receive files and images from vtiger. If not, do the following:
+1. Download [FilesRetrieve](https://code.vtiger.com/vtiger/vtigercrm/-/blob/master/include/Webservices/FileRetrieve.php) file and paste it in appropriate folder.
+2. Register new webservice by executing sql query:
+```sql
+INSERT INTO `vtiger_ws_operation`(
+    `operationid`,
+    `name`,
+    `handler_path`,
+    `handler_method`,
+    `type`,
+    `prelogin`
+) VALUES (
+    '38',
+    'files_retrieve',
+    'include/Webservices/FileRetrieve.php',
+    'vtws_file_retrieve',
+    'GET',
+    '0'
+ );
+```
+3. Register parameters of webservice by executing sql query:
+```sql
+INSERT INTO `vtiger_ws_operation_parameters`(
+    `operationid`,
+    `name`,
+    `type`,
+    `sequence`
+) VALUES (
+    '38',
+    'id',
+    'string',
+    '1'
+ );
+```
+
 ## Command line arguments
 
 You can run executable script with following arguments:

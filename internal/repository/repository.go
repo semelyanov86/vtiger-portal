@@ -102,11 +102,18 @@ type Project interface {
 	Count(ctx context.Context, client string, contact string) (int, error)
 }
 
+type ProjectTask interface {
+	RetrieveById(ctx context.Context, id string) (domain.ProjectTask, error)
+	GetFromProject(ctx context.Context, filter PaginationQueryFilter) ([]domain.ProjectTask, error)
+	Count(ctx context.Context, parent string) (int, error)
+}
+
 type PaginationQueryFilter struct {
 	Page     int
 	PageSize int
 	Client   string
 	Contact  string
+	Parent   string
 	Filters  map[string]any
 }
 
@@ -132,6 +139,7 @@ type Repositories struct {
 	Product         ProductCrm
 	Service         ServicesCrm
 	Projects        ProjectCrm
+	ProjectTasks    ProjectTaskCrm
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -152,5 +160,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		Product:         NewProductCrm(config, cache),
 		Service:         NewServicesCRM(config, cache),
 		Projects:        NewProjectCrm(config, cache),
+		ProjectTasks:    NewProjectTaskCrm(config, cache),
 	}
 }

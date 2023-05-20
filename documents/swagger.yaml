@@ -47,7 +47,7 @@ paths:
       tags:
         - user
       summary: Create user
-      description: Here you can register new contact in portal using activation code
+      description: Here you can register new contact in portal using activation code. In order to register, you need to enter in vtiger crm in contact module special code, which allows contact to register in portal. Name of field stored in configuration of script. After successfull registration content of this field will be removed. After successfull registration system will also sent welcome email. You can disable sending email process in configuration.
       operationId: createUser
       requestBody:
         content:
@@ -226,7 +226,7 @@ paths:
       tags:
         - user
       summary: Get data about authenticated user
-      description: You must provide an Authorisation header in order to get currenc user data
+      description: You must provide an Authorisation header in order to get currenc user data. Note, that if user does not attached to any company, you will get 403 response.
       operationId: myUser
       security:
         - bearerAuth: []
@@ -670,7 +670,7 @@ paths:
       tags:
         - tickets
       summary: Get Tickets
-      description: This endpoint returns a list of tickets based on the provided page number and page size.
+      description: This endpoint returns a list of tickets based on the provided page number and page size. You can see tickets attached to company of authorized user.
       operationId: getAllTickets
       security:
         - bearerAuth: []
@@ -1364,6 +1364,212 @@ paths:
           description: Invalid ID supplied
         "404":
           description: HelpDesk or file not found
+        "403":
+          description: Operation not permitted
+  "/projects/{projectId}/tasks":
+    get:
+      tags:
+        - project
+      summary: Get Project Tasks
+      description: This endpoint returns a list of project tasks based on the provided page number and page size. There is permission validation based on project ID. If contact if not owned by project, it can not see project tasks.
+      operationId: getTasksFromProject
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: The page number to retrieve (default is 1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          description: The number of items per page (default is 20)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: projectId
+          in: path
+          description: ID of project
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProjectTask"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid pagination params
+        "403":
+          description: Operation not permitted
+  "/projects/{projectId}/tasks/{taskId}/comments":
+    get:
+      tags:
+        - project
+      summary: Project Task Comments
+      description: Returns an array of comments from related project and project task
+      operationId: getCommentsFromProjectTask
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: path
+          description: ID of project
+          required: true
+          schema:
+            type: string
+            format: string
+        - name: taskId
+          in: path
+          description: ID of project Task
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Comment"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Project not found
+        "403":
+          description: Operation not permitted
+    post:
+      tags:
+        - project
+      summary: Add comment
+      description: Create new comment, attached to current ticket
+      operationId: addCommentToProjectTask
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: path
+          description: ID of project
+          required: true
+          schema:
+            type: string
+            format: string
+        - name: taskId
+          in: path
+          description: ID of project Task
+          required: true
+          schema:
+            type: string
+            format: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                commentcontent:
+                  description: Comment content
+                  type: string
+                  example: "Please fix problem ASAP"
+      responses:
+        "201":
+          description: comment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Project not found
+        "403":
+          description: Operation not permitted
+  "/projects/{projectId}/tasks/{taskId}/documents":
+    get:
+      tags:
+        - project
+      summary: Project Task Documents
+      description: Returns an array of documents from related project task
+      operationId: getDocumentsFromProjectTask
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: path
+          description: ID of project
+          required: true
+          schema:
+            type: string
+            format: string
+        - name: taskId
+          in: path
+          description: ID of project Task
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Document"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Project not found
         "403":
           description: Operation not permitted
 externalDocs:
@@ -2782,3 +2988,72 @@ components:
         label:
           type: string
           example: "Website Redesign"
+    ProjectTask:
+      type: object
+      properties:
+        projecttaskname:
+          type: string
+          example: "Design Homepage"
+        projecttasktype:
+          type: string
+          example: "administrative"
+        projecttaskpriority:
+          type: string
+          example: "low"
+        projectid:
+          type: string
+          example: "29x54"
+        assigned_user_id:
+          type: string
+          example: "19x1"
+        projecttasknumber:
+          type: string
+          example: "1"
+        projecttask_no:
+          type: string
+          example: "PT1"
+        projecttaskprogress:
+          type: string
+          example: "75%"
+        projecttaskhours:
+          type: string
+          example: "10"
+        startdate:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00Z"
+        enddate:
+          type: string
+          format: date-time
+          example: "2023-01-07T00:00:00Z"
+        createdtime:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00Z"
+        modifiedtime:
+          type: string
+          format: date-time
+          example: "2023-01-05T00:00:00Z"
+        description:
+          type: string
+          example: "Create a new design for the homepage"
+        source:
+          type: string
+          example: "CRM"
+        starred:
+          type: boolean
+          example: false
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["design", "homepage"]
+        projecttaskstatus:
+          type: string
+          example: "Open"
+        id:
+          type: string
+          example: "28x56"
+        label:
+          type: string
+          example: "Design Homepage"

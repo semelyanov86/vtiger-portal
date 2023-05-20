@@ -36,6 +36,7 @@ type Services struct {
 	Products         ProductService
 	Services         ServicesService
 	Projects         ProjectsService
+	ProjectTasks     ProjectTasksService
 }
 
 var ErrOperationNotPermitted = errors.New("you are not permitted to view this record")
@@ -47,6 +48,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 	documentService := NewDocuments(repos.Documents, cache)
 	modulesService := NewModulesService(repos.Modules, cache)
 	currencyService := NewCurrencyService(repos.Currency, cache)
+	projectService := NewProjectsService(repos.Projects, cache, commentsService, documentService, modulesService, config)
 	return &Services{
 		Users:            NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens, repos.Documents),
 		Emails:           *NewEmailsService(email, config.Email, cache),
@@ -64,7 +66,8 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		Currencies:       currencyService,
 		Products:         NewProductService(repos.Product, cache, currencyService, repos.Documents, modulesService, config),
 		Services:         NewServicesService(repos.Service, cache, currencyService, modulesService, config),
-		Projects:         NewProjectsService(repos.Projects, cache, commentsService, documentService, modulesService, config),
+		Projects:         projectService,
+		ProjectTasks:     NewProjectTasksService(repos.ProjectTasks, cache, commentsService, documentService, modulesService, config, projectService),
 	}
 }
 
@@ -84,7 +87,7 @@ type DocumentServiceInterface interface {
 }
 
 type SupportedTypes interface {
-	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract | *domain.Currency | *domain.Product | *domain.Service | *domain.Project
+	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract | *domain.Currency | *domain.Product | *domain.Service | *domain.Project | *domain.ProjectTask
 }
 
 func GetFromCache[T SupportedTypes](key string, dest T, c cache.Cache) error {

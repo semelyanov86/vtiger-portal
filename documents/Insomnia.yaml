@@ -1,8 +1,312 @@
 _type: export
 __export_format: 4
-__export_date: 2023-05-19T12:57:48.007Z
+__export_date: 2023-05-20T07:22:57.797Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211deed91bbf7
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1684567294127
+    created: 1684566934469
+    url: "{{ base_url }}/projects/{{ projectId }}/tasks"
+    name: Get Project Tasks
+    description: >-
+      Here you can get all project tasks from related project. Note, that all
+      permissions checked based on project, if user is allowed to see project or
+      not.
+
+
+      Example response:
+
+
+      ```json
+
+      {
+      	"data": [
+      		{
+      			"projecttaskname": "Install hosting",
+      			"projecttasktype": "administrative",
+      			"projecttaskpriority": "low",
+      			"projectid": "29x54",
+      			"assigned_user_id": "19x1",
+      			"projecttasknumber": "2",
+      			"projecttask_no": "PT1",
+      			"projecttaskprogress": "20%",
+      			"projecttaskhours": "15 some",
+      			"startdate": "2023-04-30T00:00:00Z",
+      			"enddate": "2023-05-23T00:00:00Z",
+      			"createdtime": "2023-04-28T06:07:22Z",
+      			"modifiedtime": "2023-05-19T18:30:49Z",
+      			"description": "Some descr",
+      			"source": "CRM",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"projecttaskstatus": "Open",
+      			"id": "28x56",
+      			"label": ""
+      		},
+      		{
+      			"projecttaskname": "Framework installation and setup",
+      			"projecttasktype": "administrative",
+      			"projecttaskpriority": "normal",
+      			"projectid": "29x54",
+      			"assigned_user_id": "19x1",
+      			"projecttasknumber": "0",
+      			"projecttask_no": "PT2",
+      			"projecttaskprogress": "10%",
+      			"projecttaskhours": "13",
+      			"startdate": "2023-05-02T00:00:00Z",
+      			"enddate": "2023-05-05T00:00:00Z",
+      			"createdtime": "2023-04-28T06:07:55Z",
+      			"modifiedtime": "2023-04-28T06:07:55Z",
+      			"description": "This is installation only",
+      			"source": "CRM",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"projecttaskstatus": "Open",
+      			"id": "28x57",
+      			"label": ""
+      		}
+      	],
+      	"count": 2,
+      	"page": 1,
+      	"size": 20
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters:
+      - name: page
+        disabled: true
+        value: "1"
+        id: pair_a480914d95d04f5da3b5a5e27968cab0
+      - name: size
+        disabled: true
+        value: "20"
+        id: pair_2988274cb64d4880b228080f47a672db
+    headers:
+      - id: pair_43f30568ad674245a1edb1ac94aaeb54
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_e54fbb184f8f48ac9b871c99979ee01e
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684566934469
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1684500052715
+    created: 1684500052715
+    name: project
+    description: Project module in Vtiger CRM
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1684500052715
+    _type: request_group
+  - _id: wrk_66e74e4b495c4404841a78c723c211de
+    parentId: null
+    modified: 1681752522262
+    created: 1681752522262
+    name: Vtiger Customer Portal
+    description: ""
+    scope: design
+    _type: workspace
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de597c735f
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1684567159566
+    created: 1684566934462
+    url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}/comments"
+    name: Project Task Comments
+    description: >-
+      List of all related comments from project task. Note, that you need to
+      pass also project id, to check contact permissions.
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"data": [
+      		{
+      			"id": "32x68",
+      			"commentcontent": "This is test comment",
+      			"source": "CRM",
+      			"customer": "",
+      			"userid": "",
+      			"reasontoedit": "",
+      			"creator": "19x1",
+      			"assigned_user_id": "19x1",
+      			"createdtime": "2023-05-20T07:17:13Z",
+      			"modifiedtime": "2023-05-20T07:17:13Z",
+      			"related_to": "28x56",
+      			"parent_comments": "",
+      			"is_private": false,
+      			"filename": "0",
+      			"related_email_id": "0"
+      		}
+      	],
+      	"count": 1,
+      	"page": 1,
+      	"size": 100
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_bb92f18126e34dd59a63c0372dc32c2c
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_75a00e6fe12c4f30a791d9181c6e2213
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684566934462
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de1658ebcf
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1684567198152
+    created: 1684566934449
+    url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}/comments"
+    name: Add comment
+    description: |-
+      Post comment to project task
+
+      Example response:
+
+      ```json
+      {
+        "commentcontent": "Please fix problem ASAP"
+      }
+      ```
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "commentcontent": "Please fix problem ASAP"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_706feb9eec0a4a3090597fe22aca0e3c
+      - id: pair_736ff2dfdc1042b2ad85d55fc8510071
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684566934449
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211dedb7dde10
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1684567288523
+    created: 1684566934447
+    url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}/documents"
+    name: Project Task Documents
+    description: |-
+      Here you can get list of all documents, attached to project task.
+
+      Example response:
+      ```json
+      {
+      	"data": [
+      		{
+      			"notes_title": "ProfileStandard",
+      			"createdtime": "2023-05-20T07:20:39Z",
+      			"modifiedtime": "2023-05-20T07:20:39Z",
+      			"filename": "ProfileStandard.jsfile.txt",
+      			"assigned_user_id": "19x1",
+      			"notecontent": "",
+      			"filetype": "application/x-javascript",
+      			"filesize": "60592",
+      			"filelocationtype": "I",
+      			"fileversion": "",
+      			"filestatus": "1",
+      			"filedownloadcount": "",
+      			"folderid": "22x1",
+      			"note_no": "DOC5",
+      			"modifiedby": "19x1",
+      			"source": "CRM",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"id": "15x69",
+      			"imageattachmentids": "15x70"
+      		}
+      	],
+      	"count": 1,
+      	"page": 1,
+      	"size": 100
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_bae89ba2d2cd4bbfb03fb2dafaa36def
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_2b9c7b721df64bf9b9e509dc65cd2011
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684566934447
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de09d91eb1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
     modified: 1684500341984
@@ -69,24 +373,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684500052715
-    created: 1684500052715
-    name: project
-    description: Project module in Vtiger CRM
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1684500052715
-    _type: request_group
-  - _id: wrk_66e74e4b495c4404841a78c723c211de
-    parentId: null
-    modified: 1681752522262
-    created: 1681752522262
-    name: Vtiger Customer Portal
-    description: ""
-    scope: design
-    _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de8d9cdc46
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
     modified: 1684500473899
@@ -391,9 +677,9 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de258f1317
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1684501038037
+    modified: 1684504988253
     created: 1684500052642
-    url: "{{ base_url }}/projects/{{ projectId }}/file/15x67"
+    url: "{{ base_url }}/projects/{{ projectId }}/file/{{ fileId }}"
     name: Get file in Project
     description: >-
       Allows you to download file by it's id.
@@ -1703,7 +1989,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de46f4f7b3
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1682768984767
+    modified: 1684566935053
     created: 1682171278798
     url: "{{ base_url }}/tickets"
     name: Get Tickets
@@ -1809,7 +2095,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deeb2dc7bf
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1682402529391
+    modified: 1684521120721
     created: 1682145840383
     url: "{{ base_url }}/tickets/{{ ticketId }}/comments"
     name: Related comments from ticket
@@ -1868,7 +2154,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dee9835bc2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1684478260228
+    modified: 1684521123335
     created: 1682098348610
     url: "{{ base_url }}/tickets/{{ ticketId }}"
     name: Find HelpDesk by ID
@@ -2535,7 +2821,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de816b2196
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de5bdcd3c0
-    modified: 1684479940396
+    modified: 1684516274471
     created: 1682089127951
     url: "{{ base_url }}/company"
     name: Get company data
@@ -2752,7 +3038,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de75ca1604
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1683468961727
+    modified: 1684518263402
     created: 1682002384617
     url: "{{ base_url }}/users/restore"
     name: Restore Password
@@ -2776,7 +3062,7 @@ resources:
       mimeType: application/json
       text: |-
         {
-          "email": "se@sergeyem.ru"
+          "email": "emelyanov86@km.ru"
         }
     parameters: []
     headers:
@@ -2795,7 +3081,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de94b9a1a1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1684475268001
+    modified: 1684518679613
     created: 1681838399470
     url: "{{ base_url }}/users/my"
     name: Get data about authenticated user
@@ -2908,7 +3194,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de00ac9da2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1683468861702
+    modified: 1684518668509
     created: 1681827520782
     url: "{{ base_url }}/users/login"
     name: Login in system
@@ -2971,7 +3257,7 @@ resources:
       mimeType: application/json
       text: |-
         {
-          "email": "se@sergeyem.ru",
+          "email": "emelyanov86@km.ru",
           "password": "1qaz2wsx"
         }
     parameters: []
@@ -2995,7 +3281,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211defe3d55d0
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1683453519352
+    modified: 1684518646351
     created: 1681752584137
     url: "{{ base_url }}/users"
     name: Create user
@@ -3074,8 +3360,8 @@ resources:
       mimeType: application/json
       text: |-
         {
-        	"email": "se@sergeyem.ru",
-        	"code": "1134",
+        	"email": "emelyanov86@km.ru",
+        	"code": "1545",
         	"password": "1qaz2wsx"
         }
     parameters: []
@@ -3118,7 +3404,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684500102494
+    modified: 1684566934535
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -3172,7 +3458,7 @@ resources:
             tags:
               - user
             summary: Create user
-            description: Here you can register new contact in portal using activation code
+            description: Here you can register new contact in portal using activation code. In order to register, you need to enter in vtiger crm in contact module special code, which allows contact to register in portal. Name of field stored in configuration of script. After successfull registration content of this field will be removed. After successfull registration system will also sent welcome email. You can disable sending email process in configuration.
             operationId: createUser
             requestBody:
               content:
@@ -3351,7 +3637,7 @@ resources:
             tags:
               - user
             summary: Get data about authenticated user
-            description: You must provide an Authorisation header in order to get currenc user data
+            description: You must provide an Authorisation header in order to get currenc user data. Note, that if user does not attached to any company, you will get 403 response.
             operationId: myUser
             security:
               - bearerAuth: []
@@ -3795,7 +4081,7 @@ resources:
             tags:
               - tickets
             summary: Get Tickets
-            description: This endpoint returns a list of tickets based on the provided page number and page size.
+            description: This endpoint returns a list of tickets based on the provided page number and page size. You can see tickets attached to company of authorized user.
             operationId: getAllTickets
             security:
               - bearerAuth: []
@@ -4489,6 +4775,212 @@ resources:
                 description: Invalid ID supplied
               "404":
                 description: HelpDesk or file not found
+              "403":
+                description: Operation not permitted
+        "/projects/{projectId}/tasks":
+          get:
+            tags:
+              - project
+            summary: Get Project Tasks
+            description: This endpoint returns a list of project tasks based on the provided page number and page size. There is permission validation based on project ID. If contact if not owned by project, it can not see project tasks.
+            operationId: getTasksFromProject
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: page
+                in: query
+                description: The page number to retrieve (default is 1)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 1
+              - name: size
+                in: query
+                description: The number of items per page (default is 20)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 20
+              - name: projectId
+                in: path
+                description: ID of project
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/ProjectTask"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid pagination params
+              "403":
+                description: Operation not permitted
+        "/projects/{projectId}/tasks/{taskId}/comments":
+          get:
+            tags:
+              - project
+            summary: Project Task Comments
+            description: Returns an array of comments from related project and project task
+            operationId: getCommentsFromProjectTask
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: projectId
+                in: path
+                description: ID of project
+                required: true
+                schema:
+                  type: string
+                  format: string
+              - name: taskId
+                in: path
+                description: ID of project Task
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Comment"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100                  
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Project not found
+              "403":
+                description: Operation not permitted
+          post:
+            tags:
+              - project
+            summary: Add comment
+            description: Create new comment, attached to current ticket
+            operationId: addCommentToProjectTask
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: projectId
+                in: path
+                description: ID of project
+                required: true
+                schema:
+                  type: string
+                  format: string
+              - name: taskId
+                in: path
+                description: ID of project Task
+                required: true
+                schema:
+                  type: string
+                  format: string
+            requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        commentcontent:
+                          description: Comment content
+                          type: string
+                          example: "Please fix problem ASAP"
+            responses:
+              "201":
+                description: comment created
+                content:
+                  application/json:
+                      schema:
+                        $ref: "#/components/schemas/Comment"         
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Project not found
+              "403":
+                description: Operation not permitted
+        "/projects/{projectId}/tasks/{taskId}/documents":
+          get:
+            tags:
+              - project
+            summary: Project Task Documents
+            description: Returns an array of documents from related project task
+            operationId: getDocumentsFromProjectTask
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: projectId
+                in: path
+                description: ID of project
+                required: true
+                schema:
+                  type: string
+                  format: string
+              - name: taskId
+                in: path
+                description: ID of project Task
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Document"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100                  
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Project not found
               "403":
                 description: Operation not permitted
       externalDocs:
@@ -5907,6 +6399,75 @@ resources:
               label:
                 type: string
                 example: "Website Redesign"
+          ProjectTask:
+            type: object
+            properties:
+              projecttaskname:
+                type: string
+                example: "Design Homepage"
+              projecttasktype:
+                type: string
+                example: "administrative"
+              projecttaskpriority:
+                type: string
+                example: "low"
+              projectid:
+                type: string
+                example: "29x54"
+              assigned_user_id:
+                type: string
+                example: "19x1"
+              projecttasknumber:
+                type: string
+                example: "1"
+              projecttask_no:
+                type: string
+                example: "PT1"
+              projecttaskprogress:
+                type: string
+                example: "75%"
+              projecttaskhours:
+                type: string
+                example: "10"
+              startdate:
+                type: string
+                format: date-time
+                example: "2023-01-01T00:00:00Z"
+              enddate:
+                type: string
+                format: date-time
+                example: "2023-01-07T00:00:00Z"
+              createdtime:
+                type: string
+                format: date-time
+                example: "2023-01-01T00:00:00Z"
+              modifiedtime:
+                type: string
+                format: date-time
+                example: "2023-01-05T00:00:00Z"
+              description:
+                type: string
+                example: "Create a new design for the homepage"
+              source:
+                type: string
+                example: "CRM"
+              starred:
+                type: boolean
+                example: false
+              tags:
+                type: array
+                items:
+                  type: string
+                example: ["design", "homepage"]
+              projecttaskstatus:
+                type: string
+                example: "Open"
+              id:
+                type: string
+                example: "28x56"
+              label:
+                type: string
+                example: "Design Homepage"
     contentType: yaml
     _type: api_spec
   - _id: env_env_7051e4988ba662848196b333737a56823b214220_sub
@@ -5941,7 +6502,7 @@ resources:
     _type: environment
   - _id: env_1bfede95dc144997a9155f6e79a3eaa5
     parentId: env_7051e4988ba662848196b333737a56823b214220
-    modified: 1684500126579
+    modified: 1684567022933
     created: 1681826841922
     name: Local
     data:
@@ -5954,6 +6515,50 @@ resources:
       managerId: 19x1
       moduleName: HelpDesk
       ticketId: 17x28
+      fileId: 15x46
+      invoiceId: 2x53
+      scId: 24x59
+      productId: 14x9
+      serviceId: 25x52
+      projectId: 29x54
+      taskId: 28x56
+    dataPropertyOrder:
+      "&":
+        - scheme
+        - base_path
+        - host
+        - URL
+        - MAIN_URL
+        - bearerToken
+        - managerId
+        - moduleName
+        - ticketId
+        - fileId
+        - invoiceId
+        - scId
+        - productId
+        - serviceId
+        - projectId
+        - taskId
+    color: null
+    isPrivate: false
+    metaSortKey: 1681826841922
+    _type: environment
+  - _id: env_1e7a3ddb61424a3aa9695942d9b177e5
+    parentId: env_7051e4988ba662848196b333737a56823b214220
+    modified: 1684519423950
+    created: 1684504939920
+    name: Development
+    data:
+      scheme: http
+      base_path: /api/v1
+      host: 185.135.137.48:4050
+      URL: http://185.135.137.48:4050/api/v1
+      MAIN_URL: http://185.135.137.48:4050
+      bearerToken: NRZQDXVYYXXIBEYVEO2IZM66TU
+      managerId: 19x1
+      moduleName: HelpDesk
+      ticketId: 17x6081
       fileId: 15x46
       invoiceId: 2x53
       scId: 24x59
@@ -5979,5 +6584,5 @@ resources:
         - projectId
     color: null
     isPrivate: false
-    metaSortKey: 1681826841922
+    metaSortKey: 1684504939920
     _type: environment

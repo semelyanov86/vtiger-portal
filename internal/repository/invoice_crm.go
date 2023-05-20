@@ -25,7 +25,7 @@ func NewInvoiceCrm(config config.Config, cache cache.Cache) InvoiceCrm {
 func (m InvoiceCrm) RetrieveById(ctx context.Context, id string) (domain.Invoice, error) {
 	result, err := m.vtiger.Retrieve(ctx, id)
 	if err != nil {
-		return domain.Invoice{}, e.Wrap("can not retrieve invoice desk with id "+id+" got error:"+result.Error.Message, err)
+		return domain.Invoice{}, e.Wrap("can not retrieve invoice desk with id "+id+" got error", err)
 	}
 	return domain.ConvertMapToInvoice(result.Result)
 }
@@ -37,7 +37,7 @@ func (m InvoiceCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([
 	invoices := make([]domain.Invoice, 0)
 	result, err := m.vtiger.Query(ctx, query)
 	if err != nil {
-		return invoices, e.Wrap("can not execute query "+query+", got error: "+result.Error.Message, err)
+		return invoices, e.Wrap("can not execute query "+query+", got error", err)
 	}
 	for _, data := range result.Result {
 		invoice, err := domain.ConvertMapToInvoice(data)

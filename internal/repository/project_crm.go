@@ -25,7 +25,7 @@ func NewProjectCrm(config config.Config, cache cache.Cache) ProjectCrm {
 func (p ProjectCrm) RetrieveById(ctx context.Context, id string) (domain.Project, error) {
 	result, err := p.vtiger.Retrieve(ctx, id)
 	if err != nil {
-		return domain.Project{}, e.Wrap("can not retrieve project with id "+id+" got error:"+result.Error.Message, err)
+		return domain.Project{}, e.Wrap("can not retrieve project with id "+id+" got error", err)
 	}
 	return domain.ConvertMapToProject(result.Result)
 }
@@ -37,7 +37,7 @@ func (p ProjectCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([
 	projects := make([]domain.Project, 0)
 	result, err := p.vtiger.Query(ctx, query)
 	if err != nil {
-		return projects, e.Wrap("can not execute query "+query+", got error: "+result.Error.Message, err)
+		return projects, e.Wrap("can not execute query "+query+", got error", err)
 	}
 	for _, data := range result.Result {
 		project, err := domain.ConvertMapToProject(data)

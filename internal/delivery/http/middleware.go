@@ -35,6 +35,10 @@ func (h Handler) corsMiddleware(c *gin.Context) {
 }
 
 func (h Handler) authenticate(c *gin.Context) {
+	if c.FullPath() == "/api/v1/users/" || c.FullPath() == "/api/v1/users/restore" || c.FullPath() == "/api/v1/users/password" || c.FullPath() == "/api/v1/users/login" {
+		c.Next()
+		return
+	}
 	c.Header("Vary", "Authorization")
 	var authorizationHeader = c.Request.Header.Get("Authorization")
 	if authorizationHeader == "" {
@@ -58,7 +62,7 @@ func (h Handler) authenticate(c *gin.Context) {
 	}
 
 	user, err := h.services.Users.GetUserByToken(c.Request.Context(), token)
-	if !user.IsActive {
+	if user != nil && !user.IsActive {
 		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Not Active", "field": "is_active", "message": "Authorized user is deactivated!"})
 		return
 	}

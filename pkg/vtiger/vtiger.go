@@ -314,9 +314,13 @@ func (c VtigerConnector) Count(ctx context.Context, module string, filters map[s
 	}
 	query = strings.TrimSuffix(query, " OR ")
 	query += ";"
+	return c.ExecuteCount(ctx, query)
+}
+
+func (c VtigerConnector) ExecuteCount(ctx context.Context, query string) (int, error) {
 	result, err := c.Query(ctx, query)
 	if err != nil {
-		return 0, e.Wrap("can not execute query "+query+", got error: "+result.Error.Message, err)
+		return 0, e.Wrap("can not execute query "+query+", got error", err)
 	}
 	countObject := result.Result[0]
 	if countObject == nil {

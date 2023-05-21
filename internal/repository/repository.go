@@ -141,6 +141,7 @@ type Repositories struct {
 	Service         ServicesCrm
 	Projects        ProjectCrm
 	ProjectTasks    ProjectTaskCrm
+	Statistics      StatisticsCrm
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -162,5 +163,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		Service:         NewServicesCRM(config, cache),
 		Projects:        NewProjectCrm(config, cache),
 		ProjectTasks:    NewProjectTaskCrm(config, cache),
+		Statistics:      NewStatisticsCrm(config, cache),
 	}
 }

@@ -69,6 +69,20 @@ INSERT INTO `vtiger_ws_operation_parameters`(
  );
 ```
 
+## Adding new custom field to module
+What if you created new custom field in Vtiger module and want to add it in Portal? Because we usong golang type system in portal, you need to register it in our domain system.
+For example, you created field 'cf_543' in HelpDesk module. Here is three steps, how you can register this field in portal:
+1. Open file `internal/domain/help_desk.go` and find type HelpDesk struct. This is block, where we store all fields for module. At the end of this struct you can add following line:
+```go
+Cf543 string `json:"cf_543"`
+```
+2. We also need to tell a system. how to decode vtiger field to our struct. For this purposes open the same file and find function ConvertMapToHelpDesk. There you need to add new case:
+```go
+case "cf_543":
+			helpDesk.Cf543 = v.(string)
+```
+3. Recompile a project by running `make build` command
+
 ## Command line arguments
 
 You can run executable script with following arguments:

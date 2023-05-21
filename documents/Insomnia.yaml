@@ -1,8 +1,103 @@
 _type: export
 __export_format: 4
-__export_date: 2023-05-20T14:15:02.086Z
+__export_date: 2023-05-21T07:48:18.364Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de074600fd
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
+    modified: 1684650414320
+    created: 1684649257100
+    url: "{{ base_url }}/statistics"
+    name: Statistics
+    description: |-
+      Gettint all statistics data for portal widgets
+
+      Example response:
+
+      ```json
+      {
+      	"data": {
+      		"tickets": {
+      			"total": 3,
+      			"Open": 2,
+      			"In Progress": 0,
+      			"Wait For Response": 0,
+      			"Closed": 0,
+      			"Open-hours": 7.6,
+      			"Open-days": 2.6,
+      			"In Progress-hours": 0,
+      			"In Progress-days": 0,
+      			"Wait For Response-hours": 0,
+      			"Wait For Response-days": 0,
+      			"Closed-Hours": 0,
+      			"Closed-Days": 0
+      		},
+      		"projects": {
+      			"total": 0,
+      			"open": 0,
+      			"closed": 0
+      		},
+      		"tasks": {
+      			"total": 0,
+      			"open": 0,
+      			"In Progress": 0,
+      			"Completed": 0,
+      			"spent_hours": 0
+      		},
+      		"invoices": {
+      			"total_qty": 0,
+      			"total_sum": 0,
+      			"open_qty": 0,
+      			"open_sum": 0,
+      			"paid_qty": 0,
+      			"paid_sum": 0
+      		}
+      	}
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_d32aa0dd617d4e978c6dafaaa68808aa
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_ace14ef02dcd4a0e8c0494b026dd9203
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684649257100
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1684649257152
+    created: 1684649257152
+    name: statistics
+    description: Endpoints for dashboards
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1684649257152
+    _type: request_group
+  - _id: wrk_66e74e4b495c4404841a78c723c211de
+    parentId: null
+    modified: 1681752522262
+    created: 1681752522262
+    name: Vtiger Customer Portal
+    description: ""
+    scope: design
+    _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deed91bbf7
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
     modified: 1684583594109
@@ -120,14 +215,6 @@ resources:
     environmentPropertyOrder: null
     metaSortKey: -1684500052715
     _type: request_group
-  - _id: wrk_66e74e4b495c4404841a78c723c211de
-    parentId: null
-    modified: 1681752522262
-    created: 1681752522262
-    name: Vtiger Customer Portal
-    description: ""
-    scope: design
-    _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de597c735f
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
     modified: 1684590648606
@@ -1946,7 +2033,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de793d958d
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1684478258368
+    modified: 1684649732547
     created: 1682232473771
     url: "{{ base_url }}/tickets/{{ ticketId }}/file/{{ fileId }}"
     name: Get file in Ticket
@@ -1989,7 +2076,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de46f4f7b3
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1684566935053
+    modified: 1684649731888
     created: 1682171278798
     url: "{{ base_url }}/tickets"
     name: Get Tickets
@@ -2154,7 +2241,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dee9835bc2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1684521123335
+    modified: 1684649734202
     created: 1682098348610
     url: "{{ base_url }}/tickets/{{ ticketId }}"
     name: Find HelpDesk by ID
@@ -2950,7 +3037,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dee56f68e2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1684590892048
+    modified: 1684649257696
     created: 1684590648088
     url: "{{ base_url }}/users/all"
     name: Get Users From My Company
@@ -3277,7 +3364,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de00ac9da2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1684518668509
+    modified: 1684649727524
     created: 1681827520782
     url: "{{ base_url }}/users/login"
     name: Login in system
@@ -3340,7 +3427,7 @@ resources:
       mimeType: application/json
       text: |-
         {
-          "email": "emelyanov86@km.ru",
+          "email": "se@sergeyem.ru",
           "password": "1qaz2wsx"
         }
     parameters: []
@@ -3364,7 +3451,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211defe3d55d0
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1684518646351
+    modified: 1684649691332
     created: 1681752584137
     url: "{{ base_url }}/users"
     name: Create user
@@ -3487,7 +3574,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684590648110
+    modified: 1684649257172
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -3535,6 +3622,8 @@ resources:
           description: Endpoints for getting services from Vtiger.
         - name: project
           description: Project module in Vtiger CRM
+        - name: statistics
+          description: Endpoints for dashboards
       paths:
         /users:
           post:
@@ -5117,6 +5206,31 @@ resources:
                 description: Project not found
               "403":
                 description: Operation not permitted
+        "/statistics":
+          get:
+            tags:
+              - statistics
+            summary: Statistics
+            description: Short information for dashboards
+            operationId: getStatistics
+            security:
+              - bearerAuth: []
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          $ref: "#/components/schemas/Statistics"
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Project not found
+              "403":
+                description: Operation not permitted
       externalDocs:
         description: Find out more about Swagger
         url: http://swagger.io
@@ -6602,6 +6716,90 @@ resources:
               label:
                 type: string
                 example: "Design Homepage"
+          Statistics:
+            type: object
+            properties:
+              tickets:
+                $ref: '#/components/schemas/TicketStatistics'
+              projects:
+                $ref: '#/components/schemas/ProjectStatistics'
+              tasks:
+                $ref: '#/components/schemas/TaskStatistics'
+              invoices:
+                $ref: '#/components/schemas/InvoiceStatistics'
+          TicketStatistics:
+            type: object
+            properties:
+              total:
+                type: integer
+                example: 100
+              Open:
+                type: integer
+                example: 20
+              In Progress:
+                type: integer
+                example: 50
+              Wait For Response:
+                type: integer
+                example: 10
+              Closed:
+                type: integer
+                example: 20
+          ProjectStatistics:
+            type: object
+            properties:
+              total:
+                type: integer
+                example: 50
+              open:
+                type: integer
+                example: 25
+              closed:
+                type: integer
+                example: 25
+          TaskStatistics:
+            type: object
+            properties:
+              total:
+                type: integer
+                example: 200
+              open:
+                type: integer
+                example: 50
+              In Progress:
+                type: integer
+                example: 100
+              Completed:
+                type: integer
+                example: 50
+              spent_hours:
+                type: number
+                format: float
+                example: 350.5
+          InvoiceStatistics:
+            type: object
+            properties:
+              total_qty:
+                type: integer
+                example: 100
+              total_sum:
+                type: number
+                format: float
+                example: 12000.00
+              open_qty:
+                type: integer
+                example: 30
+              open_sum:
+                type: number
+                format: float
+                example: 5000.00
+              paid_qty:
+                type: integer
+                example: 70
+              paid_sum:
+                type: number
+                format: float
+                example: 7000.00
     contentType: yaml
     _type: api_spec
   - _id: env_env_7051e4988ba662848196b333737a56823b214220_sub
@@ -6636,7 +6834,7 @@ resources:
     _type: environment
   - _id: env_1bfede95dc144997a9155f6e79a3eaa5
     parentId: env_7051e4988ba662848196b333737a56823b214220
-    modified: 1684567022933
+    modified: 1684649726981
     created: 1681826841922
     name: Local
     data:
@@ -6645,7 +6843,7 @@ resources:
       host: 127.0.0.1:4050
       URL: http://127.0.0.1:4050/api/v1
       MAIN_URL: http://127.0.0.1:4050
-      bearerToken: KZMMLO27L46FV5LY5VPTKCEQWM
+      bearerToken: YXXNAEFCDWVOAWRADJTS4GOG6E
       managerId: 19x1
       moduleName: HelpDesk
       ticketId: 17x28

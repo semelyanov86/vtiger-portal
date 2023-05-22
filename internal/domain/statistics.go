@@ -24,17 +24,21 @@ type TicketStatistics struct {
 }
 
 type ProjectStatistics struct {
-	Total  int `json:"total"`
-	Open   int `json:"open"`
-	Closed int `json:"closed"`
+	Total       int     `json:"total"`
+	Open        int     `json:"open"`
+	OpenHours   float64 `json:"open_hours"`
+	Closed      int     `json:"closed"`
+	ClosedHours float64 `json:"closed_hours"`
 }
 
 type TaskStatistics struct {
-	Total      int     `json:"total"`
-	Open       int     `json:"open"`
-	InProgress int     `json:"In Progress"`
-	Completed  int     `json:"Completed"`
-	SpentHours float64 `json:"spent_hours"`
+	Total           int     `json:"total"`
+	Open            int     `json:"open"`
+	OpenHours       float64 `json:"open-hours"`
+	InProgress      int     `json:"In Progress"`
+	InProgressHours float64 `json:"In Progress-hours"`
+	Completed       int     `json:"Completed"`
+	CompletedHours  float64 `json:"Completed-hours"`
 }
 
 type InvoiceStatistics struct {

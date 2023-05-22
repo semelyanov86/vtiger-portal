@@ -25,164 +25,195 @@ func NewStatisticsService(repository repository.StatisticsCrm, cache cache.Cache
 	}
 }
 
-func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.User) (domain.Statistics, error) {
-	var stats domain.Statistics
-	var wg sync.WaitGroup
-	var mutex sync.Mutex
-	var totalErr, openErr, ipError, wrError, closedError error
-	limitCh := make(chan struct{}, 1)
-	limitCh <- struct{}{}
+type operation struct {
+	wg      sync.WaitGroup
+	mutex   sync.Mutex
+	stats   *domain.Statistics
+	limitCh chan struct{}
+}
 
-	err := GetFromCache[*domain.Statistics]("stat-"+userModel.Crmid, &stats, s.cache)
+func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.User) (domain.Statistics, error) {
+	var totalErr, openErr, ipError, wrError, closedError error
+
+	statOperation := &operation{
+		wg:      sync.WaitGroup{},
+		mutex:   sync.Mutex{},
+		stats:   &domain.Statistics{},
+		limitCh: make(chan struct{}, 1),
+	}
+
+	statOperation.limitCh <- struct{}{}
+
+	err := GetFromCache[*domain.Statistics]("stat-"+userModel.Crmid, statOperation.stats, s.cache)
 	if err == nil {
-		return stats, nil
+		return *statOperation.stats, nil
 	}
 
 	if errors.Is(cache.ErrItemNotFound, err) {
-		wg.Add(5)
+		statOperation.wg.Add(5)
 		// Total Tickets
 		go func() {
-			defer wg.Done()
-			total, err := s.repository.CalcTicketTotal(ctx, userModel)
-			<-limitCh
-			if err != nil {
-				totalErr = err
-				return
-			}
-
-			mutex.Lock()
-			stats.Tickets.Total = total
-			mutex.Unlock()
+			totalErr = s.calcTotalTickets(ctx, userModel, statOperation)
 		}()
 
 		// Open tickets
 		go func() {
-			defer wg.Done()
-			var openHours float64
-			var openDays float64
-			var openTotal int
-			limitCh <- struct{}{}
-			tickets, err := s.repository.TicketOpenStat(ctx, userModel)
-			<-limitCh
-			if err != nil {
-				openErr = err
-				return
-			}
-
-			for _, ticket := range tickets {
-				openHours += ticket.Hours
-				openDays += ticket.Days
-				openTotal++
-			}
-			mutex.Lock()
-			stats.Tickets.Open = openTotal
-			stats.Tickets.OpenDays = openDays
-			stats.Tickets.OpenHours = openHours
-			mutex.Unlock()
+			openErr = s.calcOpenTickets(ctx, userModel, statOperation)
 		}()
 
 		// In progress tickets
 		go func() {
-			defer wg.Done()
-			var ipHours float64
-			var ipDays float64
-			var ipTotal int
-			limitCh <- struct{}{}
-			tickets, err := s.repository.TicketInProgressStat(ctx, userModel)
-			<-limitCh
-			if err != nil {
-				ipError = err
-				return
-			}
-
-			for _, ticket := range tickets {
-				ipHours += ticket.Hours
-				ipDays += ticket.Days
-				ipTotal++
-			}
-			mutex.Lock()
-			stats.Tickets.InProgress = ipTotal
-			stats.Tickets.InProgressDays = ipDays
-			stats.Tickets.InProgressHours = ipHours
-			mutex.Unlock()
+			ipError = s.calcInProgressTickets(ctx, userModel, statOperation)
 		}()
 
 		// Wait For Response tickets
 		go func() {
-			defer wg.Done()
-			var wrHours float64
-			var wrDays float64
-			var wrTotal int
-			limitCh <- struct{}{}
-			tickets, err := s.repository.TicketWaitForResponseStat(ctx, userModel)
-			<-limitCh
-			if err != nil {
-				ipError = err
-				return
-			}
-
-			for _, ticket := range tickets {
-				wrHours += ticket.Hours
-				wrDays += ticket.Days
-				wrTotal++
-			}
-			mutex.Lock()
-			stats.Tickets.WaitForResponse = wrTotal
-			stats.Tickets.WaitForResponseDays = wrDays
-			stats.Tickets.WaitForResponseHours = wrHours
-			mutex.Unlock()
+			wrError = s.calcWaitForResponseTickets(ctx, userModel, statOperation)
 		}()
 
 		// Closed tickets
 		go func() {
-			defer wg.Done()
-			var wrHours float64
-			var wrDays float64
-			var wrTotal int
-			limitCh <- struct{}{}
-			tickets, err := s.repository.TicketClosedStat(ctx, userModel)
-			<-limitCh
-			if err != nil {
-				closedError = err
-				return
-			}
-
-			for _, ticket := range tickets {
-				wrHours += ticket.Hours
-				wrDays += ticket.Days
-				wrTotal++
-			}
-			mutex.Lock()
-			stats.Tickets.Closed = wrTotal
-			stats.Tickets.ClosedDays = wrDays
-			stats.Tickets.ClosedHours = wrHours
-			mutex.Unlock()
+			closedError = s.calcClosedTickets(ctx, userModel, statOperation)
 		}()
 
-		wg.Wait()
+		statOperation.wg.Wait()
 
 		if totalErr != nil {
-			return stats, fmt.Errorf("error calculating total tickets: %v", totalErr)
+			return *statOperation.stats, fmt.Errorf("error calculating total tickets: %v", totalErr)
 		}
 		if openErr != nil {
-			return stats, fmt.Errorf("error calculating open tickets: %v", openErr)
+			return *statOperation.stats, fmt.Errorf("error calculating open tickets: %v", openErr)
 		}
 		if ipError != nil {
-			return stats, fmt.Errorf("error calculating In Progress tickets: %v", ipError)
+			return *statOperation.stats, fmt.Errorf("error calculating In Progress tickets: %v", ipError)
 		}
 		if wrError != nil {
-			return stats, fmt.Errorf("error calculating In Progress tickets: %v", wrError)
+			return *statOperation.stats, fmt.Errorf("error calculating In Progress tickets: %v", wrError)
 		}
 		if closedError != nil {
-			return stats, fmt.Errorf("error calculating In Progress tickets: %v", closedError)
+			return *statOperation.stats, fmt.Errorf("error calculating In Progress tickets: %v", closedError)
 		}
-		err = StoreInCache[*domain.Statistics]("stat-"+userModel.Crmid, &stats, CacheStatisticsTtl, s.cache)
+		err = StoreInCache[*domain.Statistics]("stat-"+userModel.Crmid, statOperation.stats, CacheStatisticsTtl, s.cache)
 		if err != nil {
-			return stats, err
+			return *statOperation.stats, err
 		}
 
-		return stats, nil
+		return *statOperation.stats, nil
 	} else {
-		return stats, e.Wrap("can not convert caches data to stat", err)
+		return *statOperation.stats, e.Wrap("can not convert caches data to stat", err)
 	}
+}
+
+func (s StatisticsService) calcTotalTickets(ctx context.Context, userModel domain.User, op *operation) error {
+	defer op.wg.Done()
+	total, err := s.repository.CalcTicketTotal(ctx, userModel)
+	<-op.limitCh
+	if err != nil {
+		return err
+	}
+
+	op.mutex.Lock()
+	op.stats.Tickets.Total = total
+	op.mutex.Unlock()
+	return nil
+}
+
+func (s StatisticsService) calcOpenTickets(ctx context.Context, userModel domain.User, op *operation) error {
+	defer op.wg.Done()
+	var openHours float64
+	var openDays float64
+	var openTotal int
+	op.limitCh <- struct{}{}
+	tickets, err := s.repository.TicketOpenStat(ctx, userModel)
+	<-op.limitCh
+	if err != nil {
+		return err
+	}
+
+	for _, ticket := range tickets {
+		openHours += ticket.Hours
+		openDays += ticket.Days
+		openTotal++
+	}
+	op.mutex.Lock()
+	op.stats.Tickets.Open = openTotal
+	op.stats.Tickets.OpenDays = openDays
+	op.stats.Tickets.OpenHours = openHours
+	op.mutex.Unlock()
+	return nil
+}
+
+func (s StatisticsService) calcInProgressTickets(ctx context.Context, userModel domain.User, op *operation) error {
+	defer op.wg.Done()
+	var ipHours float64
+	var ipDays float64
+	var ipTotal int
+	op.limitCh <- struct{}{}
+	tickets, err := s.repository.TicketInProgressStat(ctx, userModel)
+	<-op.limitCh
+	if err != nil {
+		return err
+	}
+
+	for _, ticket := range tickets {
+		ipHours += ticket.Hours
+		ipDays += ticket.Days
+		ipTotal++
+	}
+	op.mutex.Lock()
+	op.stats.Tickets.InProgress = ipTotal
+	op.stats.Tickets.InProgressDays = ipDays
+	op.stats.Tickets.InProgressHours = ipHours
+	op.mutex.Unlock()
+	return nil
+}
+
+func (s StatisticsService) calcWaitForResponseTickets(ctx context.Context, userModel domain.User, op *operation) error {
+	defer op.wg.Done()
+	var wrHours float64
+	var wrDays float64
+	var wrTotal int
+	op.limitCh <- struct{}{}
+	tickets, err := s.repository.TicketWaitForResponseStat(ctx, userModel)
+	<-op.limitCh
+	if err != nil {
+		return err
+	}
+
+	for _, ticket := range tickets {
+		wrHours += ticket.Hours
+		wrDays += ticket.Days
+		wrTotal++
+	}
+	op.mutex.Lock()
+	op.stats.Tickets.WaitForResponse = wrTotal
+	op.stats.Tickets.WaitForResponseDays = wrDays
+	op.stats.Tickets.WaitForResponseHours = wrHours
+	op.mutex.Unlock()
+	return nil
+}
+
+func (s StatisticsService) calcClosedTickets(ctx context.Context, userModel domain.User, op *operation) error {
+	defer op.wg.Done()
+	var wrHours float64
+	var wrDays float64
+	var wrTotal int
+	op.limitCh <- struct{}{}
+	tickets, err := s.repository.TicketClosedStat(ctx, userModel)
+	<-op.limitCh
+	if err != nil {
+		return err
+	}
+
+	for _, ticket := range tickets {
+		wrHours += ticket.Hours
+		wrDays += ticket.Days
+		wrTotal++
+	}
+	op.mutex.Lock()
+	op.stats.Tickets.Closed = wrTotal
+	op.stats.Tickets.ClosedDays = wrDays
+	op.stats.Tickets.ClosedHours = wrHours
+	op.mutex.Unlock()
+	return nil
 }

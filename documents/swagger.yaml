@@ -3173,9 +3173,17 @@ components:
         open:
           type: integer
           example: 25
+        open_hours:
+          type: number
+          format: float
+          example: 100.25
         closed:
           type: integer
           example: 25
+        closed_hours:
+          type: number
+          format: float
+          example: 333.25
     TaskStatistics:
       type: object
       properties:
@@ -3185,16 +3193,24 @@ components:
         open:
           type: integer
           example: 50
+        open-hours:
+          type: number
+          format: float
+          example: 100.25
         In Progress:
           type: integer
           example: 100
+        In Progress-hours:
+          type: number
+          format: float
+          example: 100.25
         Completed:
           type: integer
           example: 50
-        spent_hours:
+        Completed-hours:
           type: number
           format: float
-          example: 350.5
+          example: 100.25
     InvoiceStatistics:
       type: object
       properties:

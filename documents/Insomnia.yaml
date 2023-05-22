@@ -1,11 +1,11 @@
 _type: export
 __export_format: 4
-__export_date: 2023-05-21T07:48:18.364Z
+__export_date: 2023-05-22T06:14:14.043Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de074600fd
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
-    modified: 1684650414320
+    modified: 1684735982712
     created: 1684649257100
     url: "{{ base_url }}/statistics"
     name: Statistics
@@ -20,12 +20,12 @@ resources:
       		"tickets": {
       			"total": 3,
       			"Open": 2,
-      			"In Progress": 0,
+      			"In Progress": 1,
       			"Wait For Response": 0,
       			"Closed": 0,
       			"Open-hours": 7.6,
       			"Open-days": 2.6,
-      			"In Progress-hours": 0,
+      			"In Progress-hours": 5,
       			"In Progress-days": 0,
       			"Wait For Response-hours": 0,
       			"Wait For Response-days": 0,
@@ -35,14 +35,18 @@ resources:
       		"projects": {
       			"total": 0,
       			"open": 0,
-      			"closed": 0
+      			"open_hours": 0,
+      			"closed": 0,
+      			"closed_hours": 0
       		},
       		"tasks": {
       			"total": 0,
       			"open": 0,
+      			"open-hours": 0,
       			"In Progress": 0,
+      			"In Progress-hours": 0,
       			"Completed": 0,
-      			"spent_hours": 0
+      			"Completed-hours": 0
       		},
       		"invoices": {
       			"total_qty": 0,
@@ -2241,7 +2245,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dee9835bc2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1684649734202
+    modified: 1684735217652
     created: 1682098348610
     url: "{{ base_url }}/tickets/{{ ticketId }}"
     name: Find HelpDesk by ID
@@ -3574,7 +3578,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684649257172
+    modified: 1684735958153
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -6754,9 +6758,17 @@ resources:
               open:
                 type: integer
                 example: 25
+              open_hours:
+                type: number
+                format: float
+                example: 100.25
               closed:
                 type: integer
                 example: 25
+              closed_hours:
+                type: number
+                format: float
+                example: 333.25
           TaskStatistics:
             type: object
             properties:
@@ -6766,16 +6778,24 @@ resources:
               open:
                 type: integer
                 example: 50
+              open-hours:
+                type: number
+                format: float
+                example: 100.25
               In Progress:
                 type: integer
                 example: 100
+              In Progress-hours:
+                type: number
+                format: float
+                example: 100.25
               Completed:
                 type: integer
                 example: 50
-              spent_hours:
+              Completed-hours:
                 type: number
                 format: float
-                example: 350.5
+                example: 100.25
           InvoiceStatistics:
             type: object
             properties:

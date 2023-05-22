@@ -30,9 +30,9 @@ func (r *UsersRepo) Insert(ctx context.Context, user *domain.User) error {
 	user.Version = 1
 
 	var query = `
-				INSERT INTO users (crmid, first_name, last_name, description, account_id, account_name, title, department, email, password, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	var args = []any{user.Crmid, user.FirstName, user.LastName, user.Description, user.AccountId, user.AccountName, user.Title, user.Department, user.Email, user.Password.Hash, user.CreatedAt, user.UpdatedAt, user.IsActive, user.MailingCity, user.MailingStreet, user.MailingCountry, user.OtherCountry, user.MailingState, user.MailingPoBox, user.OtherCity, user.OtherState, user.MailingZip, user.OtherZip, user.OtherStreet, user.OtherPoBox, user.Image, user.Imageattachmentids, user.Version, user.Phone}
+				INSERT INTO users (crmid, first_name, last_name, description, account_id, account_name, title, department, email, password, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone, assigned_user_id) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+	var args = []any{user.Crmid, user.FirstName, user.LastName, user.Description, user.AccountId, user.AccountName, user.Title, user.Department, user.Email, user.Password.Hash, user.CreatedAt, user.UpdatedAt, user.IsActive, user.MailingCity, user.MailingStreet, user.MailingCountry, user.OtherCountry, user.MailingState, user.MailingPoBox, user.OtherCity, user.OtherState, user.MailingZip, user.OtherZip, user.OtherStreet, user.OtherPoBox, user.Image, user.Imageattachmentids, user.Version, user.Phone, user.AssignedUserId}
 
 	result, err := r.db.ExecContext(ctx, query, args...)
 	if err != nil {
@@ -54,7 +54,7 @@ func (r *UsersRepo) Insert(ctx context.Context, user *domain.User) error {
 }
 
 func (r *UsersRepo) GetByEmail(ctx context.Context, email string) (domain.User, error) {
-	var query = `SELECT id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, password, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone FROM users WHERE email = ?`
+	var query = `SELECT id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, password, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone, assigned_user_id FROM users WHERE email = ?`
 	var user domain.User
 
 	err := r.db.QueryRowContext(ctx, query, email).Scan(
@@ -69,7 +69,7 @@ func (r *UsersRepo) GetByEmail(ctx context.Context, email string) (domain.User, 
 		&user.Department,
 		&user.Email, &user.Password.Hash,
 		&user.CreatedAt, &user.UpdatedAt,
-		&user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone,
+		&user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone, &user.AssignedUserId,
 	)
 	if err != nil {
 		switch {
@@ -83,7 +83,7 @@ func (r *UsersRepo) GetByEmail(ctx context.Context, email string) (domain.User, 
 }
 
 func (r *UsersRepo) GetById(ctx context.Context, id int64) (domain.User, error) {
-	var query = `SELECT id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, password, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone FROM users WHERE id = ?`
+	var query = `SELECT id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, password, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone, assigned_user_id FROM users WHERE id = ?`
 	var user domain.User
 
 	err := r.db.QueryRowContext(ctx, query, id).Scan(
@@ -98,7 +98,7 @@ func (r *UsersRepo) GetById(ctx context.Context, id int64) (domain.User, error) 
 		&user.Department,
 		&user.Email, &user.Password.Hash,
 		&user.CreatedAt, &user.UpdatedAt,
-		&user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone,
+		&user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone, &user.AssignedUserId,
 	)
 	if err != nil {
 		switch {
@@ -112,8 +112,8 @@ func (r *UsersRepo) GetById(ctx context.Context, id int64) (domain.User, error) 
 }
 
 func (r *UsersRepo) Update(ctx context.Context, user *domain.User) error {
-	var query = `UPDATE users SET first_name = ?, last_name = ?, description = ?, account_id = ?, account_name = ?, title = ?, department = ?, email = ?, password = ?, updated_at = NOW(), is_active = ?, mailingcity = ?, mailingstreet = ?, mailingcountry = ?, othercountry = ?, mailingstate = ?, mailingpobox = ?, othercity = ?, otherstate = ?, mailingzip = ?, otherzip = ?, otherstreet = ?, otherpobox = ?, image = ?, imageattachmentids = ?, version = version + 1, phone = ? WHERE id = ?`
-	var args = []any{user.FirstName, user.LastName, user.Description, user.AccountId, user.AccountName, user.Title, user.Department, user.Email, user.Password.Hash, user.IsActive, user.MailingCity, user.MailingStreet, user.MailingCountry, user.OtherCountry, user.MailingState, user.MailingPoBox, user.OtherCity, user.OtherState, user.MailingZip, user.OtherZip, user.OtherStreet, user.OtherPoBox, user.Image, user.Imageattachmentids, user.Phone, user.Id}
+	var query = `UPDATE users SET first_name = ?, last_name = ?, description = ?, account_id = ?, account_name = ?, title = ?, department = ?, email = ?, password = ?, updated_at = NOW(), is_active = ?, mailingcity = ?, mailingstreet = ?, mailingcountry = ?, othercountry = ?, mailingstate = ?, mailingpobox = ?, othercity = ?, otherstate = ?, mailingzip = ?, otherzip = ?, otherstreet = ?, otherpobox = ?, image = ?, imageattachmentids = ?, version = version + 1, phone = ?, assigned_user_id = ? WHERE id = ?`
+	var args = []any{user.FirstName, user.LastName, user.Description, user.AccountId, user.AccountName, user.Title, user.Department, user.Email, user.Password.Hash, user.IsActive, user.MailingCity, user.MailingStreet, user.MailingCountry, user.OtherCountry, user.MailingState, user.MailingPoBox, user.OtherCity, user.OtherState, user.MailingZip, user.OtherZip, user.OtherStreet, user.OtherPoBox, user.Image, user.Imageattachmentids, user.Phone, user.AssignedUserId, user.Id}
 
 	_, err := r.db.ExecContext(ctx, query, args...)
 	if err != nil {
@@ -137,7 +137,7 @@ func (r *UsersRepo) GetForToken(ctx context.Context, tokenScope, tokenPlaintext 
 	tokenHash := sha256.Sum256([]byte(tokenPlaintext))
 
 	query := `
-        SELECT users.id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone
+        SELECT users.id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone, assigned_user_id
         FROM users
         INNER JOIN tokens
         ON users.id = tokens.user_id
@@ -150,7 +150,7 @@ func (r *UsersRepo) GetForToken(ctx context.Context, tokenScope, tokenPlaintext 
 	var user domain.User
 
 	err := r.db.QueryRowContext(ctx, query, args...).Scan(
-		&user.Id, &user.Crmid, &user.FirstName, &user.LastName, &user.Description, &user.AccountId, &user.AccountName, &user.Title, &user.Department, &user.Email, &user.CreatedAt, &user.UpdatedAt, &user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone,
+		&user.Id, &user.Crmid, &user.FirstName, &user.LastName, &user.Description, &user.AccountId, &user.AccountName, &user.Title, &user.Department, &user.Email, &user.CreatedAt, &user.UpdatedAt, &user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone, &user.AssignedUserId,
 	)
 	if err != nil {
 		switch {

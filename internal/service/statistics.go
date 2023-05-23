@@ -33,7 +33,7 @@ type operation struct {
 }
 
 func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.User) (domain.Statistics, error) {
-	var totalErr, openErr, ipError, wrError, closedError error
+	var totalErr, openErr, ipError, wrError, closedError, openInvoicesErr, closedInvoicesErr, totalInvoicesErr error
 
 	statOperation := &operation{
 		wg:      sync.WaitGroup{},
@@ -50,7 +50,7 @@ func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.U
 	}
 
 	if errors.Is(cache.ErrItemNotFound, err) {
-		statOperation.wg.Add(5)
+		statOperation.wg.Add(8)
 		// Total Tickets
 		go func() {
 			totalErr = s.calcTotalTickets(ctx, userModel, statOperation)
@@ -76,6 +76,21 @@ func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.U
 			closedError = s.calcClosedTickets(ctx, userModel, statOperation)
 		}()
 
+		// Open Invoices
+		go func() {
+			openInvoicesErr = s.calcOpenInvoices(ctx, userModel, statOperation)
+		}()
+
+		// Closed Invoices
+		go func() {
+			closedInvoicesErr = s.calcClosedInvoices(ctx, userModel, statOperation)
+		}()
+
+		// Total Invoices
+		go func() {
+			totalInvoicesErr = s.calcTotalInvoices(ctx, userModel, statOperation)
+		}()
+
 		statOperation.wg.Wait()
 
 		if totalErr != nil {
@@ -93,6 +108,16 @@ func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.U
 		if closedError != nil {
 			return *statOperation.stats, fmt.Errorf("error calculating In Progress tickets: %v", closedError)
 		}
+		if openInvoicesErr != nil {
+			return *statOperation.stats, fmt.Errorf("error calculating open invoices: %v", closedError)
+		}
+		if closedInvoicesErr != nil {
+			return *statOperation.stats, fmt.Errorf("error calculating closed invoices: %v", closedError)
+		}
+		if totalInvoicesErr != nil {
+			return *statOperation.stats, fmt.Errorf("error calculating total invoices: %v", closedError)
+		}
+
 		err = StoreInCache[*domain.Statistics]("stat-"+userModel.Crmid, statOperation.stats, CacheStatisticsTtl, s.cache)
 		if err != nil {
 			return *statOperation.stats, err
@@ -214,6 +239,72 @@ func (s StatisticsService) calcClosedTickets(ctx context.Context, userModel doma
 	op.stats.Tickets.Closed = wrTotal
 	op.stats.Tickets.ClosedDays = wrDays
 	op.stats.Tickets.ClosedHours = wrHours
+	op.mutex.Unlock()
+	return nil
+}
+
+func (s StatisticsService) calcOpenInvoices(ctx context.Context, userModel domain.User, op *operation) error {
+	defer op.wg.Done()
+	var openSum domain.InvoiceFloat
+	var openTotal int
+	op.limitCh <- struct{}{}
+	invoices, err := s.repository.InvoicesOpenStat(ctx, userModel)
+	<-op.limitCh
+	if err != nil {
+		return err
+	}
+
+	for _, invoice := range invoices {
+		openSum += invoice.HdnGrandTotal
+		openTotal++
+	}
+	op.mutex.Lock()
+	op.stats.Invoices.OpenQty = openTotal
+	op.stats.Invoices.OpenSum = float64(openSum)
+	op.mutex.Unlock()
+	return nil
+}
+
+func (s StatisticsService) calcClosedInvoices(ctx context.Context, userModel domain.User, op *operation) error {
+	defer op.wg.Done()
+	var closedSum domain.InvoiceFloat
+	var closedTotal int
+	op.limitCh <- struct{}{}
+	invoices, err := s.repository.InvoicesClosedStat(ctx, userModel)
+	<-op.limitCh
+	if err != nil {
+		return err
+	}
+
+	for _, invoice := range invoices {
+		closedSum += invoice.HdnGrandTotal
+		closedTotal++
+	}
+	op.mutex.Lock()
+	op.stats.Invoices.PaidQty = closedTotal
+	op.stats.Invoices.PaidSum = float64(closedSum)
+	op.mutex.Unlock()
+	return nil
+}
+
+func (s StatisticsService) calcTotalInvoices(ctx context.Context, userModel domain.User, op *operation) error {
+	defer op.wg.Done()
+	var sum domain.InvoiceFloat
+	var total int
+	op.limitCh <- struct{}{}
+	invoices, err := s.repository.InvoicesTotalStat(ctx, userModel)
+	<-op.limitCh
+	if err != nil {
+		return err
+	}
+
+	for _, invoice := range invoices {
+		sum += invoice.HdnGrandTotal
+		total++
+	}
+	op.mutex.Lock()
+	op.stats.Invoices.TotalQty = total
+	op.stats.Invoices.TotalSum = float64(sum)
 	op.mutex.Unlock()
 	return nil
 }

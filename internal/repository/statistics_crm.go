@@ -66,6 +66,18 @@ func (s StatisticsCrm) CalcTicketClosed(ctx context.Context, userModel domain.Us
 	return s.vtiger.ExecuteCount(ctx, query)
 }
 
+func (s StatisticsCrm) InvoicesOpenStat(ctx context.Context, userModel domain.User) ([]domain.Invoice, error) {
+	return s.executeInvoiceStatsQuery(ctx, s.generateInvoiceStatsQuery(userModel, "Open"))
+}
+
+func (s StatisticsCrm) InvoicesClosedStat(ctx context.Context, userModel domain.User) ([]domain.Invoice, error) {
+	return s.executeInvoiceStatsQuery(ctx, s.generateInvoiceStatsQuery(userModel, "Closed"))
+}
+
+func (s StatisticsCrm) InvoicesTotalStat(ctx context.Context, userModel domain.User) ([]domain.Invoice, error) {
+	return s.executeInvoiceStatsQuery(ctx, s.generateInvoiceStatsQuery(userModel, ""))
+}
+
 func (s StatisticsCrm) generateTicketsQuery(userModel domain.User, status string) string {
 	query := "SELECT COUNT(*) FROM HelpDesk WHERE parent_id = " + userModel.AccountId
 	if status != "all" && status != "" && status != "total" {
@@ -85,17 +97,37 @@ func (s StatisticsCrm) generateTicketStatsQuery(userModel domain.User, status st
 }
 
 func (s StatisticsCrm) executeTicketStatsQuery(ctx context.Context, query string) ([]domain.HelpDesk, error) {
-	result, err := s.vtiger.Query(ctx, query)
-	tickets := make([]domain.HelpDesk, 0)
+	return executeQuery[domain.HelpDesk](ctx, query, s.vtiger, domain.ConvertMapToHelpDesk)
+}
+
+func (s StatisticsCrm) executeInvoiceStatsQuery(ctx context.Context, query string) ([]domain.Invoice, error) {
+	return executeQuery[domain.Invoice](ctx, query, s.vtiger, domain.ConvertMapToInvoice)
+}
+
+func executeQuery[T domain.HelpDesk | domain.Invoice](ctx context.Context, query string, c vtiger.VtigerConnector, fn func(map[string]any) (T, error)) ([]T, error) {
+	result, err := c.Query(ctx, query)
+	tickets := make([]T, 0)
 	if err != nil {
 		return nil, e.Wrap("can not execute query "+query+", got error", err)
 	}
 	for _, data := range result.Result {
-		ticket, err := domain.ConvertMapToHelpDesk(data)
+		ticket, err := fn(data)
 		if err != nil {
-			return nil, e.Wrap("can not convert map to helpdesk", err)
+			return nil, e.Wrap("can not convert map to type", err)
 		}
 		tickets = append(tickets, ticket)
 	}
 	return tickets, nil
+}
+
+func (s StatisticsCrm) generateInvoiceStatsQuery(userModel domain.User, status string) string {
+	query := "SELECT hdnGrandTotal FROM Invoice WHERE account_id = " + userModel.AccountId
+	if status == "Open" {
+		query += " AND invoicestatus IN ('Created', 'Approved', 'Sent')"
+	} else if status == "Closed" {
+		query += " AND invoicestatus IN ('Paid')"
+	}
+
+	query += ";"
+	return query
 }

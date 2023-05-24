@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -35,6 +36,8 @@ type VtigerConnector struct {
 	connection VtigerConnectionConfig
 	fetcher    CrmFetcher
 }
+
+var sessionIdMutex = sync.Mutex{}
 
 type VtigerConnectionConfig struct {
 	Url                   string `yaml:"url"`
@@ -392,7 +395,10 @@ func (c VtigerConnector) sessionId() (string, error) {
 	// Get the sessionData from the cache
 	var sessionData SessionData
 	var decodedSessionData *SessionData
+	sessionIdMutex.Lock()
+	defer sessionIdMutex.Unlock()
 	cachedSessionData, err := c.cache.Get(TokenKey)
+
 	if errors.Is(cache.ErrItemNotFound, err) {
 		sessionData, err = c.storeSession()
 		if err != nil {
@@ -416,6 +422,7 @@ func (c VtigerConnector) sessionId() (string, error) {
 			}
 			return "", e.Wrap("can not convert caches data to session", err)
 		}
+
 		if decodedSessionData.ExpireTime > time.Now().Unix() || decodedSessionData.Token == "" {
 			sessionData, err = c.storeSession()
 			if err != nil {

@@ -39,7 +39,7 @@ func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.U
 		wg:      sync.WaitGroup{},
 		mutex:   sync.Mutex{},
 		stats:   &domain.Statistics{},
-		limitCh: make(chan struct{}, 1),
+		limitCh: make(chan struct{}, 3),
 	}
 
 	statOperation.limitCh <- struct{}{}

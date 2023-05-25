@@ -66,6 +66,21 @@ func (s StatisticsCrm) CalcTicketClosed(ctx context.Context, userModel domain.Us
 	return s.vtiger.ExecuteCount(ctx, query)
 }
 
+func (s StatisticsCrm) CalcProjectsTotal(ctx context.Context, userModel domain.User) (int, error) {
+	query := s.generateProjectsQuery(userModel, "")
+	return s.vtiger.ExecuteCount(ctx, query)
+}
+
+func (s StatisticsCrm) CalcProjectsOpen(ctx context.Context, userModel domain.User) (int, error) {
+	query := s.generateProjectsQuery(userModel, "open")
+	return s.vtiger.ExecuteCount(ctx, query)
+}
+
+func (s StatisticsCrm) CalcProjectsClosed(ctx context.Context, userModel domain.User) (int, error) {
+	query := s.generateProjectsQuery(userModel, "closed")
+	return s.vtiger.ExecuteCount(ctx, query)
+}
+
 func (s StatisticsCrm) InvoicesOpenStat(ctx context.Context, userModel domain.User) ([]domain.Invoice, error) {
 	return s.executeInvoiceStatsQuery(ctx, s.generateInvoiceStatsQuery(userModel, "Open"))
 }
@@ -84,6 +99,19 @@ func (s StatisticsCrm) generateTicketsQuery(userModel domain.User, status string
 		query += " AND ticketstatus = '" + status + "'"
 	}
 	query += ";"
+	return query
+}
+
+func (s StatisticsCrm) generateProjectsQuery(userModel domain.User, status string) string {
+	query := "SELECT COUNT(*) FROM Project WHERE linktoaccountscontacts = " + userModel.Crmid + " OR linktoaccountscontacts = " + userModel.AccountId + " "
+	if status == "" {
+		query += ";"
+	} else if status == "open" {
+		query += " AND projectstatus IN ('prospecting', 'initiated', 'in progress', 'waiting for feedback');"
+	} else if status == "closed" {
+		query += " AND projectstatus IN ('completed', 'delivered');"
+	}
+
 	return query
 }
 

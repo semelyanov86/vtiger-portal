@@ -115,6 +115,7 @@ type PaginationQueryFilter struct {
 	Client   string
 	Contact  string
 	Parent   string
+	Sort     string
 	Filters  map[string]any
 }
 

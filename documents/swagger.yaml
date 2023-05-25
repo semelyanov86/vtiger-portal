@@ -744,6 +744,13 @@ paths:
             type: integer
             format: int32
             default: 20
+        - name: sort
+          in: query
+          description: Field, which accepts order by algorithm. Minus sign at the beginning means desc order.
+          required: false
+          schema:
+            type: string
+            example: -ticket_no
       responses:
         "200":
           description: successful operation
@@ -1749,6 +1756,9 @@ components:
           type: string
         imagecontent:
           type: string
+        assigned_user_id:
+          type: string
+          example: "17x1"
       xml:
         name: User
     Manager:

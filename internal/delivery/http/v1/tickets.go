@@ -163,6 +163,13 @@ func (h *Handler) getAllTickets(c *gin.Context) {
 	page, size := h.getPageAndSizeParams(c)
 
 	if userModel == nil || page < 0 || size < 0 {
+		newResponse(c, http.StatusBadRequest, "Wrong pagination params or auth user")
+		return
+	}
+	sortString := c.DefaultQuery("sort", "-ticket_no")
+
+	if !isSortStringValid(sortString, []string{"ticket_no", "ticket_title", "ticketstatus", "hours", "days", "ticketcategories"}) {
+		newResponse(c, http.StatusUnprocessableEntity, "sort value "+sortString+" is not allowed")
 		return
 	}
 
@@ -171,6 +178,7 @@ func (h *Handler) getAllTickets(c *gin.Context) {
 		PageSize: size,
 		Client:   userModel.AccountId,
 		Contact:  userModel.Crmid,
+		Sort:     sortString,
 	})
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())

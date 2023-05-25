@@ -231,6 +231,7 @@ func TestHandler_getAllTickets(t *testing.T) {
 					PageSize: 20,
 					Client:   "11x1",
 					Contact:  "12x11",
+					Sort:     "-ticket_no",
 				}).Return([]domain.HelpDesk{domain.MockedHelpDesk}, nil)
 				r.EXPECT().Count(context.Background(), "11x1").Return(1, nil)
 			},

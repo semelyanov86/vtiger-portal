@@ -33,7 +33,13 @@ func (m HelpDeskCrm) RetrieveById(ctx context.Context, id string) (domain.HelpDe
 func (m HelpDeskCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.HelpDesk, error) {
 	// Calculate the offset for the given page number and page size
 	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT * FROM HelpDesk WHERE parent_id = " + filter.Client + " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
+	query := "SELECT * FROM HelpDesk WHERE parent_id = " + filter.Client + " "
+	sort := filter.Sort
+	if sort == "" {
+		sort = "-ticket_no"
+	}
+	query += GenerateOrderByClause(sort)
+	query += " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
 	tickets := make([]domain.HelpDesk, 0)
 	result, err := m.vtiger.Query(ctx, query)
 	if err != nil {

@@ -89,3 +89,25 @@ func (h *Handler) getPageAndSizeParams(c *gin.Context) (int, int) {
 	}
 	return page, size
 }
+
+func isSortStringValid(sort string, allowedFields []string) bool {
+	fields := strings.Split(sort, ",")
+
+	for _, field := range fields {
+		fieldName := strings.TrimPrefix(field, "-")
+		if !contains(allowedFields, fieldName) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func contains(slice []string, str string) bool {
+	for _, item := range slice {
+		if item == str {
+			return true
+		}
+	}
+	return false
+}

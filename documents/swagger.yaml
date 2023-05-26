@@ -751,6 +751,13 @@ paths:
           schema:
             type: string
             example: -ticket_no
+        - name: search
+          in: query
+          description: Search with LIKE filter in ticket_no and ticket_title fields
+          required: false
+          schema:
+            type: string
+            example: TT3
       responses:
         "200":
           description: successful operation

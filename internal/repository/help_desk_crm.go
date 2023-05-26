@@ -38,6 +38,9 @@ func (m HelpDeskCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) (
 	if sort == "" {
 		sort = "-ticket_no"
 	}
+	if filter.Search != "" {
+		query += " AND ticket_no LIKE '%" + filter.Search + "%' OR ticket_title LIKE '%" + filter.Search + "%' "
+	}
 	query += GenerateOrderByClause(sort)
 	query += " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
 	tickets := make([]domain.HelpDesk, 0)

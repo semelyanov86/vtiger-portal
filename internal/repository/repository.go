@@ -117,6 +117,7 @@ type PaginationQueryFilter struct {
 	Parent   string
 	Sort     string
 	Filters  map[string]any
+	Search   string
 }
 
 var ErrRecordNotFound = errors.New("record not found")

@@ -179,6 +179,7 @@ func (h *Handler) getAllTickets(c *gin.Context) {
 		Client:   userModel.AccountId,
 		Contact:  userModel.Crmid,
 		Sort:     sortString,
+		Search:   c.DefaultQuery("search", ""),
 	})
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())

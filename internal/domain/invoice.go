@@ -101,6 +101,13 @@ type InvoiceFloat float64
 type InvoiceInt int
 
 func (i *InvoiceDate) UnmarshalJSON(jsonValue []byte) error {
+	dateStr := string(jsonValue)
+
+	if dateStr == `""` { // Check for empty string
+		*i = InvoiceDate(time.Time{})
+		return nil
+	}
+
 	date, err := utils.BytesToDate(jsonValue, "2006-01-02")
 
 	if err != nil {

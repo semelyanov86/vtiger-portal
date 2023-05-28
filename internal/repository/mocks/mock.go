@@ -457,6 +457,21 @@ func (mr *MockHelpDeskMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockHelpDesk)(nil).RetrieveById), ctx, id)
 }
 
+// Revise mocks base method.
+func (m *MockHelpDesk) Revise(ctx context.Context, ticket map[string]any) (domain.HelpDesk, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Revise", ctx, ticket)
+	ret0, _ := ret[0].(domain.HelpDesk)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Revise indicates an expected call of Revise.
+func (mr *MockHelpDeskMockRecorder) Revise(ctx, ticket interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Revise", reflect.TypeOf((*MockHelpDesk)(nil).Revise), ctx, ticket)
+}
+
 // Update mocks base method.
 func (m *MockHelpDesk) Update(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error) {
 	m.ctrl.T.Helper()

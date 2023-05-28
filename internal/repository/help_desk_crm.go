@@ -88,3 +88,11 @@ func (m HelpDeskCrm) Update(ctx context.Context, ticket domain.HelpDesk) (domain
 	}
 	return domain.ConvertMapToHelpDesk(result.Result)
 }
+
+func (m HelpDeskCrm) Revise(ctx context.Context, ticket map[string]any) (domain.HelpDesk, error) {
+	result, err := m.vtiger.Revise(ctx, ticket)
+	if err != nil {
+		return domain.HelpDesk{}, e.Wrap("can send update map to vtiger", err)
+	}
+	return domain.ConvertMapToHelpDesk(result.Result)
+}

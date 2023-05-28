@@ -52,6 +52,7 @@ type HelpDesk interface {
 	Count(ctx context.Context, client string) (int, error)
 	Create(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error)
 	Update(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error)
+	Revise(ctx context.Context, ticket map[string]any) (domain.HelpDesk, error)
 }
 
 type Comment interface {

@@ -97,6 +97,7 @@ func (w WebRequests) SendObject(ctx context.Context, operation string, session s
 		"element":     {string(jsonObject)},
 		"elementType": {elementType},
 	}
+
 	reqBody := strings.NewReader(form.Encode())
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, w.config.Url, reqBody)

@@ -265,6 +265,14 @@ func (c VtigerConnector) RetrieveFiles(ctx context.Context, id string) (*VtigerR
 }
 
 func (c VtigerConnector) Update(ctx context.Context, data map[string]any) (*VtigerResponse[map[string]any], error) {
+	return c.doUpdate(ctx, data, "update")
+}
+
+func (c VtigerConnector) Revise(ctx context.Context, data map[string]any) (*VtigerResponse[map[string]any], error) {
+	return c.doUpdate(ctx, data, "revise")
+}
+
+func (c VtigerConnector) doUpdate(ctx context.Context, data map[string]any, operation string) (*VtigerResponse[map[string]any], error) {
 	sessionID, err := c.sessionId()
 	if err != nil {
 		return nil, err
@@ -272,7 +280,8 @@ func (c VtigerConnector) Update(ctx context.Context, data map[string]any) (*Vtig
 
 	webRequest := NewWebRequest(c.connection)
 	// send a request to retrieve a record
-	resp, err := webRequest.SendObject(ctx, "update", sessionID, "", data)
+	resp, err := webRequest.SendObject(ctx, operation, sessionID, "", data)
+
 	if err != nil {
 		return nil, e.Wrap("code 7", err)
 	}

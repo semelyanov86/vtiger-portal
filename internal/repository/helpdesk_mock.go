@@ -27,3 +27,7 @@ func (m HelpDeskMockRepository) Create(ctx context.Context, ticket domain.HelpDe
 func (m HelpDeskMockRepository) Update(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error) {
 	return domain.MockedHelpDesk, nil
 }
+
+func (m HelpDeskMockRepository) Revise(ctx context.Context, ticket map[string]any) (domain.HelpDesk, error) {
+	return domain.MockedHelpDesk, nil
+}

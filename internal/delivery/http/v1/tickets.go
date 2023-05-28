@@ -18,6 +18,7 @@ func (h *Handler) initTicketsRoutes(api *gin.RouterGroup) {
 		tickets.POST("/", h.createTicket)
 		tickets.GET("/:id", h.getTicket)
 		tickets.PUT("/:id", h.updateTicket)
+		tickets.PATCH("/:id", h.updatePartlyTicket)
 		tickets.GET("/:id/comments", h.getComments)
 		tickets.POST("/:id/comments", h.addComment)
 		tickets.GET("/:id/documents", h.getDocuments)
@@ -235,6 +236,34 @@ func (h *Handler) updateTicket(c *gin.Context) {
 	ticket, err := h.services.HelpDesk.UpdateTicket(c.Request.Context(), inp, id, *userModel)
 	if errors.Is(service.ErrValidation, err) {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "ticketcategories", "message": err.Error()})
+		return
+	}
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusAccepted, ticket)
+}
+
+func (h *Handler) updatePartlyTicket(c *gin.Context) {
+	var inp map[string]any
+	if err := c.ShouldBindJSON(&inp); err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "ticketstatus", "message": "Incorrect value"})
+		return // exit on first error
+	}
+	id := h.getAndValidateId(c, "id")
+	userModel := h.getValidatedUser(c)
+	if userModel == nil || id == "" {
+		return
+	}
+
+	ticket, err := h.services.HelpDesk.Revise(c.Request.Context(), inp, id, *userModel)
+	if errors.Is(service.ErrValidation, err) {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "ticketstatus", "message": err.Error()})
 		return
 	}
 	if errors.Is(service.ErrOperationNotPermitted, err) {

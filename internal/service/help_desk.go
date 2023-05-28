@@ -191,3 +191,21 @@ func (h HelpDesk) UpdateTicket(ctx context.Context, input CreateTicketInput, id 
 	err = StoreInCache[*domain.HelpDesk](id, &ticket, CacheHelpDeskTtl, h.cache)
 	return ticket, err
 }
+
+func (h HelpDesk) Revise(ctx context.Context, input map[string]any, id string, user domain.User) (domain.HelpDesk, error) {
+	ticket, err := h.retrieveHelpDesk(ctx, id)
+	if err != nil {
+		return ticket, e.Wrap("can not retrieve helpdesk during update", err)
+	}
+	if user.AccountId != ticket.ParentID {
+		return domain.HelpDesk{}, ErrOperationNotPermitted
+	}
+	input["id"] = id
+
+	ticket, err = h.repository.Revise(ctx, input)
+	if err != nil {
+		return ticket, err
+	}
+	err = StoreInCache[*domain.HelpDesk](id, &ticket, CacheHelpDeskTtl, h.cache)
+	return ticket, err
+}

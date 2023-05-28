@@ -108,12 +108,14 @@ func TestHandler_getProjectById(t *testing.T) {
 func TestHandler_getRelatedCommentsFromProject(t *testing.T) {
 	type mockRepositoryProject func(r *mock_repository.MockProject)
 	type mockRepositoryComment func(r *mock_repository.MockComment)
+	type mockRepositoryManager func(r *mock_repository.MockManagers)
 
 	tests := []struct {
 		name         string
 		id           string
 		mockProject  mockRepositoryProject
 		mockComment  mockRepositoryComment
+		mockManager  mockRepositoryManager
 		userModel    *domain.User
 		statusCode   int
 		responseBody string
@@ -127,6 +129,9 @@ func TestHandler_getRelatedCommentsFromProject(t *testing.T) {
 			mockComment: func(r *mock_repository.MockComment) {
 				r.EXPECT().RetrieveFromModule(context.Background(), "29x54").Return([]domain.Comment{domain.MockedComment}, nil)
 			},
+			mockManager: func(r *mock_repository.MockManagers) {
+				r.EXPECT().RetrieveById(context.Background(), "19x1").Return(domain.MockedManager, nil)
+			},
 			statusCode:   http.StatusOK,
 			responseBody: `"commentcontent":"This is a test comment."`,
 			userModel:    &repository.MockedUser,
@@ -138,6 +143,9 @@ func TestHandler_getRelatedCommentsFromProject(t *testing.T) {
 			},
 			mockComment: func(r *mock_repository.MockComment) {
 			},
+			mockManager: func(r *mock_repository.MockManagers) {
+
+			},
 			statusCode:   http.StatusUnauthorized,
 			responseBody: `"error":"Anonymous Access",`,
 			userModel:    domain.AnonymousUser,
@@ -147,6 +155,9 @@ func TestHandler_getRelatedCommentsFromProject(t *testing.T) {
 			mockProject: func(r *mock_repository.MockProject) {
 			},
 			mockComment: func(r *mock_repository.MockComment) {
+			},
+			mockManager: func(r *mock_repository.MockManagers) {
+
 			},
 			statusCode:   http.StatusUnprocessableEntity,
 			responseBody: `wrong id`,
@@ -162,6 +173,9 @@ func TestHandler_getRelatedCommentsFromProject(t *testing.T) {
 			},
 			mockComment: func(r *mock_repository.MockComment) {
 			},
+			mockManager: func(r *mock_repository.MockManagers) {
+
+			},
 			statusCode:   http.StatusForbidden,
 			responseBody: `"message":"You are not allowed to view this record"`,
 			userModel:    &repository.MockedUser,
@@ -176,10 +190,12 @@ func TestHandler_getRelatedCommentsFromProject(t *testing.T) {
 
 			rm := mock_repository.NewMockProject(c)
 			rc := mock_repository.NewMockComment(c)
+			rman := mock_repository.NewMockManagers(c)
 			tt.mockProject(rm)
 			tt.mockComment(rc)
+			tt.mockManager(rman)
 
-			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.NewManagerService(rman, cache.NewMemoryCache()))
 
 			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
 
@@ -273,7 +289,7 @@ func TestHandler_getAllProjects(t *testing.T) {
 			rc := mock_repository.NewMockComment(c)
 			tt.mockProject(rm)
 
-			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 
 			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
 
@@ -376,7 +392,7 @@ func TestHandler_getRelatedDocumentsFromProject(t *testing.T) {
 			tt.mockProject(rm)
 			tt.mockDocument(rd)
 
-			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
 			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{})
@@ -487,7 +503,7 @@ func TestHandler_getFileFromProject(t *testing.T) {
 			tt.mockProject(rm)
 			tt.mockDocument(rd)
 
-			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
 			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{})

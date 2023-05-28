@@ -2109,6 +2109,8 @@ components:
         related_email_id:
           type: "string"
           example: "eml-654"
+        author:
+          $ref: '#/components/schemas/CommentsAuthor'
     Document:
       type: "object"
       properties:
@@ -3297,3 +3299,21 @@ components:
           type: number
           format: float
           example: 7000.00
+    CommentsAuthor:
+      type: object
+      properties:
+        firstname:
+          type: string
+          example: "Ksenia"
+        lastname:
+          type: string
+          example: "Ivanova"
+        email:
+          type: string
+          example: "ks@mail.ru"
+        imagecontent:
+          type: string
+          example: ""
+        id:
+          type: string
+          example: "19x1"

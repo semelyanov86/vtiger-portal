@@ -186,6 +186,34 @@ func (s UsersService) FindContactsFromAccount(ctx context.Context, filter reposi
 	}
 }
 
+func (s UsersService) FindByCrmid(ctx context.Context, id string) (domain.User, error) {
+	var user domain.User
+	err := GetFromCache[*domain.User](id, &user, s.cache)
+	if err == nil {
+		return user, nil
+	}
+	if errors.Is(cache.ErrItemNotFound, err) {
+		user, err := s.crm.RetrieveById(ctx, id)
+		if err != nil {
+			return user, err
+		}
+		if user.Imageattachmentids != "" {
+			file, err := s.document.RetrieveFile(ctx, user.Imageattachmentids)
+			if err == nil && file.Filecontents != "" {
+				user.Imagecontent = file.Filecontents
+			}
+		}
+
+		err = StoreInCache[*domain.User](id, &user, CacheUsersTTL, s.cache)
+		if err != nil {
+			return user, err
+		}
+		return user, err
+	} else {
+		return user, e.Wrap("can not convert caches data to user", err)
+	}
+}
+
 func (s UsersService) ResetUserPassword(ctx context.Context, input PasswordResetInput) (domain.User, error) {
 	user, err := s.repo.GetForToken(ctx, domain.ScopePasswordReset, input.Token)
 	if err != nil {

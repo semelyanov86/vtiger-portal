@@ -110,12 +110,14 @@ func TestHandler_getTicketById(t *testing.T) {
 func TestHandler_getRelatedComments(t *testing.T) {
 	type mockRepositoryTicket func(r *mock_repository.MockHelpDesk)
 	type mockRepositoryComment func(r *mock_repository.MockComment)
+	type mockRepositoryManager func(r *mock_repository.MockManagers)
 
 	tests := []struct {
 		name         string
 		id           string
 		mockTicket   mockRepositoryTicket
 		mockComment  mockRepositoryComment
+		mockManager  mockRepositoryManager
 		userModel    *domain.User
 		statusCode   int
 		responseBody string
@@ -129,6 +131,9 @@ func TestHandler_getRelatedComments(t *testing.T) {
 			mockComment: func(r *mock_repository.MockComment) {
 				r.EXPECT().RetrieveFromModule(context.Background(), "17x16").Return([]domain.Comment{domain.MockedComment}, nil)
 			},
+			mockManager: func(r *mock_repository.MockManagers) {
+				r.EXPECT().RetrieveById(context.Background(), "19x1").Return(domain.MockedManager, nil)
+			},
 			statusCode:   http.StatusOK,
 			responseBody: `"commentcontent":"This is a test comment."`,
 			userModel:    &repository.MockedUser,
@@ -140,6 +145,9 @@ func TestHandler_getRelatedComments(t *testing.T) {
 			},
 			mockComment: func(r *mock_repository.MockComment) {
 			},
+			mockManager: func(r *mock_repository.MockManagers) {
+
+			},
 			statusCode:   http.StatusUnauthorized,
 			responseBody: `"error":"Anonymous Access",`,
 			userModel:    domain.AnonymousUser,
@@ -149,6 +157,9 @@ func TestHandler_getRelatedComments(t *testing.T) {
 			mockTicket: func(r *mock_repository.MockHelpDesk) {
 			},
 			mockComment: func(r *mock_repository.MockComment) {
+			},
+			mockManager: func(r *mock_repository.MockManagers) {
+
 			},
 			statusCode:   http.StatusUnprocessableEntity,
 			responseBody: `wrong id`,
@@ -164,6 +175,9 @@ func TestHandler_getRelatedComments(t *testing.T) {
 			},
 			mockComment: func(r *mock_repository.MockComment) {
 			},
+			mockManager: func(r *mock_repository.MockManagers) {
+
+			},
 			statusCode:   http.StatusForbidden,
 			responseBody: `"message":"You are not allowed to view this record"`,
 			userModel:    &repository.MockedUser,
@@ -178,10 +192,12 @@ func TestHandler_getRelatedComments(t *testing.T) {
 
 			rm := mock_repository.NewMockHelpDesk(c)
 			rc := mock_repository.NewMockComment(c)
+			rman := mock_repository.NewMockManagers(c)
 			tt.mockTicket(rm)
 			tt.mockComment(rc)
+			tt.mockManager(rman)
 
-			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.NewManagerService(rman, cache.NewMemoryCache()))
 
 			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
 
@@ -276,7 +292,7 @@ func TestHandler_getAllTickets(t *testing.T) {
 			rc := mock_repository.NewMockComment(c)
 			tt.mockTicket(rm)
 
-			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 
 			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
 
@@ -379,7 +395,7 @@ func TestHandler_getRelatedDocuments(t *testing.T) {
 			tt.mockTicket(rm)
 			tt.mockDocument(rd)
 
-			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
 			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{})
@@ -490,7 +506,7 @@ func TestHandler_getFile(t *testing.T) {
 			tt.mockTicket(rm)
 			tt.mockDocument(rd)
 
-			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
 			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{})
@@ -551,7 +567,7 @@ func TestHandler_createTicket(t *testing.T) {
 			rmm := mock_repository.NewMockModules(c)
 			tt.mockModule(rmm)
 
-			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
 			helpDeskService := service.NewHelpDeskService(repository.HelpDeskMockRepository{}, cache.NewMemoryCache(), commentService, documentService, service.NewModulesService(rmm, cache.NewMemoryCache()), config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultUser: "19x1"}}})
@@ -629,7 +645,7 @@ func TestHandler_updateTicket(t *testing.T) {
 			rmm := mock_repository.NewMockModules(c)
 			tt.mockModule(rmm)
 
-			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
 			helpDeskService := service.NewHelpDeskService(repository.HelpDeskMockRepository{}, cache.NewMemoryCache(), commentService, documentService, service.NewModulesService(rmm, cache.NewMemoryCache()), config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultUser: "19x1"}}})
@@ -690,7 +706,7 @@ func TestHandler_addCommentToTicket(t *testing.T) {
 			rd := mock_repository.NewMockDocument(c)
 			rmm := mock_repository.NewMockModules(c)
 
-			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{})
+			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
 			helpDeskService := service.NewHelpDeskService(repository.HelpDeskMockRepository{}, cache.NewMemoryCache(), commentService, documentService, service.NewModulesService(rmm, cache.NewMemoryCache()), config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultUser: "19x1"}}})

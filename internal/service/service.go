@@ -45,17 +45,19 @@ var ErrOperationNotPermitted = errors.New("you are not permitted to view this re
 func NewServices(repos repository.Repositories, email email.Sender, wg *sync.WaitGroup, config config.Config, cache cache.Cache) *Services {
 	emailService := *NewEmailsService(email, config.Email, cache)
 	companyService := NewCompanyService(repos.Company, cache)
-	commentsService := NewComments(repos.Comments, cache, config)
+	managersService := NewManagerService(repos.Managers, cache)
+	usersService := NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens, repos.Documents, cache)
+	commentsService := NewComments(repos.Comments, cache, config, usersService, managersService)
 	documentService := NewDocuments(repos.Documents, cache)
 	modulesService := NewModulesService(repos.Modules, cache)
 	currencyService := NewCurrencyService(repos.Currency, cache)
 	projectService := NewProjectsService(repos.Projects, cache, commentsService, documentService, modulesService, config)
 	return &Services{
-		Users:            NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens, repos.Documents, cache),
+		Users:            usersService,
 		Emails:           *NewEmailsService(email, config.Email, cache),
 		Tokens:           NewTokensService(repos.Tokens, repos.Users, emailService, config, companyService),
 		Context:          NewContextService(),
-		Managers:         NewManagerService(repos.Managers, cache),
+		Managers:         managersService,
 		Modules:          modulesService,
 		Company:          companyService,
 		HelpDesk:         NewHelpDeskService(repos.HelpDesk, cache, commentsService, documentService, modulesService, config),
@@ -89,7 +91,7 @@ type DocumentServiceInterface interface {
 }
 
 type SupportedTypes interface {
-	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract | *domain.Currency | *domain.Product | *domain.Service | *domain.Project | *domain.ProjectTask | *[]domain.User | *domain.Statistics
+	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract | *domain.Currency | *domain.Product | *domain.Service | *domain.Project | *domain.ProjectTask | *[]domain.User | *domain.Statistics | *domain.User
 }
 
 func GetFromCache[T SupportedTypes](key string, dest T, c cache.Cache) error {

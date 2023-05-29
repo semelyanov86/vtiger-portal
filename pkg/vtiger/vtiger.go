@@ -393,6 +393,7 @@ func processVtigerResponse[T ResultData](response []byte, data *VtigerResponse[T
 	if err := json.Unmarshal(response, &data); err != nil {
 		return data, err
 	}
+
 	if !data.Success {
 		return data, e.Wrap(data.Error.Code+" - "+data.Error.Message, ErrResponseError)
 	}
@@ -485,6 +486,7 @@ func (c VtigerConnector) login(session SessionData) (SessionData, error) {
 		loginResult.Result.ServerTime = session.ServerTime
 		responseData = loginResult
 		if err != nil {
+			c.cache.Set(TokenKey, []byte{}, 0)
 			return sessionData, e.Wrap("wrong response received from vtiger during login", err)
 		}
 		tryCounter++

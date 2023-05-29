@@ -8,6 +8,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"strconv"
 	"sync"
 )
 
@@ -33,7 +34,7 @@ type operation struct {
 }
 
 func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.User) (domain.Statistics, error) {
-	var totalErr, openErr, ipError, wrError, closedError, openInvoicesErr, closedInvoicesErr, totalInvoicesErr, totalProjectsErr, openProjectsErr, closedProjectsErr error
+	var totalErr, openErr, ipError, wrError, closedError, openInvoicesErr, closedInvoicesErr, totalInvoicesErr, totalProjectsErr, openProjectsErr, closedProjectsErr, inProgressTasksErr error
 
 	statOperation := &operation{
 		wg:      sync.WaitGroup{},
@@ -50,7 +51,7 @@ func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.U
 	}
 
 	if errors.Is(cache.ErrItemNotFound, err) {
-		statOperation.wg.Add(11)
+		statOperation.wg.Add(12)
 		// Total Tickets
 		go func() {
 			totalErr = s.calcTotalTickets(ctx, userModel, statOperation)
@@ -106,6 +107,11 @@ func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.U
 			closedProjectsErr = s.calcClosedProjects(ctx, userModel, statOperation)
 		}()
 
+		// In Progress Tasks
+		go func() {
+			inProgressTasksErr = s.calcInProgressTasks(ctx, userModel, statOperation)
+		}()
+
 		statOperation.wg.Wait()
 
 		if totalErr != nil {
@@ -139,6 +145,9 @@ func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.U
 			return *statOperation.stats, fmt.Errorf("error calculating open projects: %v", openProjectsErr)
 		}
 		if closedProjectsErr != nil {
+			return *statOperation.stats, fmt.Errorf("error calculating closed projects: %v", closedProjectsErr)
+		}
+		if inProgressTasksErr != nil {
 			return *statOperation.stats, fmt.Errorf("error calculating closed projects: %v", closedProjectsErr)
 		}
 
@@ -374,6 +383,25 @@ func (s StatisticsService) calcClosedProjects(ctx context.Context, userModel dom
 
 	op.mutex.Lock()
 	op.stats.Projects.Closed = total
+	op.mutex.Unlock()
+	return nil
+}
+
+func (s StatisticsService) calcInProgressTasks(ctx context.Context, userModel domain.User, op *operation) error {
+	defer op.wg.Done()
+	op.limitCh <- struct{}{}
+	tasks, err := s.repository.TasksFromInProgressProjects(ctx, userModel)
+	<-op.limitCh
+	if err != nil {
+		return err
+	}
+
+	op.mutex.Lock()
+	for _, task := range tasks {
+		op.stats.Tasks.InProgress++
+		hour, _ := strconv.ParseFloat(task.Projecttaskhours, 64)
+		op.stats.Tasks.InProgressHours += hour
+	}
 	op.mutex.Unlock()
 	return nil
 }

@@ -93,6 +93,25 @@ func (s StatisticsCrm) InvoicesTotalStat(ctx context.Context, userModel domain.U
 	return s.executeInvoiceStatsQuery(ctx, s.generateInvoiceStatsQuery(userModel, ""))
 }
 
+func (s StatisticsCrm) TasksFromInProgressProjects(ctx context.Context, userModel domain.User) ([]domain.ProjectTask, error) {
+	projects, err := s.getInProgressProjects(ctx, userModel)
+	tasks := make([]domain.ProjectTask, 0)
+	if err != nil {
+		return tasks, e.Wrap("can not receive in progress projects", err)
+	}
+	for _, project := range projects {
+		query := "SELECT * FROM ProjectTask WHERE projectid = " + project.Id + ";"
+		pt, err := executeQuery[domain.ProjectTask](ctx, query, s.vtiger, domain.ConvertMapToProjectTask)
+
+		if err != nil {
+			return tasks, e.Wrap("can not retrieve project tasks", err)
+		}
+		tasks = append(tasks, pt...)
+	}
+
+	return tasks, err
+}
+
 func (s StatisticsCrm) generateTicketsQuery(userModel domain.User, status string) string {
 	query := "SELECT COUNT(*) FROM HelpDesk WHERE parent_id = " + userModel.AccountId
 	if status != "all" && status != "" && status != "total" {
@@ -132,7 +151,12 @@ func (s StatisticsCrm) executeInvoiceStatsQuery(ctx context.Context, query strin
 	return executeQuery[domain.Invoice](ctx, query, s.vtiger, domain.ConvertMapToInvoice)
 }
 
-func executeQuery[T domain.HelpDesk | domain.Invoice](ctx context.Context, query string, c vtiger.VtigerConnector, fn func(map[string]any) (T, error)) ([]T, error) {
+func (s StatisticsCrm) getInProgressProjects(ctx context.Context, userModel domain.User) ([]domain.Project, error) {
+	query := "SELECT projectname FROM Project WHERE linktoaccountscontacts = " + userModel.Crmid + " OR linktoaccountscontacts = " + userModel.AccountId + " AND projectstatus IN ('in progress');"
+	return executeQuery[domain.Project](ctx, query, s.vtiger, domain.ConvertMapToProject)
+}
+
+func executeQuery[T domain.HelpDesk | domain.Invoice | domain.Project | domain.ProjectTask](ctx context.Context, query string, c vtiger.VtigerConnector, fn func(map[string]any) (T, error)) ([]T, error) {
 	result, err := c.Query(ctx, query)
 	tickets := make([]T, 0)
 	if err != nil {

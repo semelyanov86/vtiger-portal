@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"github.com/semelyanov86/vtiger-portal/internal/utils"
 	"github.com/semelyanov86/vtiger-portal/pkg/validator"
 	"time"
 )
@@ -153,4 +154,13 @@ func ConvertMapToUser(m map[string]any) User {
 	}
 
 	return user
+}
+
+func (u User) ConvertToMap() (map[string]any, error) {
+	result, err := utils.ConvertStructToMap(u)
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
 }

@@ -194,6 +194,21 @@ func (mr *MockUsersCrmMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockUsersCrm)(nil).RetrieveById), ctx, id)
 }
 
+// Update mocks base method.
+func (m *MockUsersCrm) Update(ctx context.Context, id string, user domain.User) (domain.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, id, user)
+	ret0, _ := ret[0].(domain.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockUsersCrmMockRecorder) Update(ctx, id, user interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockUsersCrm)(nil).Update), ctx, id, user)
+}
+
 // MockTokens is a mock of Tokens interface.
 type MockTokens struct {
 	ctrl     *gomock.Controller

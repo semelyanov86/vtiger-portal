@@ -16,6 +16,7 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 		users.POST("/", h.userSignUp)
 		users.POST("/login", h.signIn)
 		users.GET("/my", h.getUserInfo)
+		users.PUT("/my", h.updateUserInfo)
 		users.POST("/restore", h.sendRestoreToken)
 		users.PUT("/password", h.resetPassword)
 		users.GET("/all", h.usersFromAccount)
@@ -45,6 +46,36 @@ func (h *Handler) userSignUp(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, user)
+}
+
+func (h *Handler) updateUserInfo(c *gin.Context) {
+	userModel := h.getValidatedUser(c)
+	if userModel == nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Auth Error", "field": "crmid", "message": "User is not found in auth process"})
+		return
+	}
+	var inp service.UserUpdateInput
+	if err := c.BindJSON(&inp); err != nil {
+		for _, fieldErr := range err.(validator.ValidationErrors) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": fieldErr.Field(), "message": fieldErr.Error()})
+			return // exit on first error
+		}
+	}
+
+	user, err := h.services.Users.Update(c.Request.Context(), userModel.Id, inp)
+
+	if err != nil {
+		if errors.Is(err, repository.ErrDuplicateEmail) {
+			newResponse(c, http.StatusUnprocessableEntity, err.Error())
+
+			return
+		}
+
+		newResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+	c.JSON(http.StatusAccepted, user)
 }
 
 func (h *Handler) signIn(c *gin.Context) {

@@ -79,3 +79,18 @@ func (receiver UsersVtiger) ClearUserCodeField(ctx context.Context, id string) (
 	user := domain.ConvertMapToUser(result.Result)
 	return user, nil
 }
+
+func (receiver UsersVtiger) Update(ctx context.Context, id string, user domain.User) (domain.User, error) {
+	userMap, err := user.ConvertToMap()
+	if err != nil {
+		return user, e.Wrap("can not convert to map", err)
+	}
+	userMap["id"] = id
+
+	result, err := receiver.vtiger.Revise(ctx, userMap)
+	if err != nil {
+		return user, e.Wrap("can send update map to vtiger", err)
+	}
+	user = domain.ConvertMapToUser(result.Result)
+	return user, nil
+}

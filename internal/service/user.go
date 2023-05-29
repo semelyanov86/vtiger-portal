@@ -36,6 +36,30 @@ type PasswordResetInput struct {
 	Password string `json:"password" binding:"required,min=5,max=20"`
 }
 
+type UserUpdateInput struct {
+	AccountName    string `json:"account_name"`
+	Department     string `json:"department" binding:"required,min=2,max=50"`
+	Description    string `json:"description" binding:"required,min=5,max=200"`
+	Email          string `json:"email" binding:"required,email"`
+	FirstName      string `json:"firstname" binding:"required,min=2,max=50"`
+	LastName       string `json:"lastname" binding:"required,min=2,max=50"`
+	Mailingcity    string `json:"mailingcity" binding:"required,min=2,max=50"`
+	Mailingcountry string `json:"mailingcountry" binding:"required,min=2,max=50"`
+	Mailingpobox   string `json:"mailingpobox"`
+	Mailingstate   string `json:"mailingstate"`
+	Mailingstreet  string `json:"mailingstreet" binding:"required,min=2,max=100"`
+	Mailingzip     string `json:"mailingzip" binding:"required,min=2,max=10"`
+	Othercity      string `json:"othercity"`
+	Othercountry   string `json:"othercountry"`
+	Otherpobox     string `json:"otherpobox"`
+	Otherstate     string `json:"otherstate"`
+	Otherstreet    string `json:"otherstreet"`
+	Otherzip       string `json:"otherzip"`
+	Password       string `json:"password"`
+	Phone          string `json:"phone" binding:"required,min=5,max=15"`
+	Title          string `json:"title" binding:"required,min=2,max=50"`
+}
+
 type UsersService struct {
 	repo            repository.Users
 	crm             repository.UsersCrm
@@ -113,6 +137,82 @@ func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput, cfg *co
 	}
 
 	return user, nil
+}
+
+func (s UsersService) Update(ctx context.Context, id int64, updateData UserUpdateInput) (*domain.User, error) {
+	user, err := s.GetUserById(ctx, id)
+	if err != nil {
+		return nil, e.Wrap("can not get user by id "+strconv.Itoa(int(id)), err)
+	}
+	if updateData.FirstName != "" {
+		user.FirstName = updateData.FirstName
+	}
+	if updateData.LastName != "" {
+		user.LastName = updateData.LastName
+	}
+	if updateData.Email != "" {
+		user.Email = updateData.Email
+	}
+	if updateData.AccountName != "" {
+		user.AccountName = updateData.AccountName
+	}
+	if updateData.Department != "" {
+		user.Department = updateData.Department
+	}
+	if updateData.Description != "" {
+		user.Description = updateData.Description
+	}
+	if updateData.Email != "" {
+		user.Email = updateData.Email
+	}
+	if updateData.Mailingcity != "" {
+		user.MailingCity = updateData.Mailingcity
+	}
+	if updateData.Mailingpobox != "" {
+		user.MailingPoBox = updateData.Mailingpobox
+	}
+	if updateData.Mailingstate != "" {
+		user.MailingState = updateData.Mailingstate
+	}
+	if updateData.Mailingstreet != "" {
+		user.MailingStreet = updateData.Mailingstreet
+	}
+	if updateData.Mailingzip != "" {
+		user.MailingZip = updateData.Mailingzip
+	}
+	if updateData.Othercity != "" {
+		user.OtherCity = updateData.Othercity
+	}
+	if updateData.Othercountry != "" {
+		user.OtherCountry = updateData.Othercountry
+	}
+	if updateData.Otherpobox != "" {
+		user.OtherPoBox = updateData.Otherpobox
+	}
+	if updateData.Otherstate != "" {
+		user.OtherState = updateData.Otherstate
+	}
+	if updateData.Otherstreet != "" {
+		user.OtherStreet = updateData.Otherstreet
+	}
+	if updateData.Otherzip != "" {
+		user.OtherZip = updateData.Otherzip
+	}
+	if updateData.Phone != "" {
+		user.Phone = updateData.Phone
+	}
+	if updateData.Title != "" {
+		user.Title = updateData.Title
+	}
+	if updateData.Password != "" {
+		user.Password.Set(updateData.Password)
+	}
+	err = s.repo.Update(ctx, user)
+	if err != nil {
+		return user, e.Wrap("can not update user", err)
+	}
+	_, err = s.crm.Update(ctx, user.Crmid, *user)
+	return user, err
 }
 
 func (s UsersService) GetUserByToken(ctx context.Context, token string) (*domain.User, error) {

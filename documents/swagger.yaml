@@ -309,6 +309,38 @@ paths:
                   message:
                     type: string
                     example: "Got anonymous user from token or user without crmid"
+    put:
+      tags:
+        - user
+      summary: Update User
+      description: Allows authorized user information about yourself.
+      operationId: updateUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "202":
+          description: Ticket updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid ID supplied
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        "404":
+          description: HelpDesk or file not found
+        "403":
+          description: Operation not permitted
   "/managers/{managerId}":
     get:
       tags:

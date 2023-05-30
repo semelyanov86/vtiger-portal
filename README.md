@@ -68,6 +68,27 @@ INSERT INTO `vtiger_ws_operation_parameters`(
     '1'
  );
 ```
+Note, that Vtiger does not provide an endpoint for storing images. If you want to allow users change images, you need to add following code in file `include/Webservices/Revise.php`, before line `$entity = $handler->revise($element);`:
+```php
+if ($element['imagecontent'] && $element['imagename'] && $element['imagetype']) {
+            $decodedImageContent = base64_decode($element['imagecontent']);
+            $tempFileName = tempnam(sys_get_temp_dir(), 'image_');
+            file_put_contents($tempFileName, $decodedImageContent);
+            $_FILES['uploaded_image'] = [
+                'name' => $element['imagename'], // Provide the desired file name
+                'type' => $element['imagetype'], // Provide the correct file type
+                'tmp_name' => $tempFileName,
+                'error' => 0,
+                'size' => filesize($tempFileName)
+            ];
+            /** @var Contacts $contactModule */
+            $contactModule = new $entityName;
+            if (method_exists($contactModule, "insertIntoAttachment")) {
+                $contactModule->insertIntoAttachment($idList[1], $entityName);
+            }
+        }
+```
+Now, you can pass imagename, imagetype and imagecontent params
 
 ## Adding new custom field to module
 What if you created new custom field in Vtiger module and want to add it in Portal? Because we usong golang type system in portal, you need to register it in our domain system.

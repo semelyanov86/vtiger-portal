@@ -58,6 +58,9 @@ type UserUpdateInput struct {
 	Password       string `json:"password"`
 	Phone          string `json:"phone" binding:"required,min=5,max=15"`
 	Title          string `json:"title" binding:"required,min=2,max=50"`
+	Imagename      string `json:"imagename"`
+	Imagetype      string `json:"imagetype"`
+	Imagecontent   string `json:"imagecontent"`
 }
 
 type UsersService struct {
@@ -203,6 +206,15 @@ func (s UsersService) Update(ctx context.Context, id int64, updateData UserUpdat
 	}
 	if updateData.Title != "" {
 		user.Title = updateData.Title
+	}
+	if updateData.Imagename != "" {
+		user.Imagename = updateData.Imagename
+	}
+	if updateData.Imagetype != "" {
+		user.Imagetype = updateData.Imagetype
+	}
+	if updateData.Imagecontent != "" {
+		user.Imagecontent = updateData.Imagecontent
 	}
 	if updateData.Password != "" {
 		user.Password.Set(updateData.Password)

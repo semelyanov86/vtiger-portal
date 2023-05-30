@@ -39,6 +39,8 @@ type User struct {
 	Code               string    `json:"-"`
 	Imageattachmentids string    `json:"imageattachmentids"`
 	Imagecontent       string    `json:"imagecontent"`
+	Imagename          string    `json:"imagename"`
+	Imagetype          string    `json:"imagetype"`
 	Phone              string    `json:"phone"`
 	AssignedUserId     string    `json:"assigned_user_id"`
 }

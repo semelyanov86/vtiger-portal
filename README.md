@@ -90,8 +90,10 @@ if ($element['imagecontent'] && $element['imagename'] && $element['imagetype']) 
 ```
 Now, you can pass imagename, imagetype and imagecontent params
 
+Note, in old vtiger versions, we receive always empty attachment ids. In this case, you can not download documents via API. To fix this, add methods from vtiger 7.5 in `include/Webservices/DataTransform.php` and `vtlib/Vtiger/Functions.php`. sanitizeFileFieldsForIds and getAttachmentIds
+
 ## Adding new custom field to module
-What if you created new custom field in Vtiger module and want to add it in Portal? Because we usong golang type system in portal, you need to register it in our domain system.
+What if you created new custom field in Vtiger module and want to add it in Portal? Because we using golang type system in portal, you need to register it in our domain system.
 For example, you created field 'cf_543' in HelpDesk module. Here is three steps, how you can register this field in portal:
 1. Open file `internal/domain/help_desk.go` and find type HelpDesk struct. This is block, where we store all fields for module. At the end of this struct you can add following line:
 ```go

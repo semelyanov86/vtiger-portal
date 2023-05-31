@@ -75,6 +75,7 @@ func (h *Handler) updateUserInfo(c *gin.Context) {
 
 		return
 	}
+	go h.getUserInfo(c)
 	c.JSON(http.StatusAccepted, user)
 }
 

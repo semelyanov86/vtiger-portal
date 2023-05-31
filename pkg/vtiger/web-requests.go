@@ -103,7 +103,7 @@ func (w WebRequests) SendObject(ctx context.Context, operation string, session s
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, w.config.Url, reqBody)
 
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, e.Wrap("can not generate request", err)
 	}
 	req.Header.Set("User-Agent", "Go-Portal")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")

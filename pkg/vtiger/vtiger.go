@@ -425,11 +425,6 @@ func (c VtigerConnector) sessionId() (string, error) {
 		decodedSessionData = &SessionData{}
 		err = json.Unmarshal(cachedSessionData, decodedSessionData)
 		if err != nil {
-			if jsonErr, ok := err.(*json.SyntaxError); ok {
-				problemPart := cachedSessionData[jsonErr.Offset-10 : jsonErr.Offset+10]
-
-				err = fmt.Errorf("%w ~ error near '%s' (offset %d)", err, problemPart, jsonErr.Offset)
-			}
 			return "", e.Wrap("can not convert caches data to session", err)
 		}
 

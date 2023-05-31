@@ -11,6 +11,7 @@ func (h *Handler) initFaqsRoutes(api *gin.RouterGroup) {
 	tickets := api.Group("/faqs")
 	{
 		tickets.GET("/", h.getAllFaqs)
+		tickets.GET("/starred", h.getStarredFaqs)
 	}
 }
 
@@ -36,5 +37,26 @@ func (h *Handler) getAllFaqs(c *gin.Context) {
 		Count: count,
 		Page:  page,
 		Size:  size,
+	})
+}
+
+func (h *Handler) getStarredFaqs(c *gin.Context) {
+	userModel := h.getValidatedUser(c)
+
+	if userModel == nil {
+		newResponse(c, http.StatusBadRequest, "Wrong token or page size")
+		return
+	}
+
+	faqs, err := h.services.Faqs.GetStarred(c.Request.Context())
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, DataResponse[domain.Faq]{
+		Data:  faqs,
+		Count: len(faqs),
+		Page:  1,
+		Size:  100,
 	})
 }

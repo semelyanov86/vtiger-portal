@@ -6,6 +6,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
+	"github.com/semelyanov86/vtiger-portal/pkg/e"
 )
 
 type Faqs struct {
@@ -31,4 +32,22 @@ func (f Faqs) GetAll(ctx context.Context, filter repository.PaginationQueryFilte
 	}
 	count, err := f.repository.Count(ctx, filter.Client)
 	return faqs, count, err
+}
+
+func (f Faqs) GetStarred(ctx context.Context) ([]domain.Faq, error) {
+	faqs, _, err := f.GetAll(ctx, repository.PaginationQueryFilter{
+		Page:     1,
+		PageSize: 100,
+	})
+
+	if err != nil {
+		return faqs, e.Wrap("can not get all faqs", err)
+	}
+	res := make([]domain.Faq, 0)
+	for _, faq := range faqs {
+		if faq.Starred {
+			res = append(res, faq)
+		}
+	}
+	return res, nil
 }

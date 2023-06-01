@@ -55,3 +55,15 @@ func (p ProjectTaskCrm) Count(ctx context.Context, parent string) (int, error) {
 
 	return p.vtiger.Count(ctx, "ProjectTask", body)
 }
+
+func (p ProjectTaskCrm) Create(ctx context.Context, task domain.ProjectTask) (domain.ProjectTask, error) {
+	ticketMap, err := task.ConvertToMap()
+	if err != nil {
+		return task, e.Wrap("can not convert to map", err)
+	}
+	result, err := p.vtiger.Create(ctx, "ProjectTask", ticketMap)
+	if err != nil {
+		return task, e.Wrap("can not create task", err)
+	}
+	return domain.ConvertMapToProjectTask(result.Result)
+}

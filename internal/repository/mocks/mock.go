@@ -1077,6 +1077,21 @@ func (mr *MockProjectTaskMockRecorder) Count(ctx, parent interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockProjectTask)(nil).Count), ctx, parent)
 }
 
+// Create mocks base method.
+func (m *MockProjectTask) Create(ctx context.Context, task domain.ProjectTask) (domain.ProjectTask, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, task)
+	ret0, _ := ret[0].(domain.ProjectTask)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockProjectTaskMockRecorder) Create(ctx, task interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockProjectTask)(nil).Create), ctx, task)
+}
+
 // GetFromProject mocks base method.
 func (m *MockProjectTask) GetFromProject(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.ProjectTask, error) {
 	m.ctrl.T.Helper()

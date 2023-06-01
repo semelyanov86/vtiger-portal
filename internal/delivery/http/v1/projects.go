@@ -21,6 +21,7 @@ func (h *Handler) initProjectsRoutes(api *gin.RouterGroup) {
 		projects.GET("/:id/documents", h.getProjectDocuments)
 		projects.GET("/:id/file/:file", h.getProjectFile)
 		projects.GET("/:id/tasks", h.getAllProjectTasks)
+		projects.POST("/:id/tasks", h.createProjectTask)
 		projects.GET("/:id/tasks/:task/comments", h.getProjectTaskComments)
 		projects.POST("/:id/tasks/:task/comments", h.addProjectTaskComment)
 		projects.GET("/:id/tasks/:task/documents", h.getProjectTaskDocuments)
@@ -224,6 +225,44 @@ func (h *Handler) getAllProjectTasks(c *gin.Context) {
 		Page:  page,
 		Size:  size,
 	})
+}
+
+func (h *Handler) createProjectTask(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+	var inp service.ProjectTaskInput
+	if err := c.BindJSON(&inp); err != nil {
+		for _, fieldErr := range err.(validator.ValidationErrors) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": fieldErr.Field(), "message": fieldErr.Error()})
+			return // exit on first error
+		}
+	}
+	userModel := h.getValidatedUser(c)
+	if id == "" || userModel == nil {
+		newResponse(c, http.StatusBadRequest, "Wrong project or auth user")
+		return
+	}
+
+	project, err := h.services.Projects.GetProjectById(c.Request.Context(), id)
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if project.Linktoaccountscontacts != userModel.AccountId && project.Linktoaccountscontacts != userModel.Crmid {
+		notPermittedResponse(c)
+		return
+	}
+
+	task, err := h.services.ProjectTasks.CreateProjectTask(c.Request.Context(), inp, id)
+	if errors.Is(service.ErrValidation, err) {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "projecttaskname", "message": err.Error()})
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusCreated, task)
 }
 
 func (h *Handler) getProjectTaskComments(c *gin.Context) {

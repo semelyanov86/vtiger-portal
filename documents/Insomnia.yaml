@@ -1,6 +1,6 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-01T06:23:59.241Z
+__export_date: 2023-06-01T16:57:11.515Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de074600fd
@@ -102,6 +102,103 @@ resources:
     description: ""
     scope: design
     _type: workspace
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211deb0d90dd1
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1685638619262
+    created: 1685638229603
+    url: "{{ base_url }}/projects/{{ projectId }}/tasks"
+    name: Create new task
+    description: >-
+      Here you can create project task, attached to project. Note, that after
+      creation status field will be default. You do not need to pass it.
+
+
+      Example request:
+
+      ```json
+
+      {
+        "projecttaskname": "Landing page creation",
+        "projecttasktype": "administrative",
+        "projecttaskpriority": "normal",
+        "description": "Need to create creative landing for our key services"
+      }
+
+      ```
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"projecttaskname": "Landing page creation",
+      	"projecttasktype": "administrative",
+      	"projecttaskpriority": "normal",
+      	"projectid": "29x54",
+      	"assigned_user_id": "19x1",
+      	"projecttasknumber": "0",
+      	"projecttask_no": "PT4",
+      	"projecttaskprogress": "10%",
+      	"projecttaskhours": "",
+      	"startdate": "0001-01-01T00:00:00Z",
+      	"enddate": "0001-01-01T00:00:00Z",
+      	"createdtime": "2023-06-01T16:54:17Z",
+      	"modifiedtime": "2023-06-01T16:54:17Z",
+      	"description": "Need to create creative landing for our key services",
+      	"source": "PORTAL",
+      	"starred": false,
+      	"tags": [
+      		""
+      	],
+      	"projecttaskstatus": "Open",
+      	"id": "28x94",
+      	"label": "Landing page creation"
+      }
+
+      ```
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "projecttaskname": "Landing page creation",
+          "projecttasktype": "administrative",
+          "projecttaskpriority": "normal",
+          "description": "Need to create creative landing for our key services"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_af1834fa6a9f43e3879f87384edd9998
+      - id: pair_38d01a75c3514a6a9bfba2599131a92c
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1685638229603
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1684500052715
+    created: 1684500052715
+    name: project
+    description: Project module in Vtiger CRM
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1684500052715
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deed91bbf7
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
     modified: 1684583594109
@@ -209,16 +306,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684500052715
-    created: 1684500052715
-    name: project
-    description: Project module in Vtiger CRM
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1684500052715
-    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de597c735f
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
     modified: 1684590648606
@@ -466,7 +553,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de8d9cdc46
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1685600614049
+    modified: 1685638230272
     created: 1684500052658
     url: "{{ base_url }}/projects"
     name: Get Projects
@@ -3706,7 +3793,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1685600613549
+    modified: 1685638618740
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -5329,6 +5416,63 @@ resources:
                 description: Invalid pagination params
               "403":
                 description: Operation not permitted
+          post:
+              tags:
+                - project
+              summary: Create new task
+              description: Allows authorized user create project task, attached to project
+              operationId: createProjectTask
+              security:
+                - bearerAuth: []
+              parameters:
+                - name: projectId
+                  in: path
+                  description: ID of project
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        projecttaskname:
+                          description: Title of task
+                          type: string
+                          example: "Problem with internet"
+                        projecttasktype:
+                          description: Type of task
+                          type: string
+                          example: "administrative"
+                        projecttaskpriority:
+                          description: Priority of task
+                          type: string
+                          example: "normal"
+                        description:
+                          description: Some description of task
+                          type: string
+                          example: "There are no internet in my appartment."
+              responses:
+                "201":
+                  description: Task created
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ProjectTask"                
+                "400":
+                  description: Invalid ID supplied
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "404":
+                  description: Task or file not found
+                "403":
+                  description: Operation not permitted
         "/projects/{projectId}/tasks/{taskId}/comments":
           get:
             tags:

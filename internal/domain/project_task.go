@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"github.com/semelyanov86/vtiger-portal/internal/utils"
 	"strings"
 	"time"
 )
@@ -106,4 +107,17 @@ func ConvertMapToProjectTask(inputMap map[string]any) (ProjectTask, error) {
 	}
 
 	return projectTask, nil
+}
+
+func (h ProjectTask) ConvertToMap() (map[string]any, error) {
+	result, err := utils.ConvertStructToMap(h)
+	if err != nil {
+		return result, err
+	}
+	tags := ""
+	if len(h.Tags) > 0 {
+		tags = strings.Join(h.Tags, ",")
+	}
+	result["tags"] = tags
+	return result, nil
 }

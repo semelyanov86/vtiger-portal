@@ -1616,6 +1616,63 @@ paths:
           description: Invalid pagination params
         "403":
           description: Operation not permitted
+    post:
+      tags:
+        - project
+      summary: Create new task
+      description: Allows authorized user create project task, attached to project
+      operationId: createProjectTask
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: path
+          description: ID of project
+          required: true
+          schema:
+            type: string
+            format: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                projecttaskname:
+                  description: Title of task
+                  type: string
+                  example: "Problem with internet"
+                projecttasktype:
+                  description: Type of task
+                  type: string
+                  example: "administrative"
+                projecttaskpriority:
+                  description: Priority of task
+                  type: string
+                  example: "normal"
+                description:
+                  description: Some description of task
+                  type: string
+                  example: "There are no internet in my appartment."
+      responses:
+        "201":
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectTask"
+        "400":
+          description: Invalid ID supplied
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        "404":
+          description: Task or file not found
+        "403":
+          description: Operation not permitted
   "/projects/{projectId}/tasks/{taskId}/comments":
     get:
       tags:

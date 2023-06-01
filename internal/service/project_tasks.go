@@ -22,6 +22,13 @@ type ProjectTasksService struct {
 	project    ProjectsService
 }
 
+type ProjectTaskInput struct {
+	Projecttaskname     string `json:"projecttaskname" binding:"required"`
+	Projecttasktype     string `json:"projecttasktype" binding:"required"`
+	Projecttaskpriority string `json:"projecttaskpriority" binding:"required"`
+	Description         string `json:"description" binding:"required"`
+}
+
 func NewProjectTasksService(repository repository.ProjectTask, cache cache.Cache, comments CommentServiceInterface, document DocumentServiceInterface, module ModulesService, config config.Config, project ProjectsService) ProjectTasksService {
 	return ProjectTasksService{
 		repository: repository,
@@ -115,6 +122,49 @@ func (p ProjectTasksService) validateProjectPermissions(ctx context.Context, id 
 	}
 	if project.Linktoaccountscontacts != client && project.Linktoaccountscontacts != contact {
 		return ErrOperationNotPermitted
+	}
+	return nil
+}
+
+func (p ProjectTasksService) CreateProjectTask(ctx context.Context, input ProjectTaskInput, projectId string) (domain.ProjectTask, error) {
+	var projectTask domain.ProjectTask
+
+	projectTask.Projecttaskname = input.Projecttaskname
+	projectTask.Projecttasktype = input.Projecttasktype
+	projectTask.Projecttaskpriority = input.Projecttaskpriority
+	projectTask.Description = input.Description
+	projectTask.Projectid = projectId
+	projectTask.Projecttaskprogress = "10%"
+	projectTask.Source = "PORTAL"
+	projectTask.AssignedUserId = p.config.Vtiger.Business.DefaultUser
+
+	err := p.validateInputFields(ctx, &projectTask)
+	if err != nil {
+		return projectTask, err
+	}
+
+	return p.repository.Create(ctx, projectTask)
+}
+
+func (p ProjectTasksService) validateInputFields(ctx context.Context, projectTask *domain.ProjectTask) error {
+	module, err := p.module.Describe(ctx, "ProjectTask")
+	if err != nil {
+		return e.Wrap("can not get module info", err)
+	}
+	var fields = module.Fields
+	for _, field := range fields {
+		switch field.Name {
+		case "projecttaskstatus":
+			projectTask.Projecttaskstatus = field.Type.DefaultValue
+		case "projecttaskpriority":
+			if !field.Type.IsPicklistExist(projectTask.Projecttaskpriority) {
+				return e.Wrap("Wrong value for field projecttaskpriority", ErrValidation)
+			}
+		case "projecttasktype":
+			if !field.Type.IsPicklistExist(projectTask.Projecttasktype) {
+				return e.Wrap("Wrong value for field Projecttasktype", ErrValidation)
+			}
+		}
 	}
 	return nil
 }

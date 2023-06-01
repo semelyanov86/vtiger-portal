@@ -57,12 +57,20 @@ func (h *Handler) getAllProjects(c *gin.Context) {
 	if userModel == nil || page < 0 || size < 0 {
 		return
 	}
+	sortString := c.DefaultQuery("sort", "-project_no")
+
+	if !isSortStringValid(sortString, []string{"project_no", "projectname", "projecttype", "projectstatus", "projectpriority"}) {
+		newResponse(c, http.StatusUnprocessableEntity, "sort value "+sortString+" is not allowed")
+		return
+	}
 
 	projects, count, err := h.services.Projects.GetAll(c.Request.Context(), repository.PaginationQueryFilter{
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,
 		Contact:  userModel.Crmid,
+		Sort:     sortString,
+		Search:   c.DefaultQuery("search", ""),
 	})
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())

@@ -33,7 +33,21 @@ func (p ProjectCrm) RetrieveById(ctx context.Context, id string) (domain.Project
 func (p ProjectCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Project, error) {
 	// Calculate the offset for the given page number and page size
 	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT * FROM Project WHERE linktoaccountscontacts = " + filter.Client + " OR linktoaccountscontacts = " + filter.Contact + " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
+	query := "SELECT * FROM Project WHERE linktoaccountscontacts = " + filter.Client + " "
+	if filter.Search == "" {
+		query += " OR linktoaccountscontacts = " + filter.Contact + " "
+	}
+
+	sort := filter.Sort
+	if sort == "" {
+		sort = "-ticket_no"
+	}
+	if filter.Search != "" {
+		query += " AND project_no LIKE '%" + filter.Search + "%' OR projectname LIKE '%" + filter.Search + "%' OR projecttype LIKE '%" + filter.Search + "%' "
+	}
+	query += GenerateOrderByClause(sort)
+	query += " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
+
 	projects := make([]domain.Project, 0)
 	result, err := p.vtiger.Query(ctx, query)
 	if err != nil {

@@ -324,7 +324,7 @@ paths:
               $ref: "#/components/schemas/User"
       responses:
         "202":
-          description: Ticket updated
+          description: User updated
           content:
             application/json:
               schema:
@@ -338,7 +338,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ValidationResponse"
         "404":
-          description: HelpDesk or file not found
+          description: User or file not found
         "403":
           description: Operation not permitted
   "/managers/{managerId}":
@@ -911,6 +911,40 @@ paths:
           description: Invalid pagination params
         "403":
           description: Operation not permitted
+  "/faqs/starred":
+    get:
+      tags:
+        - faq
+      summary: Get Only Starred Faqs
+      description: This endpoint returns a list of frequently asked questions based on the starred status.
+      operationId: getStarredFaqs
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Faq"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid pagination params
+        "403":
+          description: Operation not permitted
   "/invoices":
     get:
       tags:
@@ -1285,6 +1319,20 @@ paths:
             type: integer
             format: int32
             default: 20
+        - name: sort
+          in: query
+          description: Field, which accepts order by algorithm. Minus sign at the beginning means desc order.
+          required: false
+          schema:
+            type: string
+            example: -project_no
+        - name: search
+          in: query
+          description: Search with LIKE filter in project_no and projecttitle and projecttype fields
+          required: false
+          schema:
+            type: string
+            example: TT3
       responses:
         "200":
           description: successful operation

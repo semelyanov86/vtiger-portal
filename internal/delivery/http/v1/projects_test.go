@@ -245,6 +245,8 @@ func TestHandler_getAllProjects(t *testing.T) {
 					PageSize: 20,
 					Client:   "11x1",
 					Contact:  "12x11",
+					Sort:     "-project_no",
+					Search:   "",
 				}).Return([]domain.Project{domain.MockedProject}, nil)
 				r.EXPECT().Count(context.Background(), "11x1", "12x11").Return(1, nil)
 			},

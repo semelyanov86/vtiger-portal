@@ -1,11 +1,11 @@
 _type: export
 __export_format: 4
-__export_date: 2023-05-22T06:14:14.043Z
+__export_date: 2023-06-01T06:23:59.241Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de074600fd
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
-    modified: 1684735982712
+    modified: 1685358715076
     created: 1684649257100
     url: "{{ base_url }}/statistics"
     name: Statistics
@@ -287,7 +287,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de1658ebcf
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1684567198152
+    modified: 1685338663818
     created: 1684566934449
     url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}/comments"
     name: Add comment
@@ -466,15 +466,20 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de8d9cdc46
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1684500473899
+    modified: 1685600614049
     created: 1684500052658
     url: "{{ base_url }}/projects"
     name: Get Projects
-    description: |-
+    description: >-
       Allows to get list of all projects. Accept also pagination params.
 
+      Also available search functionality, but note: due to vtiger limitations with OR clause, search is available only for attached Accounts to project, not contacts. If Project is attached to concrete contact, it will be not displayed.
+
+
       Example response:
+
       ```json
+
       {
       	"data": [
       		{
@@ -536,18 +541,27 @@ resources:
       	"page": 1,
       	"size": 20
       }
+
       ```
     method: GET
     body: {}
     parameters:
       - name: page
-        disabled: true
+        disabled: false
         value: "1"
         id: pair_491a66276de743d6bcc0320583aafd4c
       - name: size
-        disabled: true
+        disabled: false
         value: "20"
         id: pair_61d53eb2a1374bf79da28d34c6c3ad7e
+      - name: sort
+        disabled: true
+        value: project_no
+        id: pair_f3908a90e06b42538ae8bb9542117618
+      - name: search
+        disabled: true
+        value: PROJ2
+        id: pair_8a23d75d547049b0957a8ffb6296205f
     headers:
       - id: pair_2eceff9f1a4e4ea6826f6a348aeeb387
         name: Accept
@@ -633,7 +647,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de2af8354f
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1684500729356
+    modified: 1685288626222
     created: 1684500052649
     url: "{{ base_url }}/projects/{{ projectId }}/comments"
     name: Add comment
@@ -818,7 +832,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de4ae3365e
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de4cf5bc59
-    modified: 1684500102994
+    modified: 1685040646057
     created: 1684494653803
     url: "{{ base_url }}/services"
     name: Get Services
@@ -924,7 +938,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211decdabdf8b
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de4cf5bc59
-    modified: 1684494751219
+    modified: 1685080482948
     created: 1684494653802
     url: "{{ base_url }}/services/{{ serviceId }}"
     name: Find Service by ID
@@ -1343,11 +1357,12 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9127d807
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
-    modified: 1682660944164
+    modified: 1685080146216
     created: 1682659418912
     url: "{{ base_url }}/invoices"
     name: Get Invoices
-    description: ""
+    description: In order to work correctly, make sure that dates field are required
+      in Vtiger
     method: GET
     body: {}
     parameters:
@@ -1393,7 +1408,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de68d60525
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
-    modified: 1684477568367
+    modified: 1685080305886
     created: 1682578221793
     url: "{{ base_url }}/invoices/{{ invoiceId }}"
     name: Find Invoice by id
@@ -1680,6 +1695,48 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211def30bcb59
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211dee75bc045
+    modified: 1685599226505
+    created: 1685556697764
+    url: "{{ base_url }}/faqs/starred"
+    name: Get Only Starred Faqs
+    description: Filter only starred faqs to display in widgets
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_3950d64bbb344a0d941d0545bd14b36b
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_37fcf2a103cf47e3ae6ba9fb7b4d190d
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1685556697764
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211dee75bc045
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1682529682973
+    created: 1682529682973
+    name: faq
+    description: Frequently asked questions
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1682529682973
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de590cffc0
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211dee75bc045
     modified: 1682660893388
@@ -1752,19 +1809,92 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211dee75bc045
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de6d74493f
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
+    modified: 1685369401537
+    created: 1685369330631
+    url: "{{ base_url }}/users/my"
+    name: Update ticket
+    description: ""
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "ticket_title": "Problem with internet",
+          "ticketpriorities": "Normal",
+          "ticketseverities": "Minor",
+          "ticketcategories": "Big Problem",
+          "description": "There are no internet in my appartment."
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_f90649c1a84d418aaeccbe10508b6c0c
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1685369330631
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1682529682973
-    created: 1682529682973
-    name: faq
-    description: Frequently asked questions
+    modified: 1682098348631
+    created: 1682098348631
+    name: tickets
+    description: Operations with HelpDesk module
     environment: {}
     environmentPropertyOrder: null
-    metaSortKey: -1682529682973
+    metaSortKey: -1682098348631
     _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211def8070423
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
+    modified: 1685259012380
+    created: 1685212284466
+    url: "{{ base_url }}/tickets/{{ ticketId }}"
+    name: Partly Update ticket
+    description: Allows to update specific field in HelpDesk module. Currently
+      support only status field.
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "ticketstatus": "Closed"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_83afe002380e4bf48542718c983dd5e1
+      - id: pair_c6d1cd93560d49e4914b2ac9d05413b0
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1685212284466
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de29bcffbf
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1682529769590
+    modified: 1685287878476
     created: 1682489644953
     url: "{{ base_url }}/tickets/{{ ticketId }}/comments"
     name: Add comment
@@ -1823,106 +1953,6 @@ resources:
       token: "{{bearerToken}}"
       prefix: ""
     metaSortKey: -1682489644953
-    isPrivate: false
-    settingStoreCookies: true
-    settingSendCookies: true
-    settingDisableRenderRequestBody: false
-    settingEncodeUrl: true
-    settingRebuildPath: true
-    settingFollowRedirects: global
-    _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1682098348631
-    created: 1682098348631
-    name: tickets
-    description: Operations with HelpDesk module
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1682098348631
-    _type: request_group
-  - _id: req_wrk_66e74e4b495c4404841a78c723c211deb8d9c1dc
-    parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1682487624539
-    created: 1682426774797
-    url: "{{ base_url }}/tickets/{{ ticketId }}"
-    name: Update ticket
-    description: >-
-      To update ticket, you need to send PUT request and pass ticket ID. Note,
-      that you can pass only those fields you want to change.
-
-
-      Example request body:
-
-      ```json
-
-      {
-        "ticket_title": "Neew new mouse changes",
-        "ticketpriorities": "Normal",
-        "ticketseverities": "Minor",
-        "ticketcategories": "Big Problem",
-        "description": "Current mouse not working"
-      }
-
-      ```
-
-
-      Example response with status 202:
-
-      ```json
-
-      {
-      	"ticket_no": "TT3",
-      	"assigned_user_id": "19x1",
-      	"parent_id": "11x6",
-      	"ticketpriorities": "Normal",
-      	"product_id": "",
-      	"ticketseverities": "Minor",
-      	"ticketstatus": "Open",
-      	"ticketcategories": "Big Problem",
-      	"hours": 2,
-      	"days": 0,
-      	"createdtime": "2023-03-15T14:54:01Z",
-      	"modifiedtime": "2023-04-25T18:25:20Z",
-      	"from_portal": false,
-      	"modifiedby": "19x1",
-      	"ticket_title": "Neew new mouse changes",
-      	"description": "Current mouse not working",
-      	"solution": "Some solution",
-      	"contact_id": "12x11",
-      	"created_user_id": "",
-      	"source": "CRM",
-      	"starred": false,
-      	"tags": [
-      		"test1",
-      		"test2"
-      	],
-      	"id": "17x28",
-      	"label": "Neew new mouse changes"
-      }
-
-      ```
-    method: PUT
-    body:
-      mimeType: application/json
-      text: |-
-        {
-          "ticket_title": "Neew new mouse changes",
-          "ticketpriorities": "Normal",
-          "ticketseverities": "Minor",
-          "ticketcategories": "Big Problem",
-          "description": "Current mouse not working"
-        }
-    parameters: []
-    headers:
-      - name: Content-Type
-        value: application/json
-        id: pair_8902278f1ddf46c0b704e345b31553df
-    authentication:
-      type: bearer
-      token: "{{bearerToken}}"
-      prefix: ""
-    metaSortKey: -1682426774797
     isPrivate: false
     settingStoreCookies: true
     settingSendCookies: true
@@ -2013,7 +2043,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deb8795f33
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1682425976976
+    modified: 1685512196613
     created: 1682232473773
     url: "{{ base_url }}/tickets/{{ ticketId }}/documents"
     name: Related documents from ticket
@@ -2037,7 +2067,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de793d958d
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1684649732547
+    modified: 1685039933753
     created: 1682232473771
     url: "{{ base_url }}/tickets/{{ ticketId }}/file/{{ fileId }}"
     name: Get file in Ticket
@@ -2080,7 +2110,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de46f4f7b3
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1684649731888
+    modified: 1685197190425
     created: 1682171278798
     url: "{{ base_url }}/tickets"
     name: Get Tickets
@@ -2168,8 +2198,17 @@ resources:
         id: pair_8d0ad7d75fb54917bcca31b74d2be90e
       - name: size
         disabled: true
-        value: "10"
+        value: "5"
         id: pair_d1e556b86b9f4dbf9cd74fd3d9cba060
+      - name: sort
+        disabled: true
+        value: -ticket_no
+        id: pair_c7e0f105a0594dd4a8f06275cefa002c
+      - name: search
+        disabled: true
+        value: new
+        id: pair_1f98e09450484cc5880a8ad2926b2c27
+        description: ""
     headers: []
     authentication:
       type: bearer
@@ -2186,7 +2225,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deeb2dc7bf
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1684521120721
+    modified: 1685285068997
     created: 1682145840383
     url: "{{ base_url }}/tickets/{{ ticketId }}/comments"
     name: Related comments from ticket
@@ -2217,7 +2256,14 @@ resources:
       			"parent_comments": "",
       			"is_private": false,
       			"filename": "0",
-      			"related_email_id": "0"
+      			"related_email_id": "0",
+      			"author": {
+      				"firstname": "",
+      				"lastname": "Administrator",
+      				"email": "emelyanov86@km.ru",
+      				"imagecontent": "",
+      				"id": "19x1"
+      			}
       		}
       	],
       	"count": 1,
@@ -2245,7 +2291,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dee9835bc2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1684735217652
+    modified: 1685211879193
     created: 1682098348610
     url: "{{ base_url }}/tickets/{{ ticketId }}"
     name: Find HelpDesk by ID
@@ -2305,7 +2351,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de01c821a8
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211defbd34a2b
-    modified: 1684478262338
+    modified: 1685253923481
     created: 1682057273135
     url: "{{ base_url }}/modules/{{ moduleName }}"
     name: Module Info
@@ -2848,7 +2894,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deaa5108ed
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de1a8565a9
-    modified: 1684478268252
+    modified: 1685554975794
     created: 1682010335863
     url: "{{ base_url }}/managers/{{ managerId }}"
     name: Find manager by ID
@@ -2912,7 +2958,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de816b2196
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de5bdcd3c0
-    modified: 1684516274471
+    modified: 1685554970919
     created: 1682089127951
     url: "{{ base_url }}/company"
     name: Get company data
@@ -3039,9 +3085,101 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211deb8d9c1dc
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1685556529681
+    created: 1682426774797
+    url: "{{ base_url }}/tickets/{{ ticketId }}"
+    name: Update user
+    description: |-
+      Here you can update information about authenticated user
+
+      Example response:
+      ```json
+      {
+      		"firstname": "Sergei",
+      		"lastname": "Emelianov",
+      		"description": "Here is changed description second",
+      		"account_name": "CIT",
+      		"title": "Director",
+      		"department": "Management",
+      		"email": "se@sergeyem.ru",
+      		"mailingcity": "Cheboksary",
+      		"mailingstreet": "Bulvar Yunosti, 3",
+      		"mailingcountry": "Russia",
+      		"othercountry": "Russia",
+      		"mailingstate": "Chuvashia",
+      		"mailingpobox": "",
+      		"othercity": "Cheboksary",
+      		"otherstate": "Chuvashia",
+      		"mailingzip": "428010",
+      		"otherzip": "428010",
+      		"otherstreet": "Bulvar Yunosti, 3",
+      		"otherpobox": "",
+      		"phone": "+4915211100235"
+      }
+      ```
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        		"firstname": "Sergei",
+        		"lastname": "Emelianov",
+        		"description": "Here is changed description second",
+        		"account_name": "CIT",
+        		"title": "Director",
+        		"department": "Management",
+        		"email": "se@sergeyem.ru",
+        		"mailingcity": "Cheboksary",
+        		"mailingstreet": "Bulvar Yunosti, 3",
+        		"mailingcountry": "Russia",
+        		"othercountry": "Russia",
+        		"mailingstate": "Chuvashia",
+        		"mailingpobox": "",
+        		"othercity": "Cheboksary",
+        		"otherstate": "Chuvashia",
+        		"mailingzip": "428010",
+        		"otherzip": "428010",
+        		"otherstreet": "Bulvar Yunosti, 3",
+        		"otherpobox": "",
+        		"phone": "+4915211100235"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_8902278f1ddf46c0b704e345b31553df
+      - id: pair_7098c1937d1b4e7da566ce8fda1b87c9
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684590648138
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1681752584161
+    created: 1681752584161
+    name: user
+    description: Operations about user
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1681752584161
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dee56f68e2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1684649257696
+    modified: 1685556413331
     created: 1684590648088
     url: "{{ base_url }}/users/all"
     name: Get Users From My Company
@@ -3122,16 +3260,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1681752584161
-    created: 1681752584161
-    name: user
-    description: Operations about user
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1681752584161
-    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de051cf8c0
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
     modified: 1683371854698
@@ -3255,7 +3383,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de94b9a1a1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1684518679613
+    modified: 1685556698416
     created: 1681838399470
     url: "{{ base_url }}/users/my"
     name: Get data about authenticated user
@@ -3368,7 +3496,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de00ac9da2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1684649727524
+    modified: 1685197194997
     created: 1681827520782
     url: "{{ base_url }}/users/login"
     name: Login in system
@@ -3578,7 +3706,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684735958153
+    modified: 1685600613549
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -3894,6 +4022,38 @@ resources:
                         message:
                           type: string
                           example: "Got anonymous user from token or user without crmid"
+          put:
+              tags:
+                - user
+              summary: Update User
+              description: Allows authorized user information about yourself.
+              operationId: updateUser
+              security:
+                - bearerAuth: []
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/User" 
+              responses:
+                "202":
+                  description: User updated
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/User"                
+                "400":
+                  description: Invalid ID supplied
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "404":
+                  description: User or file not found
+                "403":
+                  description: Operation not permitted
         "/managers/{managerId}":
           get:
             tags:
@@ -4064,6 +4224,51 @@ resources:
                           description: Some description of ticket
                           type: string
                           example: "There are no internet in my appartment."
+              responses:
+                "202":
+                  description: Ticket updated
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/HelpDesk"                
+                "400":
+                  description: Invalid ID supplied
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "404":
+                  description: HelpDesk or file not found
+                "403":
+                  description: Operation not permitted
+          patch:
+              tags:
+                - tickets
+              summary: Partly Update ticket
+              description: Allows update specific field in ticket. Currently we support only status field.
+              operationId: updateTicketPartly
+              security:
+                - bearerAuth: []
+              parameters:
+                - name: ticketId
+                  in: path
+                  description: ID of ticket to update
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        ticketstatus:
+                          description: Status of ticket
+                          type: string
+                          example: "Closed"
               responses:
                 "202":
                   description: Ticket updated
@@ -4329,6 +4534,20 @@ resources:
                   type: integer
                   format: int32
                   default: 20
+              - name: sort
+                in: query
+                description: Field, which accepts order by algorithm. Minus sign at the beginning means desc order.
+                required: false
+                schema:
+                  type: string
+                  example: -ticket_no
+              - name: search
+                in: query
+                description: Search with LIKE filter in ticket_no and ticket_title fields
+                required: false
+                schema:
+                  type: string
+                  example: TT3
             responses:
               "200":
                 description: successful operation
@@ -4380,6 +4599,40 @@ resources:
                     type: integer
                     format: int32
                     default: 20
+              responses:
+                "200":
+                  description: successful operation
+                  content:
+                    application/json:
+                      schema:
+                        type: object
+                        properties:
+                          data:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/Faq"
+                          count:
+                            type: number
+                            example: 100
+                          page:
+                            type: number
+                            example: 1
+                          size:
+                            type: number
+                            example: 100
+                "400":
+                  description: Invalid pagination params
+                "403":
+                  description: Operation not permitted
+        "/faqs/starred":
+          get:
+              tags:
+                - faq
+              summary: Get Only Starred Faqs
+              description: This endpoint returns a list of frequently asked questions based on the starred status.
+              operationId: getStarredFaqs
+              security:
+                - bearerAuth: []
               responses:
                 "200":
                   description: successful operation
@@ -4779,6 +5032,20 @@ resources:
                   type: integer
                   format: int32
                   default: 20
+              - name: sort
+                in: query
+                description: Field, which accepts order by algorithm. Minus sign at the beginning means desc order.
+                required: false
+                schema:
+                  type: string
+                  example: -project_no
+              - name: search
+                in: query
+                description: Search with LIKE filter in project_no and projecttitle and projecttype fields
+                required: false
+                schema:
+                  type: string
+                  example: TT3
             responses:
               "200":
                 description: successful operation
@@ -5334,6 +5601,9 @@ resources:
                 type: string
               imagecontent:
                 type: string
+              assigned_user_id:
+                type: string
+                example: "17x1"
             xml:
               name: User
           Manager:
@@ -5632,6 +5902,8 @@ resources:
               related_email_id:
                 type: "string"
                 example: "eml-654"
+              author:
+                $ref: '#/components/schemas/CommentsAuthor'
           Document:
             type: "object"
             properties:
@@ -6820,6 +7092,24 @@ resources:
                 type: number
                 format: float
                 example: 7000.00
+          CommentsAuthor:
+            type: object
+            properties:
+              firstname:
+                type: string
+                example: "Ksenia"
+              lastname:
+                type: string
+                example: "Ivanova"
+              email:
+                type: string
+                example: "ks@mail.ru"
+              imagecontent:
+                type: string
+                example: ""
+              id:
+                type: string
+                example: "19x1"
     contentType: yaml
     _type: api_spec
   - _id: env_env_7051e4988ba662848196b333737a56823b214220_sub

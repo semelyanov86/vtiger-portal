@@ -36,7 +36,7 @@ func (h *Handler) getProject(c *gin.Context) {
 		return
 	}
 
-	project, err := h.services.Projects.GetProjectById(c.Request.Context(), id)
+	project, err := h.services.Projects.GetProjectById(c.Request.Context(), id, true)
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -242,7 +242,7 @@ func (h *Handler) createProjectTask(c *gin.Context) {
 		return
 	}
 
-	project, err := h.services.Projects.GetProjectById(c.Request.Context(), id)
+	project, err := h.services.Projects.GetProjectById(c.Request.Context(), id, false)
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return

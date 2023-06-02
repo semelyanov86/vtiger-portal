@@ -46,6 +46,7 @@ func TestHandler_getProjectTasks(t *testing.T) {
 					Parent:   "29x54",
 				}).Return([]domain.ProjectTask{domain.MockedProjectTask}, nil)
 				r.EXPECT().Count(context.Background(), "29x54").Return(1, nil)
+
 			},
 			statusCode:   http.StatusOK,
 			responseBody: `"projecttaskname":"Install hosting"`,
@@ -90,7 +91,7 @@ func TestHandler_getProjectTasks(t *testing.T) {
 			rt := mock_repository.NewMockProjectTask(c)
 			tt.mockProjectTask(rt)
 
-			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), service.Comments{}, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
+			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), service.Comments{}, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{}, rt)
 
 			tasksService := service.NewProjectTasksService(rt, cache.NewMemoryCache(), &mock_service.MockCommentServiceInterface{}, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{}, projectsService)
 
@@ -231,7 +232,7 @@ func TestHandler_getRelatedCommentsFromProjectTask(t *testing.T) {
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.NewManagerService(rman, cache.NewMemoryCache()))
 
-			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
+			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{}, rt)
 			projectTaskService := service.NewProjectTasksService(rt, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{}, projectsService)
 
 			services := &service.Services{Projects: projectsService, Comments: commentService, Context: service.MockedContextService{MockedUser: tt.userModel}, ProjectTasks: projectTaskService}
@@ -350,7 +351,7 @@ func TestHandler_getRelatedDocumentsFromProjectTask(t *testing.T) {
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
-			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{})
+			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{}, rt)
 			projectTasksService := service.NewProjectTasksService(rt, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{}, projectsService)
 
 			services := &service.Services{Projects: projectsService, Comments: commentService, Documents: documentService, Context: service.MockedContextService{MockedUser: tt.userModel}, ProjectTasks: projectTasksService}

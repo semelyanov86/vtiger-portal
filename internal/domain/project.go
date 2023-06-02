@@ -6,29 +6,43 @@ import (
 )
 
 type Project struct {
-	Projectname              string    `json:"projectname"`
-	Startdate                time.Time `json:"startdate"`
-	Targetenddate            time.Time `json:"targetenddate"`
-	Actualenddate            time.Time `json:"actualenddate"`
-	Projectstatus            string    `json:"projectstatus"`
-	Projecttype              string    `json:"projecttype"`
-	Linktoaccountscontacts   string    `json:"linktoaccountscontacts"`
-	ProjectNo                string    `json:"project_no"`
-	Targetbudget             string    `json:"targetbudget"`
-	Projecturl               string    `json:"projecturl"`
-	Projectpriority          string    `json:"projectpriority"`
-	Progress                 string    `json:"progress"`
-	Isconvertedfrompotential bool      `json:"isconvertedfrompotential"`
-	Potentialid              string    `json:"potentialid"`
-	CreatedTime              time.Time `json:"created_time"`
-	ModifiedTime             time.Time `json:"modified_time"`
-	AssignedUserId           string    `json:"assigned_user_id"`
-	Description              string    `json:"description"`
-	Source                   string    `json:"source"`
-	Starred                  bool      `json:"starred"`
-	Tags                     []string  `json:"tags"`
-	Id                       string    `json:"id"`
-	Label                    string    `json:"label"`
+	Projectname              string                   `json:"projectname"`
+	Startdate                time.Time                `json:"startdate"`
+	Targetenddate            time.Time                `json:"targetenddate"`
+	Actualenddate            time.Time                `json:"actualenddate"`
+	Projectstatus            string                   `json:"projectstatus"`
+	Projecttype              string                   `json:"projecttype"`
+	Linktoaccountscontacts   string                   `json:"linktoaccountscontacts"`
+	ProjectNo                string                   `json:"project_no"`
+	Targetbudget             string                   `json:"targetbudget"`
+	Projecturl               string                   `json:"projecturl"`
+	Projectpriority          string                   `json:"projectpriority"`
+	Progress                 string                   `json:"progress"`
+	Isconvertedfrompotential bool                     `json:"isconvertedfrompotential"`
+	Potentialid              string                   `json:"potentialid"`
+	CreatedTime              time.Time                `json:"created_time"`
+	ModifiedTime             time.Time                `json:"modified_time"`
+	AssignedUserId           string                   `json:"assigned_user_id"`
+	Description              string                   `json:"description"`
+	Source                   string                   `json:"source"`
+	Starred                  bool                     `json:"starred"`
+	Tags                     []string                 `json:"tags"`
+	Id                       string                   `json:"id"`
+	Label                    string                   `json:"label"`
+	Statistics               CurrentProjectStatistics `json:"statistics,omitempty"`
+}
+
+type CurrentProjectStatistics struct {
+	TotalTasks      int     `json:"total_tasks,omitempty"`
+	TotalHours      float64 `json:"total_hours,omitempty"`
+	OpenTasks       int     `json:"open_tasks,omitempty"`
+	ClosedTasks     int     `json:"closed_tasks,omitempty"`
+	InProgressTasks int     `json:"in_progress_tasks,omitempty"`
+	DeferredTasks   int     `json:"deferred_tasks,omitempty"`
+	CancelledTasks  int     `json:"cancelled_tasks,omitempty"`
+	LowTasks        int     `json:"low_tasks,omitempty"`
+	NormalTasks     int     `json:"normal_tasks,omitempty"`
+	HighTasks       int     `json:"high_tasks,omitempty"`
 }
 
 var MockedProject = Project{

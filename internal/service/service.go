@@ -51,7 +51,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 	documentService := NewDocuments(repos.Documents, cache)
 	modulesService := NewModulesService(repos.Modules, cache)
 	currencyService := NewCurrencyService(repos.Currency, cache)
-	projectService := NewProjectsService(repos.Projects, cache, commentsService, documentService, modulesService, config)
+	projectService := NewProjectsService(repos.Projects, cache, commentsService, documentService, modulesService, config, repos.ProjectTasks)
 	return &Services{
 		Users:            usersService,
 		Emails:           *NewEmailsService(email, config.Email, cache),

@@ -116,7 +116,7 @@ func (p ProjectTasksService) AddComment(ctx context.Context, content string, rel
 }
 
 func (p ProjectTasksService) validateProjectPermissions(ctx context.Context, id string, client string, contact string) error {
-	project, err := p.project.GetProjectById(ctx, id)
+	project, err := p.project.GetProjectById(ctx, id, false)
 	if err != nil {
 		return err
 	}

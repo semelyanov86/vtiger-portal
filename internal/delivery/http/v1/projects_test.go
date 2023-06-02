@@ -20,20 +20,34 @@ import (
 
 func TestHandler_getProjectById(t *testing.T) {
 	type mockRepositoryProject func(r *mock_repository.MockProject)
+	type mockRepositoryTask func(r *mock_repository.MockProjectTask)
 
 	tests := []struct {
-		name         string
-		id           string
-		mockProject  mockRepositoryProject
-		userModel    *domain.User
-		statusCode   int
-		responseBody string
+		name            string
+		id              string
+		mockProject     mockRepositoryProject
+		mockProjectTask mockRepositoryTask
+		userModel       *domain.User
+		statusCode      int
+		responseBody    string
 	}{
 		{
 			name: "Project received",
 			id:   "29x54",
 			mockProject: func(r *mock_repository.MockProject) {
 				r.EXPECT().RetrieveById(context.Background(), "29x54").Return(domain.MockedProject, nil)
+			},
+			mockProjectTask: func(r *mock_repository.MockProjectTask) {
+				r.EXPECT().GetFromProject(context.Background(), repository.PaginationQueryFilter{
+					Page:     1,
+					PageSize: 100,
+					Client:   "",
+					Contact:  "",
+					Parent:   "29x54",
+					Sort:     "",
+					Filters:  nil,
+					Search:   "",
+				}).Return([]domain.ProjectTask{domain.MockedProjectTask}, nil)
 			},
 			statusCode:   http.StatusOK,
 			responseBody: `"projectname":"Website development"`,
@@ -44,6 +58,9 @@ func TestHandler_getProjectById(t *testing.T) {
 			id:   "17x1",
 			mockProject: func(r *mock_repository.MockProject) {
 			},
+			mockProjectTask: func(r *mock_repository.MockProjectTask) {
+
+			},
 			statusCode:   http.StatusUnauthorized,
 			responseBody: `"error":"Anonymous Access",`,
 			userModel:    domain.AnonymousUser,
@@ -51,6 +68,9 @@ func TestHandler_getProjectById(t *testing.T) {
 			name: "Wrong ID",
 			id:   "17",
 			mockProject: func(r *mock_repository.MockProject) {
+			},
+			mockProjectTask: func(r *mock_repository.MockProjectTask) {
+
 			},
 			statusCode:   http.StatusUnprocessableEntity,
 			responseBody: `wrong id`,
@@ -63,6 +83,18 @@ func TestHandler_getProjectById(t *testing.T) {
 				project := domain.MockedProject
 				project.Linktoaccountscontacts = "11x16"
 				r.EXPECT().RetrieveById(context.Background(), "29x54").Return(project, nil)
+			},
+			mockProjectTask: func(r *mock_repository.MockProjectTask) {
+				r.EXPECT().GetFromProject(context.Background(), repository.PaginationQueryFilter{
+					Page:     1,
+					PageSize: 100,
+					Client:   "",
+					Contact:  "",
+					Parent:   "29x54",
+					Sort:     "",
+					Filters:  nil,
+					Search:   "",
+				}).Return([]domain.ProjectTask{domain.MockedProjectTask}, nil)
 			},
 			statusCode:   http.StatusForbidden,
 			responseBody: `"message":"You are not allowed to view this record"`,
@@ -77,9 +109,11 @@ func TestHandler_getProjectById(t *testing.T) {
 			defer c.Finish()
 
 			rm := mock_repository.NewMockProject(c)
+			rt := mock_repository.NewMockProjectTask(c)
 			tt.mockProject(rm)
+			tt.mockProjectTask(rt)
 
-			managerService := service.NewProjectsService(rm, cache.NewMemoryCache(), &mock_service.MockCommentServiceInterface{}, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
+			managerService := service.NewProjectsService(rm, cache.NewMemoryCache(), &mock_service.MockCommentServiceInterface{}, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{}, rt)
 
 			services := &service.Services{Projects: managerService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -197,7 +231,7 @@ func TestHandler_getRelatedCommentsFromProject(t *testing.T) {
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.NewManagerService(rman, cache.NewMemoryCache()))
 
-			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
+			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{}, repository.ProjectTaskCrm{})
 
 			services := &service.Services{Projects: projectsService, Comments: commentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -293,7 +327,7 @@ func TestHandler_getAllProjects(t *testing.T) {
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 
-			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{})
+			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, mock_service.NewMockDocumentServiceInterface(c), service.ModulesService{}, config.Config{}, repository.ProjectTaskCrm{})
 
 			services := &service.Services{Projects: projectsService, Comments: commentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services, config: &config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultPagination: 20}}}}
@@ -397,7 +431,7 @@ func TestHandler_getRelatedDocumentsFromProject(t *testing.T) {
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
-			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{})
+			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{}, repository.ProjectTaskCrm{})
 
 			services := &service.Services{Projects: projectsService, Comments: commentService, Documents: documentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -508,7 +542,7 @@ func TestHandler_getFileFromProject(t *testing.T) {
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
 			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
 
-			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{})
+			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{}, repository.ProjectTaskCrm{})
 
 			services := &service.Services{Projects: projectsService, Comments: commentService, Documents: documentService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}

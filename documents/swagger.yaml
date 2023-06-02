@@ -3267,6 +3267,8 @@ components:
         label:
           type: string
           example: "Website Redesign"
+        statistics:
+          $ref: '#/components/schemas/CurrentProjectStatistics'
     ProjectTask:
       type: object
       properties:
@@ -3454,3 +3456,36 @@ components:
         id:
           type: string
           example: "19x1"
+    CurrentProjectStatistics:
+      type: object
+      properties:
+        total_tasks:
+          type: number
+          example: 10
+        total_hours:
+          type: number
+          example: 120
+        open_tasks:
+          type: number
+          example: 3
+        closed_tasks:
+          type: number
+          example: 5
+        in_progress_tasks:
+          type: number
+          example: 1
+        deferred_tasks:
+          type: number
+          example: 2
+        cancelled_tasks:
+          type: number
+          example: 1
+        low_tasks:
+          type: number
+          example: 1
+        normal_tasks:
+          type: number
+          example: 5
+        high_tasks:
+          type: number
+          example: 1

@@ -1,8 +1,142 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-03T06:08:14.104Z
+__export_date: 2023-06-03T07:14:13.065Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de705e89df
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
+    modified: 1685776422616
+    created: 1685776181238
+    url: "{{ base_url }}/statistics/tasks"
+    name: List of Progress Tasks
+    description: |-
+      Getting list of project tasks in progress projects
+
+      Example response:
+      ```json
+      {
+      	"data": [
+      		{
+      			"projecttaskname": "Need to fix issue",
+      			"projecttasktype": "administrative",
+      			"projecttaskpriority": "Urgent",
+      			"projectid": "29x54",
+      			"assigned_user_id": "19x1",
+      			"projecttasknumber": "2",
+      			"projecttask_no": "PT1",
+      			"projecttaskprogress": "20%",
+      			"projecttaskhours": "18",
+      			"startdate": "2023-04-30T00:00:00Z",
+      			"enddate": "2023-05-23T00:00:00Z",
+      			"createdtime": "2023-04-28T06:07:22Z",
+      			"modifiedtime": "2023-06-03T06:06:12Z",
+      			"description": "There is very big problem",
+      			"source": "CRM",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"projecttaskstatus": "Closed",
+      			"id": "28x56",
+      			"label": ""
+      		},
+      		{
+      			"projecttaskname": "Framework installation and setup",
+      			"projecttasktype": "administrative",
+      			"projecttaskpriority": "normal",
+      			"projectid": "29x54",
+      			"assigned_user_id": "19x1",
+      			"projecttasknumber": "0",
+      			"projecttask_no": "PT2",
+      			"projecttaskprogress": "10%",
+      			"projecttaskhours": "13",
+      			"startdate": "2023-05-02T00:00:00Z",
+      			"enddate": "2023-05-05T00:00:00Z",
+      			"createdtime": "2023-04-28T06:07:55Z",
+      			"modifiedtime": "2023-04-28T06:07:55Z",
+      			"description": "This is installation only",
+      			"source": "CRM",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"projecttaskstatus": "Open",
+      			"id": "28x57",
+      			"label": ""
+      		},
+      		{
+      			"projecttaskname": "Landing page creation",
+      			"projecttasktype": "administrative",
+      			"projecttaskpriority": "normal",
+      			"projectid": "29x54",
+      			"assigned_user_id": "19x1",
+      			"projecttasknumber": "0",
+      			"projecttask_no": "PT4",
+      			"projecttaskprogress": "10%",
+      			"projecttaskhours": "",
+      			"startdate": "0001-01-01T00:00:00Z",
+      			"enddate": "0001-01-01T00:00:00Z",
+      			"createdtime": "2023-06-01T16:54:17Z",
+      			"modifiedtime": "2023-06-01T16:54:17Z",
+      			"description": "Need to create creative landing for our key services",
+      			"source": "PORTAL",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"projecttaskstatus": "Open",
+      			"id": "28x94",
+      			"label": ""
+      		}
+      	],
+      	"count": 3,
+      	"page": 1,
+      	"size": 100
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_952158cbf5fa473f8174207b5ec3c5ac
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_a6ab14afc69c486bb5e200ad27469907
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1685776181238
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1684649257152
+    created: 1684649257152
+    name: statistics
+    description: Endpoints for dashboards
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1684649257152
+    _type: request_group
+  - _id: wrk_66e74e4b495c4404841a78c723c211de
+    parentId: null
+    modified: 1681752522262
+    created: 1681752522262
+    name: Vtiger Customer Portal
+    description: ""
+    scope: design
+    _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de074600fd
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
     modified: 1685358715076
@@ -84,27 +218,9 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684649257152
-    created: 1684649257152
-    name: statistics
-    description: Endpoints for dashboards
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1684649257152
-    _type: request_group
-  - _id: wrk_66e74e4b495c4404841a78c723c211de
-    parentId: null
-    modified: 1681752522262
-    created: 1681752522262
-    name: Vtiger Customer Portal
-    description: ""
-    scope: design
-    _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de6c65dc60
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1685772418020
+    modified: 1685776182105
     created: 1685770578025
     url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}"
     name: Task Update
@@ -3880,7 +3996,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1685770578091
+    modified: 1685776422093
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -5796,6 +5912,42 @@ resources:
                       properties:
                         data:
                           $ref: "#/components/schemas/Statistics"
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Project not found
+              "403":
+                description: Operation not permitted
+        "/statistics/tasks":
+          get:
+            tags:
+              - statistics
+            summary: List of Progress Tasks
+            description: Get list of tasks from project in progress status
+            operationId: getProgressTasks
+            security:
+              - bearerAuth: []
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/ProjectTask"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
               "400":
                 description: Invalid ID supplied
               "404":

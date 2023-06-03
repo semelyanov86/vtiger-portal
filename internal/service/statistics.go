@@ -33,6 +33,10 @@ type operation struct {
 	limitCh chan struct{}
 }
 
+func (s StatisticsService) GetInProgressTasks(ctx context.Context, userModel domain.User) ([]domain.ProjectTask, error) {
+	return s.repository.TasksFromInProgressProjects(ctx, userModel)
+}
+
 func (s StatisticsService) GetStatistics(ctx context.Context, userModel domain.User) (domain.Statistics, error) {
 	var totalErr, openErr, ipError, wrError, closedError, openInvoicesErr, closedInvoicesErr, totalInvoicesErr, totalProjectsErr, openProjectsErr, closedProjectsErr, inProgressTasksErr error
 

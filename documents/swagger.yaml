@@ -1915,6 +1915,42 @@ paths:
           description: Project not found
         "403":
           description: Operation not permitted
+  "/statistics/tasks":
+    get:
+      tags:
+        - statistics
+      summary: List of Progress Tasks
+      description: Get list of tasks from project in progress status
+      operationId: getProgressTasks
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProjectTask"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Project not found
+        "403":
+          description: Operation not permitted
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io

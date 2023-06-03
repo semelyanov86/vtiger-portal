@@ -67,3 +67,11 @@ func (p ProjectTaskCrm) Create(ctx context.Context, task domain.ProjectTask) (do
 	}
 	return domain.ConvertMapToProjectTask(result.Result)
 }
+
+func (p ProjectTaskCrm) Revise(ctx context.Context, task map[string]any) (domain.ProjectTask, error) {
+	result, err := p.vtiger.Revise(ctx, task)
+	if err != nil {
+		return domain.ProjectTask{}, e.Wrap("can send update map to vtiger", err)
+	}
+	return domain.ConvertMapToProjectTask(result.Result)
+}

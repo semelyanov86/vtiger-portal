@@ -1,6 +1,6 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-01T16:57:11.515Z
+__export_date: 2023-06-03T06:08:14.104Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de074600fd
@@ -102,9 +102,99 @@ resources:
     description: ""
     scope: design
     _type: workspace
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de6c65dc60
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1685772418020
+    created: 1685770578025
+    url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}"
+    name: Task Update
+    description: |-
+      Feature for partly update of project task
+
+      Example request:
+      ```json
+      {
+        "projecttaskstatus": "Closed",
+        "projecttaskname": "Need to fix issue",
+        "description": "There is very big problem",
+        "projecttaskpriority": "Urgent",
+        "projecttasktype": "administrative"
+      }
+      ```
+
+      Example response:
+      ```json
+      {
+      	"projecttaskname": "Need to fix issue",
+      	"projecttasktype": "administrative",
+      	"projecttaskpriority": "Urgent",
+      	"projectid": "29x54",
+      	"assigned_user_id": "19x1",
+      	"projecttasknumber": "2",
+      	"projecttask_no": "PT1",
+      	"projecttaskprogress": "20%",
+      	"projecttaskhours": "18",
+      	"startdate": "2023-04-30T00:00:00Z",
+      	"enddate": "2023-05-23T00:00:00Z",
+      	"createdtime": "2023-04-28T06:07:22Z",
+      	"modifiedtime": "2023-06-03T06:06:12Z",
+      	"description": "There is very big problem",
+      	"source": "CRM",
+      	"starred": false,
+      	"tags": [
+      		""
+      	],
+      	"projecttaskstatus": "Closed",
+      	"id": "28x56",
+      	"label": "Need to fix issue"
+      }
+      ```
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "projecttaskstatus": "Closed",
+          "projecttaskname": "Need to fix issue",
+          "description": "There is very big problem",
+          "projecttaskpriority": "Urgent",
+          "projecttasktype": "administrative"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_f3617631f654414ea4d19c704f474982
+      - id: pair_970078c553eb4e998a7812788409b51b
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1685770578025
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1684500052715
+    created: 1684500052715
+    name: project
+    description: Project module in Vtiger CRM
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1684500052715
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deb0d90dd1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1685638619262
+    modified: 1685684665879
     created: 1685638229603
     url: "{{ base_url }}/projects/{{ projectId }}/tasks"
     name: Create new task
@@ -189,16 +279,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684500052715
-    created: 1684500052715
-    name: project
-    description: Project module in Vtiger CRM
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1684500052715
-    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deed91bbf7
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
     modified: 1684583594109
@@ -487,7 +567,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de09d91eb1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1684500341984
+    modified: 1685770578624
     created: 1684500052656
     url: "{{ base_url }}/projects/{{ projectId }}"
     name: Find Project by ID
@@ -502,7 +582,7 @@ resources:
       		"startdate": "2023-04-30T00:00:00Z",
       		"targetenddate": "2023-05-04T00:00:00Z",
       		"actualenddate": "2023-05-31T00:00:00Z",
-      		"projectstatus": "prospecting",
+      		"projectstatus": "in progress",
       		"projecttype": "administrative",
       		"linktoaccountscontacts": "11x6",
       		"project_no": "PROJ1",
@@ -513,7 +593,7 @@ resources:
       		"isconvertedfrompotential": false,
       		"potentialid": "13x14",
       		"created_time": "2023-04-28T06:03:56Z",
-      		"modified_time": "2023-05-19T11:40:13Z",
+      		"modified_time": "2023-05-25T06:22:51Z",
       		"assigned_user_id": "19x1",
       		"description": "This is test project",
       		"source": "",
@@ -522,7 +602,14 @@ resources:
       			""
       		],
       		"id": "29x54",
-      		"label": "Website development"
+      		"label": "Website development",
+      		"statistics": {
+      			"total_tasks": 3,
+      			"total_hours": 31,
+      			"open_tasks": 3,
+      			"low_tasks": 1,
+      			"normal_tasks": 2
+      		}
       	}
       }
       ```
@@ -3793,7 +3880,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1685638618740
+    modified: 1685770578091
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -5358,6 +5445,75 @@ resources:
                 description: HelpDesk or file not found
               "403":
                 description: Operation not permitted
+        "/projects/{projectId}/tasks/{taskId}":
+          patch:
+              tags:
+                - project
+              summary: Task Update
+              description: Allows update specific field in project task.
+              operationId: updateTaskPartly
+              security:
+                - bearerAuth: []
+              parameters:
+                - name: projectId
+                  in: path
+                  description: ID of related Project
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+                - name: taskId
+                  in: path
+                  description: ID of task
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        projecttaskstatus:
+                          description: Status of task
+                          type: string
+                          example: "Closed"
+                        projecttaskname:
+                          description: Name of task
+                          type: string
+                          example: "Need to fix issue"
+                        description:
+                          description: Description of project task
+                          type: string
+                          example: "There is very big problem"
+                        projecttaskpriority:
+                          description: Priority of Project Task
+                          type: string
+                          example: "Urgent"
+                        projecttasktype:
+                          description: Type of task
+                          type: string
+                          example: "administrative"
+              responses:
+                "202":
+                  description: Ticket updated
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ProjectTask"                
+                "400":
+                  description: Invalid ID supplied
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "404":
+                  description: ProjectTask or project not found
+                "403":
+                  description: Operation not permitted
         "/projects/{projectId}/tasks":
           get:
             tags:
@@ -7067,6 +7223,8 @@ resources:
               label:
                 type: string
                 example: "Website Redesign"
+              statistics:
+                $ref: '#/components/schemas/CurrentProjectStatistics'
           ProjectTask:
             type: object
             properties:
@@ -7254,6 +7412,39 @@ resources:
               id:
                 type: string
                 example: "19x1"
+          CurrentProjectStatistics:
+            type: object
+            properties:
+              total_tasks:
+                type: number
+                example: 10
+              total_hours:
+                type: number
+                example: 120
+              open_tasks:
+                type: number
+                example: 3
+              closed_tasks:
+                type: number
+                example: 5
+              in_progress_tasks:
+                type: number
+                example: 1
+              deferred_tasks:
+                type: number
+                example: 2
+              cancelled_tasks:
+                type: number
+                example: 1
+              low_tasks:
+                type: number
+                example: 1
+              normal_tasks:
+                type: number
+                example: 5
+              high_tasks:
+                type: number
+                example: 1
     contentType: yaml
     _type: api_spec
   - _id: env_env_7051e4988ba662848196b333737a56823b214220_sub

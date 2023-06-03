@@ -146,6 +146,21 @@ func (p ProjectTasksService) CreateProjectTask(ctx context.Context, input Projec
 	return p.repository.Create(ctx, projectTask)
 }
 
+func (p ProjectTasksService) Revise(ctx context.Context, input map[string]any, id string, project string, user domain.User) (domain.ProjectTask, error) {
+	err := p.validateProjectPermissions(ctx, project, user.AccountId, user.Crmid)
+	if err != nil {
+		return domain.ProjectTask{}, err
+	}
+	input["id"] = id
+
+	task, err := p.repository.Revise(ctx, input)
+	if err != nil {
+		return task, err
+	}
+	err = StoreInCache[*domain.ProjectTask](id, &task, CacheProjectTaskTtl, p.cache)
+	return task, err
+}
+
 func (p ProjectTasksService) validateInputFields(ctx context.Context, projectTask *domain.ProjectTask) error {
 	module, err := p.module.Describe(ctx, "ProjectTask")
 	if err != nil {

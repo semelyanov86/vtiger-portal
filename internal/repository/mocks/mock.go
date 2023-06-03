@@ -1121,3 +1121,18 @@ func (mr *MockProjectTaskMockRecorder) RetrieveById(ctx, id interface{}) *gomock
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockProjectTask)(nil).RetrieveById), ctx, id)
 }
+
+// Revise mocks base method.
+func (m *MockProjectTask) Revise(ctx context.Context, task map[string]any) (domain.ProjectTask, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Revise", ctx, task)
+	ret0, _ := ret[0].(domain.ProjectTask)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Revise indicates an expected call of Revise.
+func (mr *MockProjectTaskMockRecorder) Revise(ctx, task interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Revise", reflect.TypeOf((*MockProjectTask)(nil).Revise), ctx, task)
+}

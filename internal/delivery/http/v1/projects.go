@@ -21,6 +21,7 @@ func (h *Handler) initProjectsRoutes(api *gin.RouterGroup) {
 		projects.GET("/:id/documents", h.getProjectDocuments)
 		projects.GET("/:id/file/:file", h.getProjectFile)
 		projects.GET("/:id/tasks", h.getAllProjectTasks)
+		projects.PATCH("/:id/tasks/:task", h.updateProjectTask)
 		projects.POST("/:id/tasks", h.createProjectTask)
 		projects.GET("/:id/tasks/:task/comments", h.getProjectTaskComments)
 		projects.POST("/:id/tasks/:task/comments", h.addProjectTaskComment)
@@ -263,6 +264,35 @@ func (h *Handler) createProjectTask(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, task)
+}
+
+func (h *Handler) updateProjectTask(c *gin.Context) {
+	var inp map[string]any
+	if err := c.ShouldBindJSON(&inp); err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "projectstatus", "message": "Incorrect value"})
+		return // exit on first error
+	}
+	id := h.getAndValidateId(c, "id")
+	taskId := h.getAndValidateId(c, "task")
+	userModel := h.getValidatedUser(c)
+	if userModel == nil || id == "" || taskId == "" {
+		return
+	}
+
+	task, err := h.services.ProjectTasks.Revise(c.Request.Context(), inp, taskId, id, *userModel)
+	if errors.Is(service.ErrValidation, err) {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "projecttaskstatus", "message": err.Error()})
+		return
+	}
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusAccepted, task)
 }
 
 func (h *Handler) getProjectTaskComments(c *gin.Context) {

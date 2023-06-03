@@ -110,6 +110,7 @@ type ProjectTask interface {
 	GetFromProject(ctx context.Context, filter PaginationQueryFilter) ([]domain.ProjectTask, error)
 	Count(ctx context.Context, parent string) (int, error)
 	Create(ctx context.Context, task domain.ProjectTask) (domain.ProjectTask, error)
+	Revise(ctx context.Context, task map[string]any) (domain.ProjectTask, error)
 }
 
 type PaginationQueryFilter struct {

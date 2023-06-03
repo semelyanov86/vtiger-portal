@@ -1558,6 +1558,75 @@ paths:
           description: HelpDesk or file not found
         "403":
           description: Operation not permitted
+  "/projects/{projectId}/tasks/{taskId}":
+    patch:
+      tags:
+        - project
+      summary: Task Update
+      description: Allows update specific field in project task.
+      operationId: updateTaskPartly
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: path
+          description: ID of related Project
+          required: true
+          schema:
+            type: string
+            format: string
+        - name: taskId
+          in: path
+          description: ID of task
+          required: true
+          schema:
+            type: string
+            format: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                projecttaskstatus:
+                  description: Status of task
+                  type: string
+                  example: "Closed"
+                projecttaskname:
+                  description: Name of task
+                  type: string
+                  example: "Need to fix issue"
+                description:
+                  description: Description of project task
+                  type: string
+                  example: "There is very big problem"
+                projecttaskpriority:
+                  description: Priority of Project Task
+                  type: string
+                  example: "Urgent"
+                projecttasktype:
+                  description: Type of task
+                  type: string
+                  example: "administrative"
+      responses:
+        "202":
+          description: Ticket updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectTask"
+        "400":
+          description: Invalid ID supplied
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        "404":
+          description: ProjectTask or project not found
+        "403":
+          description: Operation not permitted
   "/projects/{projectId}/tasks":
     get:
       tags:

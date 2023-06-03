@@ -61,6 +61,10 @@ type Comment interface {
 	Create(ctx context.Context, comment domain.Comment) (domain.Comment, error)
 }
 
+type Lead interface {
+	Create(ctx context.Context, comment domain.Lead) (domain.Lead, error)
+}
+
 type Document interface {
 	RetrieveFromModule(ctx context.Context, id string) ([]domain.Document, error)
 	RetrieveFile(ctx context.Context, id string) (vtiger.File, error)
@@ -148,6 +152,7 @@ type Repositories struct {
 	Projects        ProjectCrm
 	ProjectTasks    ProjectTaskCrm
 	Statistics      StatisticsCrm
+	Leads           LeadCrm
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -170,5 +175,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		Projects:        NewProjectCrm(config, cache),
 		ProjectTasks:    NewProjectTaskCrm(config, cache),
 		Statistics:      NewStatisticsCrm(config, cache),
+		Leads:           NewLeadCrm(config, cache),
 	}
 }

@@ -38,6 +38,7 @@ type Services struct {
 	Projects         ProjectsService
 	ProjectTasks     ProjectTasksService
 	Statistics       StatisticsService
+	Leads            Leads
 }
 
 var ErrOperationNotPermitted = errors.New("you are not permitted to view this record")
@@ -72,6 +73,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		Projects:         projectService,
 		ProjectTasks:     NewProjectTasksService(repos.ProjectTasks, cache, commentsService, documentService, modulesService, config, projectService),
 		Statistics:       NewStatisticsService(repos.Statistics, cache),
+		Leads:            NewLeads(repos.Leads, config),
 	}
 }
 

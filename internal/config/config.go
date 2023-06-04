@@ -22,6 +22,7 @@ type (
 		}
 		Email  EmailConfig  `yaml:"email"`
 		Vtiger VtigerConfig `yaml:"vtiger"`
+		Otp    OtpConfig    `yaml:"otp"`
 	}
 	HTTPConfig struct {
 		Host               string        `yaml:"host"`
@@ -85,6 +86,11 @@ type (
 		ClearCode         bool   `yaml:"clearCode"`
 		DefaultPagination int    `yaml:"defaultPagination"`
 		DefaultUser       string `yaml:"defaultUser"`
+	}
+	OtpConfig struct {
+		Issuer      string `yaml:"issuer"`
+		AccountName string `yaml:"accountName"`
+		SecretSize  uint   `yaml:"secretSize"`
 	}
 )
 

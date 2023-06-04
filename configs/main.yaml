@@ -56,3 +56,7 @@ vtiger:
     clearCode: true
     defaultPagination: 20
     defaultUser: "19x1"
+otp:
+  issuer: "portal.itvolga.com"
+  accountName: "info@itvolga.com"
+  secretSize: 15

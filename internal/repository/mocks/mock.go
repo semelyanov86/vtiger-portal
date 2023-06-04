@@ -97,6 +97,20 @@ func (mr *MockUsersMockRecorder) Insert(ctx, user interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockUsers)(nil).Insert), ctx, user)
 }
 
+// SaveOtp mocks base method.
+func (m *MockUsers) SaveOtp(ctx context.Context, otpSecret, otpUrl string, userId int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveOtp", ctx, otpSecret, otpUrl, userId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveOtp indicates an expected call of SaveOtp.
+func (mr *MockUsersMockRecorder) SaveOtp(ctx, otpSecret, otpUrl, userId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveOtp", reflect.TypeOf((*MockUsers)(nil).SaveOtp), ctx, otpSecret, otpUrl, userId)
+}
+
 // Update mocks base method.
 func (m *MockUsers) Update(ctx context.Context, user *domain.User) error {
 	m.ctrl.T.Helper()
@@ -553,6 +567,44 @@ func (m *MockComment) RetrieveFromModule(ctx context.Context, id string) ([]doma
 func (mr *MockCommentMockRecorder) RetrieveFromModule(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveFromModule", reflect.TypeOf((*MockComment)(nil).RetrieveFromModule), ctx, id)
+}
+
+// MockLead is a mock of Lead interface.
+type MockLead struct {
+	ctrl     *gomock.Controller
+	recorder *MockLeadMockRecorder
+}
+
+// MockLeadMockRecorder is the mock recorder for MockLead.
+type MockLeadMockRecorder struct {
+	mock *MockLead
+}
+
+// NewMockLead creates a new mock instance.
+func NewMockLead(ctrl *gomock.Controller) *MockLead {
+	mock := &MockLead{ctrl: ctrl}
+	mock.recorder = &MockLeadMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockLead) EXPECT() *MockLeadMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockLead) Create(ctx context.Context, comment domain.Lead) (domain.Lead, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, comment)
+	ret0, _ := ret[0].(domain.Lead)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockLeadMockRecorder) Create(ctx, comment interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockLead)(nil).Create), ctx, comment)
 }
 
 // MockDocument is a mock of Document interface.

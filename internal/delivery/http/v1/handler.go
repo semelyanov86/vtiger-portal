@@ -38,6 +38,7 @@ func (h *Handler) Init(api *gin.RouterGroup) {
 		h.initProjectsRoutes(v1)
 		h.initStatisticsRoutes(v1)
 		h.initLeadsRoutes(v1)
+		h.initOtpRoutes(v1)
 	}
 }
 

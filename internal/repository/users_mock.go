@@ -49,3 +49,7 @@ func (r *UsersMock) GetById(ctx context.Context, id int64) (domain.User, error) 
 func (r *UsersMock) GetForToken(ctx context.Context, tokenScope, tokenPlaintext string) (*domain.User, error) {
 	return &MockedUser, nil
 }
+
+func (r *UsersMock) SaveOtp(ctx context.Context, otpSecret string, otpUrl string, userId int64) error {
+	return nil
+}

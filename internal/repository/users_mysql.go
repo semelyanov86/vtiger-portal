@@ -163,3 +163,23 @@ func (r *UsersRepo) GetForToken(ctx context.Context, tokenScope, tokenPlaintext 
 
 	return &user, nil
 }
+
+func (r *UsersRepo) SaveOtp(ctx context.Context, otpSecret string, otpUrl string, userId int64) error {
+	var query = `UPDATE users SET otp_secret = ?, otp_auth_url = ?, version = version + 1, updated_at = NOW() WHERE id = ?`
+	var args = []any{otpSecret, otpUrl, userId}
+
+	_, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		var mySQLError *mysql.MySQLError
+		if errors.As(err, &mySQLError) {
+			if mySQLError.Number == 1062 && strings.Contains(mySQLError.Message, "users.email") {
+				return ErrDuplicateEmail
+			}
+		}
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrEditConflict
+		}
+		return err
+	}
+	return nil
+}

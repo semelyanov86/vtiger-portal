@@ -19,6 +19,7 @@ type Users interface {
 	Update(ctx context.Context, user *domain.User) error
 	GetForToken(ctx context.Context, tokenScope, tokenPlaintext string) (*domain.User, error)
 	GetById(ctx context.Context, id int64) (domain.User, error)
+	SaveOtp(ctx context.Context, otpSecret string, otpUrl string, userId int64) error
 }
 
 type UsersCrm interface {

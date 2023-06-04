@@ -139,6 +139,20 @@ func (mr *MockUsersMockRecorder) Update(ctx, user interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockUsers)(nil).Update), ctx, user)
 }
 
+// VerifyOrInvalidateOtp mocks base method.
+func (m *MockUsers) VerifyOrInvalidateOtp(ctx context.Context, userId int64, valid bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VerifyOrInvalidateOtp", ctx, userId, valid)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// VerifyOrInvalidateOtp indicates an expected call of VerifyOrInvalidateOtp.
+func (mr *MockUsersMockRecorder) VerifyOrInvalidateOtp(ctx, userId, valid interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyOrInvalidateOtp", reflect.TypeOf((*MockUsers)(nil).VerifyOrInvalidateOtp), ctx, userId, valid)
+}
+
 // MockUsersCrm is a mock of UsersCrm interface.
 type MockUsersCrm struct {
 	ctrl     *gomock.Controller

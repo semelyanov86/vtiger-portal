@@ -54,7 +54,7 @@ func (r *UsersRepo) Insert(ctx context.Context, user *domain.User) error {
 }
 
 func (r *UsersRepo) GetByEmail(ctx context.Context, email string) (domain.User, error) {
-	var query = `SELECT id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, password, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone, assigned_user_id FROM users WHERE email = ?`
+	var query = `SELECT id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, password, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone, assigned_user_id, otp_enabled, otp_verified FROM users WHERE email = ?`
 	var user domain.User
 
 	err := r.db.QueryRowContext(ctx, query, email).Scan(
@@ -69,7 +69,7 @@ func (r *UsersRepo) GetByEmail(ctx context.Context, email string) (domain.User, 
 		&user.Department,
 		&user.Email, &user.Password.Hash,
 		&user.CreatedAt, &user.UpdatedAt,
-		&user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone, &user.AssignedUserId,
+		&user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone, &user.AssignedUserId, &user.Otp_enabled, &user.Otp_verified,
 	)
 	if err != nil {
 		switch {
@@ -112,8 +112,8 @@ func (r *UsersRepo) GetById(ctx context.Context, id int64) (domain.User, error) 
 }
 
 func (r *UsersRepo) Update(ctx context.Context, user *domain.User) error {
-	var query = `UPDATE users SET first_name = ?, last_name = ?, description = ?, account_id = ?, account_name = ?, title = ?, department = ?, email = ?, password = ?, updated_at = NOW(), is_active = ?, mailingcity = ?, mailingstreet = ?, mailingcountry = ?, othercountry = ?, mailingstate = ?, mailingpobox = ?, othercity = ?, otherstate = ?, mailingzip = ?, otherzip = ?, otherstreet = ?, otherpobox = ?, image = ?, imageattachmentids = ?, version = version + 1, phone = ?, assigned_user_id = ? WHERE id = ?`
-	var args = []any{user.FirstName, user.LastName, user.Description, user.AccountId, user.AccountName, user.Title, user.Department, user.Email, user.Password.Hash, user.IsActive, user.MailingCity, user.MailingStreet, user.MailingCountry, user.OtherCountry, user.MailingState, user.MailingPoBox, user.OtherCity, user.OtherState, user.MailingZip, user.OtherZip, user.OtherStreet, user.OtherPoBox, user.Image, user.Imageattachmentids, user.Phone, user.AssignedUserId, user.Id}
+	var query = `UPDATE users SET first_name = ?, last_name = ?, description = ?, account_id = ?, account_name = ?, title = ?, department = ?, email = ?, password = ?, updated_at = NOW(), is_active = ?, mailingcity = ?, mailingstreet = ?, mailingcountry = ?, othercountry = ?, mailingstate = ?, mailingpobox = ?, othercity = ?, otherstate = ?, mailingzip = ?, otherzip = ?, otherstreet = ?, otherpobox = ?, image = ?, imageattachmentids = ?, version = version + 1, phone = ?, assigned_user_id = ?, otp_verified = ?, otp_enabled = ?, otp_auth_url = ?, otp_secret = ? WHERE id = ?`
+	var args = []any{user.FirstName, user.LastName, user.Description, user.AccountId, user.AccountName, user.Title, user.Department, user.Email, user.Password.Hash, user.IsActive, user.MailingCity, user.MailingStreet, user.MailingCountry, user.OtherCountry, user.MailingState, user.MailingPoBox, user.OtherCity, user.OtherState, user.MailingZip, user.OtherZip, user.OtherStreet, user.OtherPoBox, user.Image, user.Imageattachmentids, user.Phone, user.AssignedUserId, user.Otp_verified, user.Otp_enabled, user.Otp_auth_url, user.Otp_secret, user.Id}
 
 	_, err := r.db.ExecContext(ctx, query, args...)
 	if err != nil {
@@ -137,7 +137,7 @@ func (r *UsersRepo) GetForToken(ctx context.Context, tokenScope, tokenPlaintext 
 	tokenHash := sha256.Sum256([]byte(tokenPlaintext))
 
 	query := `
-        SELECT users.id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone, assigned_user_id
+        SELECT users.id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone, assigned_user_id, otp_enabled, otp_verified, otp_auth_url, otp_secret
         FROM users
         INNER JOIN tokens
         ON users.id = tokens.user_id
@@ -150,7 +150,7 @@ func (r *UsersRepo) GetForToken(ctx context.Context, tokenScope, tokenPlaintext 
 	var user domain.User
 
 	err := r.db.QueryRowContext(ctx, query, args...).Scan(
-		&user.Id, &user.Crmid, &user.FirstName, &user.LastName, &user.Description, &user.AccountId, &user.AccountName, &user.Title, &user.Department, &user.Email, &user.CreatedAt, &user.UpdatedAt, &user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone, &user.AssignedUserId,
+		&user.Id, &user.Crmid, &user.FirstName, &user.LastName, &user.Description, &user.AccountId, &user.AccountName, &user.Title, &user.Department, &user.Email, &user.CreatedAt, &user.UpdatedAt, &user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone, &user.AssignedUserId, &user.Otp_enabled, &user.Otp_verified, &user.Otp_auth_url, &user.Otp_secret,
 	)
 	if err != nil {
 		switch {
@@ -199,6 +199,21 @@ func (r *UsersRepo) EnableAndVerifyOtp(ctx context.Context, userId int64) error 
 		if errors.Is(err, sql.ErrNoRows) {
 			return ErrEditConflict
 		}
+		return err
+	}
+	return nil
+}
+
+func (r *UsersRepo) VerifyOrInvalidateOtp(ctx context.Context, userId int64, valid bool) error {
+	value := 0
+	if valid {
+		value = 1
+	}
+	var query = `UPDATE users SET otp_verified = ?, version = version + 1, updated_at = NOW() WHERE id = ?`
+	var args = []any{value, userId}
+
+	_, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
 		return err
 	}
 	return nil

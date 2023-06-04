@@ -21,6 +21,7 @@ type Users interface {
 	GetById(ctx context.Context, id int64) (domain.User, error)
 	SaveOtp(ctx context.Context, otpSecret string, otpUrl string, userId int64) error
 	EnableAndVerifyOtp(ctx context.Context, userId int64) error
+	VerifyOrInvalidateOtp(ctx context.Context, userId int64, valid bool) error
 }
 
 type UsersCrm interface {

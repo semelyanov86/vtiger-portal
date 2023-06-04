@@ -76,5 +76,6 @@ func (a AuthService) VerifyOtp(ctx context.Context, input OTPInput) (domain.User
 	}
 	user.Otp_enabled = true
 	user.Otp_verified = true
+	StoreInCache[*domain.User](user.Crmid, &user, CacheUsersTTL, a.cache)
 	return user, nil
 }

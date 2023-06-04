@@ -40,6 +40,13 @@ func (s TokensService) CreateAuthToken(ctx context.Context, login string, pass s
 		return nil, ErrPasswordDoesNotMatch
 	}
 	token, err := s.repo.New(ctx, user.Id, 24*time.Hour*90, domain.ScopeAuthentication)
+	if err != nil {
+		return token, e.Wrap("can not create a token", err)
+	}
+	if user.Otp_enabled {
+		err = s.userRepo.VerifyOrInvalidateOtp(ctx, user.Id, false)
+		token.OtpEnabled = true
+	}
 	return token, err
 }
 
@@ -68,6 +75,9 @@ func (s TokensService) SendPasswordResetToken(ctx context.Context, email string)
 		Support: s.config.Vtiger.Business.SupportEmail,
 		Domain:  s.config.Domain,
 		Subject: s.config.Email.Subjects.RestorePassword,
+	}
+	if user.Otp_enabled {
+		token.OtpEnabled = true
 	}
 	return s.emails.SendPasswordReset(emailData)
 }

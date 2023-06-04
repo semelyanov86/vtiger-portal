@@ -57,3 +57,7 @@ func (r *UsersMock) SaveOtp(ctx context.Context, otpSecret string, otpUrl string
 func (r *UsersMock) EnableAndVerifyOtp(ctx context.Context, userId int64) error {
 	return nil
 }
+
+func (r *UsersMock) VerifyOrInvalidateOtp(ctx context.Context, userId int64, valid bool) error {
+	return nil
+}

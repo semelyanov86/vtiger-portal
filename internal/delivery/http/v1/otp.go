@@ -12,6 +12,7 @@ func (h *Handler) initOtpRoutes(api *gin.RouterGroup) {
 	{
 		users.GET("/generate", h.generateOtp)
 		users.PATCH("/verify", h.verifyOtp)
+		users.PATCH("/validate", h.verifyOtp)
 	}
 }
 

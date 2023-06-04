@@ -66,6 +66,11 @@ func (h Handler) authenticate(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Not Active", "field": "is_active", "message": "Authorized user is deactivated!"})
 		return
 	}
+
+	if !user.Otp_verified && user.Otp_enabled && c.FullPath() != "/api/v1/otp/validate" && c.FullPath() != "/api/v1/otp/verify" {
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "OTP Required", "field": "otp_verified", "message": "You need to pass otp verification to use this service"})
+		return
+	}
 	if err != nil {
 		switch {
 		case errors.Is(err, repository.ErrRecordNotFound):

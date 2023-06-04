@@ -38,6 +38,20 @@ func (m *MockUsers) EXPECT() *MockUsersMockRecorder {
 	return m.recorder
 }
 
+// DisableOtp mocks base method.
+func (m *MockUsers) DisableOtp(ctx context.Context, userId int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisableOtp", ctx, userId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DisableOtp indicates an expected call of DisableOtp.
+func (mr *MockUsersMockRecorder) DisableOtp(ctx, userId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableOtp", reflect.TypeOf((*MockUsers)(nil).DisableOtp), ctx, userId)
+}
+
 // EnableAndVerifyOtp mocks base method.
 func (m *MockUsers) EnableAndVerifyOtp(ctx context.Context, userId int64) error {
 	m.ctrl.T.Helper()

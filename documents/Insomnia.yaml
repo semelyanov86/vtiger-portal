@@ -1,11 +1,291 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-03T07:14:13.065Z
+__export_date: 2023-06-04T10:28:05.845Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de4e1785fd
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de7a20aecd
+    modified: 1685874354139
+    created: 1685874311779
+    url: "{{ base_url }}/otp/disable"
+    name: Disable OTP
+    description: Disable the 2FA feature. This handler will update the otp_enabled
+      column in the “users” table to false.
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "token": "350142"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_0357e3342cc84286ae483df086479820
+      - id: pair_d94f73354cfe4919b32e7e673d8b4521
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1685874311779
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de7a20aecd
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1685861984150
+    created: 1685861984150
+    name: otp
+    description: Routes for handling 2FA processes
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1685861984150
+    _type: request_group
+  - _id: wrk_66e74e4b495c4404841a78c723c211de
+    parentId: null
+    modified: 1681752522262
+    created: 1681752522262
+    name: Vtiger Customer Portal
+    description: ""
+    scope: design
+    _type: workspace
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211deb42fed91
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de7a20aecd
+    modified: 1685874183201
+    created: 1685871745126
+    url: "{{ base_url }}/otp/validate"
+    name: Validate Token
+    description: Activate user access to application if token is valid
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "token": "256074"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_aa0c7102fabb4020957f33def81d4945
+      - id: pair_b0cd34bc961144eeb4b0801b39c8e2f8
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1685871745126
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de386e15b6
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de7a20aecd
+    modified: 1685874130892
+    created: 1685866590714
+    url: "{{ base_url }}/otp/verify"
+    name: Verify Token
+    description: >-
+      Now that we’ve been able to display the TOTP tokens, let’s create a route
+      handler to verify them. This handler will verify the TOTP token and update
+      the otp_enabled column in the “users” table to true. Once the OTP token is
+      valid, we’ll enable the 2FA feature and update the Otp_verified column to
+      true. 
+
+
+      Example request:
+
+      ```json
+
+      {
+        "token": "634602"
+      }
+
+      ```
+
+
+      As you can see in request, we pass token, which is digits in auth app.
+
+      Example response:
+
+      ```json
+
+      {
+      	"id": 16,
+      	"crmid": "12x11",
+      	"firstname": "Sergei",
+      	"lastname": "Emelianov",
+      	"description": "Here is changed description second",
+      	"account_id": "11x6",
+      	"account_name": "",
+      	"title": "Director",
+      	"department": "Management",
+      	"email": "se@sergeyem.ru",
+      	"created_at": "2023-05-20T14:38:44Z",
+      	"updated_at": "2023-06-04T11:03:54Z",
+      	"is_active": true,
+      	"mailingcity": "Cheboksary",
+      	"mailingstreet": "Bulvar Yunosti, 3",
+      	"mailingcountry": "Russia",
+      	"othercountry": "Russia",
+      	"mailingstate": "Chuvashia",
+      	"mailingpobox": "",
+      	"othercity": "Cheboksary",
+      	"otherstate": "Chuvashia",
+      	"mailingzip": "428010",
+      	"otherzip": "428010",
+      	"otherstreet": "Bulvar Yunosti, 3",
+      	"otherpobox": "",
+      	"image": "",
+      	"imageattachmentids": "12x93",
+      	"imagecontent": "",
+      	"imagename": "",
+      	"imagetype": "",
+      	"phone": "+4915211100235",
+      	"assigned_user_id": "19x1",
+      	"otp_enabled": true,
+      	"otp_verified": true
+      }
+
+      ```
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "token": "385950"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_1de456c9f50145b5828e2404bdaa894d
+      - id: pair_4853752d86d240988bdc9f24fb4a2d55
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{ _.bearerToken }}"
+      prefix: ""
+    metaSortKey: -1685866590714
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de8a1a0610
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de7a20aecd
+    modified: 1685874047933
+    created: 1685861984138
+    url: "{{ base_url }}/otp/generate"
+    name: Generate OTP
+    description: >-
+      Allows you to generate token and display QR code in frontend application.
+      The secret key will link the server and the application that will generate
+      the OTP tokens. You can open your authenticator app and enter the base32
+      encoded key to view the OTP token.
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"base32": "RIAIRSMOIMZ5LUEQWQIV4COC",
+      	"otpauth_url": "otpauth://totp/portal.itvolga.com:info@itvolga.com?algorithm=SHA1&digits=6&issuer=portal.itvolga.com&period=30&secret=RIAIRSMOIMZ5LUEQWQIV4COC"
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_f3ea09204bc2436289beb5c173043c27
+        name: Content-Type
+        value: application/json
+        description: ""
+      - id: pair_bc3c01bef2514d26a5fa7ce8bcab3147
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1685861984138
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de0d413d6d
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de68c16567
+    modified: 1685809397544
+    created: 1685809397544
+    url: "{{ base_url }}/leads"
+    name: Create new lead
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "lastname": "Boris Johns",
+          "email": "boris@mail.ru",
+          "phone": "+79578889654"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1685809397544
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de68c16567
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1685809397612
+    created: 1685809397612
+    name: leads
+    description: Storing leads in crm
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1685809397612
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de705e89df
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
-    modified: 1685776422616
+    modified: 1685861984696
     created: 1685776181238
     url: "{{ base_url }}/statistics/tasks"
     name: List of Progress Tasks
@@ -129,14 +409,6 @@ resources:
     environmentPropertyOrder: null
     metaSortKey: -1684649257152
     _type: request_group
-  - _id: wrk_66e74e4b495c4404841a78c723c211de
-    parentId: null
-    modified: 1681752522262
-    created: 1681752522262
-    name: Vtiger Customer Portal
-    description: ""
-    scope: design
-    _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de074600fd
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
     modified: 1685358715076
@@ -3184,7 +3456,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deaa5108ed
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de1a8565a9
-    modified: 1685554975794
+    modified: 1685872478277
     created: 1682010335863
     url: "{{ base_url }}/managers/{{ managerId }}"
     name: Find manager by ID
@@ -3469,7 +3741,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dee56f68e2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1685556413331
+    modified: 1685874193425
     created: 1684590648088
     url: "{{ base_url }}/users/all"
     name: Get Users From My Company
@@ -3673,7 +3945,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de94b9a1a1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1685556698416
+    modified: 1685874312430
     created: 1681838399470
     url: "{{ base_url }}/users/my"
     name: Get data about authenticated user
@@ -3786,7 +4058,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de00ac9da2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1685197194997
+    modified: 1685874164099
     created: 1681827520782
     url: "{{ base_url }}/users/login"
     name: Login in system
@@ -3800,10 +4072,14 @@ resources:
       {
       	"id": 1,
       	"token": "WHXDXIXGAMFFYE76DBY6DHUWJY",
-      	"expiry": "2023-07-17T16:33:29.670530331+02:00"
+      	"expiry": "2023-07-17T16:33:29.670530331+02:00",
+      	"otp_enabled": true
       }
 
       ```
+
+
+      If 2fa authentication is enabled in user, account will be deactivated until user do not send OTP token.
 
 
       To get a bearer token, you need to pass email and password in request body:
@@ -3996,7 +4272,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1685776422093
+    modified: 1685874311823
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -4046,6 +4322,10 @@ resources:
           description: Project module in Vtiger CRM
         - name: statistics
           description: Endpoints for dashboards
+        - name: leads
+          description: Storing leads in crm
+        - name: otp
+          description: Routes for handling 2FA processes
       paths:
         /users:
           post:
@@ -4344,6 +4624,182 @@ resources:
                   description: User or file not found
                 "403":
                   description: Operation not permitted
+        "/otp/generate":
+          get:
+            tags:
+              - otp
+            summary: Generate OTP
+            description: Here you can get token params to display QR code
+            operationId: generateOTP
+            security:
+              - bearerAuth: []
+            responses:
+              "201":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          $ref: "#/components/schemas/OtpResult"
+              "401":
+                description: anonymous access
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        error:
+                          type: string
+                          example: "Anonymous Access"
+                        field:
+                          type: string
+                          example: "crmid"
+                        message:
+                          type: string
+                          example: "Got anonymous user from token or user without crmid"
+        /otp/verify:
+          patch:
+            tags:
+              - otp
+            summary: Verify Token
+            description: "Attach application to verification service"
+            operationId: verifyToken
+            security:
+              - bearerAuth: []
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "12x12"
+                      token:
+                        type: string
+                        example: "TOKENDATA"
+              description: Pass a user id and token to verify token
+              required: true
+            responses:
+              "201":
+                description: successful operation
+                headers:
+                  X-Rate-Limit:
+                    description: calls per hour allowed by the user
+                    schema:
+                      type: integer
+                      format: int32
+                  X-Expires-After:
+                    description: date in UTC when token expires
+                    schema:
+                      type: string
+                      format: date-time
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/User"
+              "400":
+                description: Invalid token provided
+              "422":
+                description: Validation error
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/ValidationResponse"
+        /otp/validate:
+          patch:
+            tags:
+              - otp
+            summary: Validate Token
+            description: "Main endpoint for passing 2fa authentication"
+            operationId: validateToken
+            security:
+              - bearerAuth: []
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: "558776"
+              description: Pass digits to verify token
+              required: true
+            responses:
+              "201":
+                description: successful operation
+                headers:
+                  X-Rate-Limit:
+                    description: calls per hour allowed by the user
+                    schema:
+                      type: integer
+                      format: int32
+                  X-Expires-After:
+                    description: date in UTC when token expires
+                    schema:
+                      type: string
+                      format: date-time
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/User"
+              "400":
+                description: Invalid token provided
+              "422":
+                description: Validation error
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/ValidationResponse"
+        /otp/disable:
+          patch:
+            tags:
+              - otp
+            summary: Disable OTP
+            description: "Here you can completely remove 2FA data"
+            operationId: disalbeOTP
+            security:
+              - bearerAuth: []
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: "558776"
+              description: Pass digits to verify token
+              required: true
+            responses:
+              "201":
+                description: successful operation
+                headers:
+                  X-Rate-Limit:
+                    description: calls per hour allowed by the user
+                    schema:
+                      type: integer
+                      format: int32
+                  X-Expires-After:
+                    description: date in UTC when token expires
+                    schema:
+                      type: string
+                      format: date-time
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/User"
+              "400":
+                description: Invalid token provided
+              "422":
+                description: Validation error
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/ValidationResponse"
         "/managers/{managerId}":
           get:
             tags:
@@ -5954,6 +6410,48 @@ resources:
                 description: Project not found
               "403":
                 description: Operation not permitted
+        "/leads":
+          post:
+              tags:
+                - leads
+              summary: Create new lead
+              description: Send new lead information in crm.
+              operationId: createLead
+              security:
+                - bearerAuth: []
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        lastname:
+                          description: Name of Lead
+                          type: string
+                          example: "Boris Johns"
+                        email:
+                          description: Email of lead
+                          type: string
+                          example: "boris@mail.ru"
+                        phone:
+                          description: Phone number
+                          type: string
+                          example: "+79578889654"
+              responses:
+                "201":
+                  description: Ticket created
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/Lead"                
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "403":
+                  description: Operation not permitted
       externalDocs:
         description: Find out more about Swagger
         url: http://swagger.io
@@ -6120,6 +6618,9 @@ resources:
               expiry:
                 type: string
                 example: "2023-04-17T19:44:08.791999494+02:00"
+              otp_enabled:
+                type: boolean
+                example: true
           ApiResponse:
             type: object
             properties:
@@ -7597,6 +8098,30 @@ resources:
               high_tasks:
                 type: number
                 example: 1
+          Lead:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "10x45"
+              lastname:
+                type: string
+                example: "Boris Johns"
+              email:
+                type: string
+                example: "boris@mail.ru"
+              phone:
+                type: string
+                example: "+7957889965"
+          OtpResult:
+            type: object
+            properties:
+              base32:
+                type: string
+                example: "3HDFEUFHWSD"
+              otpauth_url:
+                type: string
+                example: "https://itvolga.com"
     contentType: yaml
     _type: api_spec
   - _id: env_env_7051e4988ba662848196b333737a56823b214220_sub
@@ -7631,7 +8156,7 @@ resources:
     _type: environment
   - _id: env_1bfede95dc144997a9155f6e79a3eaa5
     parentId: env_7051e4988ba662848196b333737a56823b214220
-    modified: 1684649726981
+    modified: 1685874163544
     created: 1681826841922
     name: Local
     data:
@@ -7640,7 +8165,7 @@ resources:
       host: 127.0.0.1:4050
       URL: http://127.0.0.1:4050/api/v1
       MAIN_URL: http://127.0.0.1:4050
-      bearerToken: YXXNAEFCDWVOAWRADJTS4GOG6E
+      bearerToken: NY6JNOFZ2ESELKEI7VZQY3AKEQ
       managerId: 19x1
       moduleName: HelpDesk
       ticketId: 17x28

@@ -218,3 +218,14 @@ func (r *UsersRepo) VerifyOrInvalidateOtp(ctx context.Context, userId int64, val
 	}
 	return nil
 }
+
+func (r *UsersRepo) DisableOtp(ctx context.Context, userId int64) error {
+	var query = `UPDATE users SET otp_enabled = ?, otp_secret = '', otp_auth_url = '', version = version + 1, updated_at = NOW() WHERE id = ?`
+	var args = []any{0, userId}
+
+	_, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+	return nil
+}

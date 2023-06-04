@@ -251,6 +251,10 @@ func (s UsersService) GetUserById(ctx context.Context, id int64) (*domain.User, 
 		updatedUser.Id = id
 		updatedUser.IsActive = user.IsActive
 		updatedUser.Password = user.Password
+		updatedUser.Otp_verified = user.Otp_verified
+		updatedUser.Otp_enabled = user.Otp_enabled
+		updatedUser.Otp_auth_url = user.Otp_auth_url
+		updatedUser.Otp_secret = user.Otp_secret
 		if err != nil {
 			logger.Error(logger.GenerateErrorMessageFromString(err.Error()))
 			return

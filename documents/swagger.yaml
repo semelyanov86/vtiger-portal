@@ -43,6 +43,10 @@ tags:
     description: Project module in Vtiger CRM
   - name: statistics
     description: Endpoints for dashboards
+  - name: leads
+    description: Storing leads in crm
+  - name: otp
+    description: Routes for handling 2FA processes
 paths:
   /users:
     post:
@@ -341,6 +345,182 @@ paths:
           description: User or file not found
         "403":
           description: Operation not permitted
+  "/otp/generate":
+    get:
+      tags:
+        - otp
+      summary: Generate OTP
+      description: Here you can get token params to display QR code
+      operationId: generateOTP
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/OtpResult"
+        "401":
+          description: anonymous access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Anonymous Access"
+                  field:
+                    type: string
+                    example: "crmid"
+                  message:
+                    type: string
+                    example: "Got anonymous user from token or user without crmid"
+  /otp/verify:
+    patch:
+      tags:
+        - otp
+      summary: Verify Token
+      description: "Attach application to verification service"
+      operationId: verifyToken
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: "12x12"
+                token:
+                  type: string
+                  example: "TOKENDATA"
+        description: Pass a user id and token to verify token
+        required: true
+      responses:
+        "201":
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid token provided
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+  /otp/validate:
+    patch:
+      tags:
+        - otp
+      summary: Validate Token
+      description: "Main endpoint for passing 2fa authentication"
+      operationId: validateToken
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: "558776"
+        description: Pass digits to verify token
+        required: true
+      responses:
+        "201":
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid token provided
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+  /otp/disable:
+    patch:
+      tags:
+        - otp
+      summary: Disable OTP
+      description: "Here you can completely remove 2FA data"
+      operationId: disalbeOTP
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: "558776"
+        description: Pass digits to verify token
+        required: true
+      responses:
+        "201":
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid token provided
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
   "/managers/{managerId}":
     get:
       tags:
@@ -1951,6 +2131,48 @@ paths:
           description: Project not found
         "403":
           description: Operation not permitted
+  "/leads":
+    post:
+      tags:
+        - leads
+      summary: Create new lead
+      description: Send new lead information in crm.
+      operationId: createLead
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lastname:
+                  description: Name of Lead
+                  type: string
+                  example: "Boris Johns"
+                email:
+                  description: Email of lead
+                  type: string
+                  example: "boris@mail.ru"
+                phone:
+                  description: Phone number
+                  type: string
+                  example: "+79578889654"
+      responses:
+        "201":
+          description: Ticket created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        "403":
+          description: Operation not permitted
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
@@ -2117,6 +2339,9 @@ components:
         expiry:
           type: string
           example: "2023-04-17T19:44:08.791999494+02:00"
+        otp_enabled:
+          type: boolean
+          example: true
     ApiResponse:
       type: object
       properties:
@@ -3594,3 +3819,27 @@ components:
         high_tasks:
           type: number
           example: 1
+    Lead:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "10x45"
+        lastname:
+          type: string
+          example: "Boris Johns"
+        email:
+          type: string
+          example: "boris@mail.ru"
+        phone:
+          type: string
+          example: "+7957889965"
+    OtpResult:
+      type: object
+      properties:
+        base32:
+          type: string
+          example: "3HDFEUFHWSD"
+        otpauth_url:
+          type: string
+          example: "https://itvolga.com"

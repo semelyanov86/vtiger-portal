@@ -61,3 +61,7 @@ func (r *UsersMock) EnableAndVerifyOtp(ctx context.Context, userId int64) error 
 func (r *UsersMock) VerifyOrInvalidateOtp(ctx context.Context, userId int64, valid bool) error {
 	return nil
 }
+
+func (r *UsersMock) DisableOtp(ctx context.Context, userId int64) error {
+	return nil
+}

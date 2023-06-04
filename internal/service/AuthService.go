@@ -79,3 +79,25 @@ func (a AuthService) VerifyOtp(ctx context.Context, input OTPInput) (domain.User
 	StoreInCache[*domain.User](user.Crmid, &user, CacheUsersTTL, a.cache)
 	return user, nil
 }
+
+func (a AuthService) DisableOtp(ctx context.Context, input OTPInput) (domain.User, error) {
+	user, err := a.repo.GetById(ctx, input.UserId)
+
+	if err != nil {
+		return user, ErrUserNotFound
+	}
+
+	valid := totp.Validate(input.Token, user.Otp_secret)
+	if !valid {
+		return user, ErrTokenNotExist
+	}
+	err = a.repo.DisableOtp(ctx, input.UserId)
+	if err != nil {
+		return user, e.Wrap("can not update user", err)
+	}
+	user.Otp_enabled = false
+	user.Otp_auth_url = ""
+	user.Otp_secret = ""
+	StoreInCache[*domain.User](user.Crmid, &user, CacheUsersTTL, a.cache)
+	return user, nil
+}

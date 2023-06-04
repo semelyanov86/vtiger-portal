@@ -22,6 +22,7 @@ type Users interface {
 	SaveOtp(ctx context.Context, otpSecret string, otpUrl string, userId int64) error
 	EnableAndVerifyOtp(ctx context.Context, userId int64) error
 	VerifyOrInvalidateOtp(ctx context.Context, userId int64, valid bool) error
+	DisableOtp(ctx context.Context, userId int64) error
 }
 
 type UsersCrm interface {

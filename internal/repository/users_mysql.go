@@ -83,7 +83,7 @@ func (r *UsersRepo) GetByEmail(ctx context.Context, email string) (domain.User, 
 }
 
 func (r *UsersRepo) GetById(ctx context.Context, id int64) (domain.User, error) {
-	var query = `SELECT id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, password, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone, assigned_user_id FROM users WHERE id = ?`
+	var query = `SELECT id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, password, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, imageattachmentids, version, phone, assigned_user_id, otp_verified, otp_enabled, otp_secret, otp_auth_url FROM users WHERE id = ?`
 	var user domain.User
 
 	err := r.db.QueryRowContext(ctx, query, id).Scan(
@@ -98,7 +98,7 @@ func (r *UsersRepo) GetById(ctx context.Context, id int64) (domain.User, error) 
 		&user.Department,
 		&user.Email, &user.Password.Hash,
 		&user.CreatedAt, &user.UpdatedAt,
-		&user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone, &user.AssignedUserId,
+		&user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Imageattachmentids, &user.Version, &user.Phone, &user.AssignedUserId, &user.Otp_verified, &user.Otp_enabled, &user.Otp_secret, &user.Otp_auth_url,
 	)
 	if err != nil {
 		switch {
@@ -167,6 +167,26 @@ func (r *UsersRepo) GetForToken(ctx context.Context, tokenScope, tokenPlaintext 
 func (r *UsersRepo) SaveOtp(ctx context.Context, otpSecret string, otpUrl string, userId int64) error {
 	var query = `UPDATE users SET otp_secret = ?, otp_auth_url = ?, version = version + 1, updated_at = NOW() WHERE id = ?`
 	var args = []any{otpSecret, otpUrl, userId}
+
+	_, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		var mySQLError *mysql.MySQLError
+		if errors.As(err, &mySQLError) {
+			if mySQLError.Number == 1062 && strings.Contains(mySQLError.Message, "users.email") {
+				return ErrDuplicateEmail
+			}
+		}
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrEditConflict
+		}
+		return err
+	}
+	return nil
+}
+
+func (r *UsersRepo) EnableAndVerifyOtp(ctx context.Context, userId int64) error {
+	var query = `UPDATE users SET otp_enabled = ?, otp_verified = ?, version = version + 1, updated_at = NOW() WHERE id = ?`
+	var args = []any{1, 1, userId}
 
 	_, err := r.db.ExecContext(ctx, query, args...)
 	if err != nil {

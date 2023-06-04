@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"errors"
 	"github.com/pquerna/otp/totp"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
+	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
@@ -16,6 +18,8 @@ type AuthService struct {
 	cache  cache.Cache
 	config config.Config
 }
+
+var ErrTokenNotExist = errors.New("token not exist or invalid")
 
 func NewAuthService(repo repository.Users, wg *sync.WaitGroup, cache cache.Cache, config config.Config) AuthService {
 	return AuthService{repo: repo, wg: wg, cache: cache, config: config}
@@ -53,4 +57,24 @@ func (a AuthService) GenerateOtp(ctx context.Context, input OTPInput) (OtpRegist
 	}
 	err = a.repo.SaveOtp(ctx, key.Secret(), key.URL(), input.UserId)
 	return otpResult, err
+}
+
+func (a AuthService) VerifyOtp(ctx context.Context, input OTPInput) (domain.User, error) {
+	user, err := a.repo.GetById(ctx, input.UserId)
+
+	if err != nil {
+		return user, ErrUserNotFound
+	}
+
+	valid := totp.Validate(input.Token, user.Otp_secret)
+	if !valid {
+		return user, ErrTokenNotExist
+	}
+	err = a.repo.EnableAndVerifyOtp(ctx, input.UserId)
+	if err != nil {
+		return user, e.Wrap("can not update user", err)
+	}
+	user.Otp_enabled = true
+	user.Otp_verified = true
+	return user, nil
 }

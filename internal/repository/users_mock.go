@@ -53,3 +53,7 @@ func (r *UsersMock) GetForToken(ctx context.Context, tokenScope, tokenPlaintext 
 func (r *UsersMock) SaveOtp(ctx context.Context, otpSecret string, otpUrl string, userId int64) error {
 	return nil
 }
+
+func (r *UsersMock) EnableAndVerifyOtp(ctx context.Context, userId int64) error {
+	return nil
+}

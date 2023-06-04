@@ -38,6 +38,20 @@ func (m *MockUsers) EXPECT() *MockUsersMockRecorder {
 	return m.recorder
 }
 
+// EnableAndVerifyOtp mocks base method.
+func (m *MockUsers) EnableAndVerifyOtp(ctx context.Context, userId int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnableAndVerifyOtp", ctx, userId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// EnableAndVerifyOtp indicates an expected call of EnableAndVerifyOtp.
+func (mr *MockUsersMockRecorder) EnableAndVerifyOtp(ctx, userId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableAndVerifyOtp", reflect.TypeOf((*MockUsers)(nil).EnableAndVerifyOtp), ctx, userId)
+}
+
 // GetByEmail mocks base method.
 func (m *MockUsers) GetByEmail(ctx context.Context, email string) (domain.User, error) {
 	m.ctrl.T.Helper()

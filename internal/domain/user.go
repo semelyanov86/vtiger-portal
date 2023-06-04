@@ -43,10 +43,10 @@ type User struct {
 	Imagetype          string    `json:"imagetype"`
 	Phone              string    `json:"phone"`
 	AssignedUserId     string    `json:"assigned_user_id"`
-	Otp_enabled        bool
-	Otp_verified       bool
-	Otp_secret         string
-	Otp_auth_url       string
+	Otp_enabled        bool      `json:"otp_enabled"`
+	Otp_verified       bool      `json:"otp_verified"`
+	Otp_secret         string    `json:"-"`
+	Otp_auth_url       string    `json:"-"`
 }
 
 var AnonymousUser = &User{}

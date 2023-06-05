@@ -1739,6 +1739,45 @@ paths:
         "403":
           description: Operation not permitted
   "/projects/{projectId}/tasks/{taskId}":
+    get:
+      tags:
+        - project
+      summary: Get Project Task
+      description: Returns a project task by its ID
+      operationId: getProjectTask
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          description: ID of task
+          required: true
+          schema:
+            type: string
+            format: string
+        - name: projectId
+          in: path
+          description: ID of project
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/ProjectTask"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: ProjectTask or Project not found
+        "403":
+          description: Operation not permitted
     patch:
       tags:
         - project

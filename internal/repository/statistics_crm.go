@@ -152,7 +152,7 @@ func (s StatisticsCrm) executeInvoiceStatsQuery(ctx context.Context, query strin
 }
 
 func (s StatisticsCrm) getInProgressProjects(ctx context.Context, userModel domain.User) ([]domain.Project, error) {
-	query := "SELECT projectname FROM Project WHERE linktoaccountscontacts = " + userModel.Crmid + " OR linktoaccountscontacts = " + userModel.AccountId + " AND projectstatus IN ('in progress');"
+	query := "SELECT projectname FROM Project WHERE linktoaccountscontacts = " + userModel.Crmid + " OR linktoaccountscontacts = " + userModel.AccountId + " AND projectstatus IN ('in progress', 'Выполняется');"
 	return executeQuery[domain.Project](ctx, query, s.vtiger, domain.ConvertMapToProject)
 }
 

@@ -22,6 +22,7 @@ func (h *Handler) initProjectsRoutes(api *gin.RouterGroup) {
 		projects.GET("/:id/file/:file", h.getProjectFile)
 		projects.GET("/:id/tasks", h.getAllProjectTasks)
 		projects.PATCH("/:id/tasks/:task", h.updateProjectTask)
+		projects.GET("/:id/tasks/:task", h.getProjectTask)
 		projects.POST("/:id/tasks", h.createProjectTask)
 		projects.GET("/:id/tasks/:task/comments", h.getProjectTaskComments)
 		projects.POST("/:id/tasks/:task/comments", h.addProjectTaskComment)
@@ -48,6 +49,32 @@ func (h *Handler) getProject(c *gin.Context) {
 	}
 	res := AloneDataResponse[domain.Project]{
 		Data: project,
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func (h *Handler) getProjectTask(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+	taskId := h.getAndValidateId(c, "task")
+
+	userModel := h.getValidatedUser(c)
+	if userModel == nil || id == "" || taskId == "" {
+		newResponse(c, http.StatusForbidden, "wrong user or id")
+		return
+	}
+
+	project, err := h.services.Projects.GetProjectById(c.Request.Context(), id, true)
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if userModel.AccountId != project.Linktoaccountscontacts && userModel.Crmid != project.Linktoaccountscontacts {
+		notPermittedResponse(c)
+		return
+	}
+	taskModel, err := h.services.ProjectTasks.GetProjectTaskById(c.Request.Context(), taskId)
+	res := AloneDataResponse[domain.ProjectTask]{
+		Data: taskModel,
 	}
 	c.JSON(http.StatusOK, res)
 }

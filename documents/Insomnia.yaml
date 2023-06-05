@@ -1,11 +1,11 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-04T10:28:05.845Z
+__export_date: 2023-06-05T16:41:52.759Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de4e1785fd
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de7a20aecd
-    modified: 1685874354139
+    modified: 1685982659183
     created: 1685874311779
     url: "{{ base_url }}/otp/disable"
     name: Disable OTP
@@ -96,7 +96,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de386e15b6
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de7a20aecd
-    modified: 1685874130892
+    modified: 1685944799567
     created: 1685866590714
     url: "{{ base_url }}/otp/verify"
     name: Verify Token
@@ -194,7 +194,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de8a1a0610
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de7a20aecd
-    modified: 1685874047933
+    modified: 1685944791774
     created: 1685861984138
     url: "{{ base_url }}/otp/generate"
     name: Generate OTP
@@ -285,7 +285,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de705e89df
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
-    modified: 1685861984696
+    modified: 1685983197204
     created: 1685776181238
     url: "{{ base_url }}/statistics/tasks"
     name: List of Progress Tasks
@@ -490,6 +490,78 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de9ff0f9d2
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1685983296573
+    created: 1685983196614
+    url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}"
+    name: Get Project Task
+    description: |-
+      Get project task data by id.
+      Example response:
+      ```json
+      {
+      	"data": {
+      		"projecttaskname": "Need to fix issue",
+      		"projecttasktype": "administrative",
+      		"projecttaskpriority": "Urgent",
+      		"projectid": "29x54",
+      		"assigned_user_id": "19x1",
+      		"projecttasknumber": "2",
+      		"projecttask_no": "PT1",
+      		"projecttaskprogress": "20%",
+      		"projecttaskhours": "18",
+      		"startdate": "2023-04-30T00:00:00Z",
+      		"enddate": "2023-05-23T00:00:00Z",
+      		"createdtime": "2023-04-28T06:07:22Z",
+      		"modifiedtime": "2023-06-03T06:06:12Z",
+      		"description": "There is very big problem",
+      		"source": "CRM",
+      		"starred": false,
+      		"tags": [
+      			""
+      		],
+      		"projecttaskstatus": "Closed",
+      		"id": "28x56",
+      		"label": "Need to fix issue"
+      	}
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_e52712058f4b47b88e67585dff690f93
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_99245f5f97b1493dbf86d0b1580f2b1c
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1685983196614
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1684500052715
+    created: 1684500052715
+    name: project
+    description: Project module in Vtiger CRM
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1684500052715
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de6c65dc60
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
     modified: 1685776182105
@@ -570,16 +642,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684500052715
-    created: 1684500052715
-    name: project
-    description: Project module in Vtiger CRM
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1684500052715
-    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deb0d90dd1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
     modified: 1685684665879
@@ -3649,7 +3711,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deb8d9c1dc
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1685556529681
+    modified: 1685902922971
     created: 1682426774797
     url: "{{ base_url }}/tickets/{{ ticketId }}"
     name: Update user
@@ -3824,7 +3886,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de051cf8c0
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1683371854698
+    modified: 1685876487843
     created: 1682092427875
     url: "{{ base_url }}/users/password"
     name: Reset Password
@@ -3945,7 +4007,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de94b9a1a1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1685874312430
+    modified: 1685875915041
     created: 1681838399470
     url: "{{ base_url }}/users/my"
     name: Get data about authenticated user
@@ -4058,7 +4120,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de00ac9da2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1685874164099
+    modified: 1685875897597
     created: 1681827520782
     url: "{{ base_url }}/users/login"
     name: Login in system
@@ -4272,7 +4334,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1685874311823
+    modified: 1685983296114
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -6018,6 +6080,45 @@ resources:
               "403":
                 description: Operation not permitted
         "/projects/{projectId}/tasks/{taskId}":
+          get:
+            tags:
+              - project
+            summary: Get Project Task
+            description: Returns a project task by its ID
+            operationId: getProjectTask
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: taskId
+                in: path
+                description: ID of task
+                required: true
+                schema:
+                  type: string
+                  format: string
+              - name: projectId
+                in: path
+                description: ID of project
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          $ref: "#/components/schemas/ProjectTask"                
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: ProjectTask or Project not found
+              "403":
+                description: Operation not permitted
           patch:
               tags:
                 - project

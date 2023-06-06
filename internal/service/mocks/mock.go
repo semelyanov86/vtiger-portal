@@ -6,6 +6,7 @@ package mock_service
 
 import (
 	context "context"
+	multipart "mime/multipart"
 	reflect "reflect"
 
 	gin "github.com/gin-gonic/gin"
@@ -139,6 +140,21 @@ func NewMockDocumentServiceInterface(ctrl *gomock.Controller) *MockDocumentServi
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockDocumentServiceInterface) EXPECT() *MockDocumentServiceInterfaceMockRecorder {
 	return m.recorder
+}
+
+// AttachFile mocks base method.
+func (m *MockDocumentServiceInterface) AttachFile(ctx context.Context, file multipart.File, id string, userModel domain.User, header *multipart.FileHeader) (domain.Document, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AttachFile", ctx, file, id, userModel, header)
+	ret0, _ := ret[0].(domain.Document)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AttachFile indicates an expected call of AttachFile.
+func (mr *MockDocumentServiceInterfaceMockRecorder) AttachFile(ctx, file, id, userModel, header interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachFile", reflect.TypeOf((*MockDocumentServiceInterface)(nil).AttachFile), ctx, file, id, userModel, header)
 }
 
 // GetFile mocks base method.

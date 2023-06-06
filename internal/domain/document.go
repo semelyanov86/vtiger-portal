@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"github.com/semelyanov86/vtiger-portal/internal/utils"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"strings"
 	"time"
@@ -112,4 +113,8 @@ var MockedFile = vtiger.File{
 	Filetype:     "image/png",
 	Filesize:     19951,
 	Filecontents: "iVBORw0KGgoAAAANSUhEUgAAAnAAAAD1CAIAAA",
+}
+
+func (d Document) ConvertToMap() (map[string]any, error) {
+	return utils.ConvertStructToMap(d)
 }

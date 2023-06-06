@@ -12,6 +12,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/email"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
+	"mime/multipart"
 	"sync"
 	"time"
 )
@@ -50,7 +51,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 	managersService := NewManagerService(repos.Managers, cache)
 	usersService := NewUsersService(repos.Users, repos.UsersCrm, wg, emailService, companyService, repos.Tokens, repos.Documents, cache)
 	commentsService := NewComments(repos.Comments, cache, config, usersService, managersService)
-	documentService := NewDocuments(repos.Documents, cache)
+	documentService := NewDocuments(repos.Documents, cache, config)
 	modulesService := NewModulesService(repos.Modules, cache)
 	currencyService := NewCurrencyService(repos.Currency, cache)
 	projectService := NewProjectsService(repos.Projects, cache, commentsService, documentService, modulesService, config, repos.ProjectTasks)
@@ -92,6 +93,7 @@ type CommentServiceInterface interface {
 type DocumentServiceInterface interface {
 	GetRelated(ctx context.Context, id string) ([]domain.Document, error)
 	GetFile(ctx context.Context, id string, relatedId string) (vtiger.File, error)
+	AttachFile(ctx context.Context, file multipart.File, id string, userModel domain.User, header *multipart.FileHeader) (domain.Document, error)
 }
 
 type SupportedTypes interface {

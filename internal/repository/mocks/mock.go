@@ -672,6 +672,21 @@ func (m *MockDocument) EXPECT() *MockDocumentMockRecorder {
 	return m.recorder
 }
 
+// AttachFile mocks base method.
+func (m *MockDocument) AttachFile(ctx context.Context, doc domain.Document, parent string) (domain.Document, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AttachFile", ctx, doc, parent)
+	ret0, _ := ret[0].(domain.Document)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AttachFile indicates an expected call of AttachFile.
+func (mr *MockDocumentMockRecorder) AttachFile(ctx, doc, parent interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachFile", reflect.TypeOf((*MockDocument)(nil).AttachFile), ctx, doc, parent)
+}
+
 // RetrieveFile mocks base method.
 func (m *MockDocument) RetrieveFile(ctx context.Context, id string) (vtiger.File, error) {
 	m.ctrl.T.Helper()

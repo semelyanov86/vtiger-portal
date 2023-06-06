@@ -22,7 +22,7 @@ func (h Handler) corsMiddleware(c *gin.Context) {
 				c.Header("Access-Control-Allow-Origin", origin)
 				if c.Request.Method == http.MethodOptions && c.Request.Header.Get("Access-Control-Request-Method") != "" {
 					c.Header("Access-Control-Allow-Methods", "OPTIONS, PUT, PATCH, DELETE")
-					c.Header("Access-Control-Allow-Headers", "Authorization, Content-Type")
+					c.Header("Access-Control-Allow-Headers", "Authorization, Content-Type, X-Requested-With")
 					c.AbortWithStatus(http.StatusOK)
 					return
 				}

@@ -72,6 +72,7 @@ type Lead interface {
 type Document interface {
 	RetrieveFromModule(ctx context.Context, id string) ([]domain.Document, error)
 	RetrieveFile(ctx context.Context, id string) (vtiger.File, error)
+	AttachFile(ctx context.Context, doc domain.Document, parent string) (domain.Document, error)
 }
 
 type Faq interface {

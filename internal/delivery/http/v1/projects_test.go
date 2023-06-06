@@ -429,7 +429,7 @@ func TestHandler_getRelatedDocumentsFromProject(t *testing.T) {
 			tt.mockDocument(rd)
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
-			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache(), config.Config{})
 
 			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{}, repository.ProjectTaskCrm{})
 
@@ -540,7 +540,7 @@ func TestHandler_getFileFromProject(t *testing.T) {
 			tt.mockDocument(rd)
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
-			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache(), config.Config{})
 
 			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{}, repository.ProjectTaskCrm{})
 

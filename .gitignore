@@ -3,6 +3,7 @@
 .bin
 .DS_Store
 vendor
+storage
 
 .env
 .envrc

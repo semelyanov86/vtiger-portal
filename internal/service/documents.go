@@ -3,26 +3,35 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
+	"io"
+	"mime/multipart"
+	"os"
+	"path/filepath"
+	"strconv"
+	"time"
 )
 
 type Documents struct {
 	repository repository.Document
 	cache      cache.Cache
+	config     config.Config
 }
 
 const CacheDocuments = "documents-"
 
 const CacheDocumentTtl = 500
 
-func NewDocuments(repository repository.Document, cache cache.Cache) Documents {
+func NewDocuments(repository repository.Document, cache cache.Cache, config config.Config) Documents {
 	return Documents{
 		repository: repository,
 		cache:      cache,
+		config:     config,
 	}
 }
 
@@ -59,4 +68,44 @@ func (d Documents) GetFile(ctx context.Context, id string, relatedId string) (vt
 		}
 	}
 	return vtiger.File{}, ErrOperationNotPermitted
+}
+
+func (d Documents) AttachFile(ctx context.Context, file multipart.File, id string, userModel domain.User, header *multipart.FileHeader) (domain.Document, error) {
+	fileBytes, err := io.ReadAll(file)
+	if err != nil {
+		return domain.Document{}, err
+	}
+
+	destinationPath := filepath.Join("storage", userModel.Crmid, id, header.Filename)
+	err = os.MkdirAll(filepath.Dir(destinationPath), 0755)
+	if err != nil {
+		return domain.Document{}, err
+	}
+
+	outFile, err := os.Create(destinationPath)
+	if err != nil {
+		return domain.Document{}, err
+	}
+	defer outFile.Close()
+
+	_, err = outFile.Write(fileBytes)
+	if err != nil {
+		return domain.Document{}, err
+	}
+	link := d.config.HTTP.Host + ":" + strconv.Itoa(d.config.HTTP.Port) + "/" + destinationPath
+	doc := domain.Document{
+		NotesTitle:       header.Filename,
+		Createdtime:      time.Now(),
+		Modifiedtime:     time.Now(),
+		Filename:         link,
+		AssignedUserId:   d.config.Vtiger.Business.DefaultUser,
+		Notecontent:      "Document uploaded from " + userModel.FirstName + " " + userModel.LastName,
+		Filetype:         "",
+		Filesize:         strconv.Itoa(int(header.Size)),
+		Filelocationtype: "E",
+		Fileversion:      "1",
+		Filestatus:       "1",
+	}
+
+	return d.repository.AttachFile(ctx, doc, id)
 }

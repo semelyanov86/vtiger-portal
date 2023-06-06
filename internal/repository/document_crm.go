@@ -44,3 +44,19 @@ func (d DocumentCrm) RetrieveFile(ctx context.Context, id string) (vtiger.File, 
 	}
 	return result.Result[0], nil
 }
+
+func (d DocumentCrm) AttachFile(ctx context.Context, doc domain.Document, parent string) (domain.Document, error) {
+	docMap, err := doc.ConvertToMap()
+	if err != nil {
+		return doc, err
+	}
+	resp, err := d.vtiger.Create(ctx, "Documents", docMap)
+	if err != nil {
+		return doc, err
+	}
+	newDoc := domain.ConvertMapToDocument(resp.Result)
+
+	d.vtiger.AddRelated(ctx, parent, newDoc.Id, "Documents")
+
+	return newDoc, nil
+}

@@ -19,6 +19,7 @@ func (h *Handler) initProjectsRoutes(api *gin.RouterGroup) {
 		projects.GET("/:id/comments", h.getProjectComments)
 		projects.POST("/:id/comments", h.addProjectComment)
 		projects.GET("/:id/documents", h.getProjectDocuments)
+		projects.POST("/:id/documents", h.uploadProjectDocument)
 		projects.GET("/:id/file/:file", h.getProjectFile)
 		projects.GET("/:id/tasks", h.getAllProjectTasks)
 		projects.PATCH("/:id/tasks/:task", h.updateProjectTask)
@@ -27,6 +28,7 @@ func (h *Handler) initProjectsRoutes(api *gin.RouterGroup) {
 		projects.GET("/:id/tasks/:task/comments", h.getProjectTaskComments)
 		projects.POST("/:id/tasks/:task/comments", h.addProjectTaskComment)
 		projects.GET("/:id/tasks/:task/documents", h.getProjectTaskDocuments)
+		projects.POST("/:id/tasks/:task/documents", h.uploadProjectTaskDocument)
 	}
 }
 
@@ -73,6 +75,9 @@ func (h *Handler) getProjectTask(c *gin.Context) {
 		return
 	}
 	taskModel, err := h.services.ProjectTasks.GetProjectTaskById(c.Request.Context(), taskId)
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+	}
 	res := AloneDataResponse[domain.ProjectTask]{
 		Data: taskModel,
 	}
@@ -163,6 +168,73 @@ func (h *Handler) getProjectDocuments(c *gin.Context) {
 		Page:  1,
 		Size:  100,
 	})
+}
+
+func (h *Handler) uploadProjectDocument(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+	userModel := h.getValidatedUser(c)
+
+	if id == "" || userModel == nil {
+		notPermittedResponse(c)
+		return
+	}
+	projectModel, err := h.services.Projects.GetProjectById(c.Request.Context(), id, false)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if projectModel.Linktoaccountscontacts != userModel.AccountId && projectModel.Linktoaccountscontacts != userModel.Crmid {
+		notPermittedResponse(c)
+		return
+	}
+
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
+		newResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	document, err := h.services.Documents.AttachFile(c.Request.Context(), file, id, *userModel, header)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, AloneDataResponse[domain.Document]{Data: document})
+}
+
+func (h *Handler) uploadProjectTaskDocument(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+	taskId := h.getAndValidateId(c, "task")
+	userModel := h.getValidatedUser(c)
+
+	if id == "" || userModel == nil || taskId == "" {
+		notPermittedResponse(c)
+		return
+	}
+	projectModel, err := h.services.Projects.GetProjectById(c.Request.Context(), id, false)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if projectModel.Linktoaccountscontacts != userModel.AccountId && projectModel.Linktoaccountscontacts != userModel.Crmid {
+		notPermittedResponse(c)
+		return
+	}
+
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
+		newResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	document, err := h.services.Documents.AttachFile(c.Request.Context(), file, taskId, *userModel, header)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, AloneDataResponse[domain.Document]{Data: document})
 }
 
 func (h *Handler) getProjectFile(c *gin.Context) {

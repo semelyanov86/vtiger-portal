@@ -132,6 +132,33 @@ func (c VtigerConnector) Lookup(ctx context.Context, dataType, value, module str
 	return processVtigerResponse[[]map[string]any](resp, vtigerResponse)
 }
 
+func (c VtigerConnector) AddRelated(ctx context.Context, source string, related string, label string) (*VtigerResponse[[]map[string]any], error) {
+	sessionID, err := c.sessionId()
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.fetcher.FetchBytes(ctx, url.Values{
+		"operation":       {"add_related"},
+		"sessionName":     {sessionID},
+		"sourceRecordId":  {source},
+		"relatedRecordId": {related},
+		"relationIdLabel": {label},
+	}.Encode())
+
+	if err != nil {
+		return nil, e.Wrap("code 7", err)
+	}
+
+	err = c.close(sessionID)
+	if err != nil {
+		return nil, err
+	}
+	vtigerResponse := &VtigerResponse[[]map[string]any]{}
+
+	return processVtigerResponse[[]map[string]any](resp, vtigerResponse)
+}
+
 func (c VtigerConnector) Query(ctx context.Context, query string) (*VtigerResponse[[]map[string]any], error) {
 	sessionID, err := c.sessionId()
 	if err != nil {
@@ -393,7 +420,6 @@ func processVtigerResponse[T ResultData](response []byte, data *VtigerResponse[T
 	if err := json.Unmarshal(response, &data); err != nil {
 		return data, err
 	}
-
 	if !data.Success {
 		return data, e.Wrap(data.Error.Code+" - "+data.Error.Message, ErrResponseError)
 	}

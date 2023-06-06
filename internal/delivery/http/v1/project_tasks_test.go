@@ -349,7 +349,7 @@ func TestHandler_getRelatedDocumentsFromProjectTask(t *testing.T) {
 			tt.mockProjectTask(rt)
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
-			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache(), config.Config{})
 
 			projectsService := service.NewProjectsService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{}, rt)
 			projectTasksService := service.NewProjectTasksService(rt, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{}, projectsService)

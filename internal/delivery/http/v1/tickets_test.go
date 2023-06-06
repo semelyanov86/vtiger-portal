@@ -396,7 +396,7 @@ func TestHandler_getRelatedDocuments(t *testing.T) {
 			tt.mockDocument(rd)
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
-			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache(), config.Config{})
 
 			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{})
 
@@ -507,7 +507,7 @@ func TestHandler_getFile(t *testing.T) {
 			tt.mockDocument(rd)
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
-			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache(), config.Config{})
 
 			helpDeskService := service.NewHelpDeskService(rm, cache.NewMemoryCache(), commentService, documentService, service.ModulesService{}, config.Config{})
 
@@ -568,7 +568,7 @@ func TestHandler_createTicket(t *testing.T) {
 			tt.mockModule(rmm)
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
-			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache(), config.Config{})
 
 			helpDeskService := service.NewHelpDeskService(repository.HelpDeskMockRepository{}, cache.NewMemoryCache(), commentService, documentService, service.NewModulesService(rmm, cache.NewMemoryCache()), config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultUser: "19x1"}}})
 
@@ -646,7 +646,7 @@ func TestHandler_updateTicket(t *testing.T) {
 			tt.mockModule(rmm)
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
-			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache(), config.Config{})
 
 			helpDeskService := service.NewHelpDeskService(repository.HelpDeskMockRepository{}, cache.NewMemoryCache(), commentService, documentService, service.NewModulesService(rmm, cache.NewMemoryCache()), config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultUser: "19x1"}}})
 
@@ -707,7 +707,7 @@ func TestHandler_addCommentToTicket(t *testing.T) {
 			rmm := mock_repository.NewMockModules(c)
 
 			commentService := service.NewComments(rc, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, service.ManagerService{})
-			documentService := service.NewDocuments(rd, cache.NewMemoryCache())
+			documentService := service.NewDocuments(rd, cache.NewMemoryCache(), config.Config{})
 
 			helpDeskService := service.NewHelpDeskService(repository.HelpDeskMockRepository{}, cache.NewMemoryCache(), commentService, documentService, service.NewModulesService(rmm, cache.NewMemoryCache()), config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultUser: "19x1"}}})
 

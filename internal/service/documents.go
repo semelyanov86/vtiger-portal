@@ -107,5 +107,7 @@ func (d Documents) AttachFile(ctx context.Context, file multipart.File, id strin
 		Filestatus:       "1",
 	}
 
+	StoreInCache[*[]domain.Document](CacheDocuments+id, nil, 0, d.cache)
+
 	return d.repository.AttachFile(ctx, doc, id)
 }

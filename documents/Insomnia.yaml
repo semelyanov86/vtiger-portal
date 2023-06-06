@@ -1,6 +1,6 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-05T16:41:52.759Z
+__export_date: 2023-06-06T15:48:26.084Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de4e1785fd
@@ -492,7 +492,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9ff0f9d2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1685983296573
+    modified: 1686066202394
     created: 1685983196614
     url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}"
     name: Get Project Task
@@ -3709,6 +3709,108 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de5073cc7f
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1686066483483
+    created: 1686066201773
+    url: "{{ base_url }}/users/my/documents"
+    name: My Documents
+    description: |-
+      Get list of attached to contact or account documents
+
+      Example response:
+      ```json
+      {
+      	"data": [
+      		{
+      			"notes_title": "getUser",
+      			"createdtime": "2023-05-19T12:53:59Z",
+      			"modifiedtime": "2023-05-19T12:53:59Z",
+      			"filename": "getUser.ts",
+      			"assigned_user_id": "19x1",
+      			"notecontent": "",
+      			"filetype": "text/vnd.qt.linguist",
+      			"filesize": "161",
+      			"filelocationtype": "I",
+      			"fileversion": "",
+      			"filestatus": "1",
+      			"filedownloadcount": "",
+      			"folderid": "22x1",
+      			"note_no": "DOC4",
+      			"modifiedby": "19x1",
+      			"source": "CRM",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"id": "15x66",
+      			"imageattachmentids": "15x67"
+      		},
+      		{
+      			"notes_title": "ProfileStandard",
+      			"createdtime": "2023-05-20T07:20:39Z",
+      			"modifiedtime": "2023-05-20T07:20:39Z",
+      			"filename": "ProfileStandard.jsfile.txt",
+      			"assigned_user_id": "19x1",
+      			"notecontent": "",
+      			"filetype": "application/x-javascript",
+      			"filesize": "60592",
+      			"filelocationtype": "I",
+      			"fileversion": "",
+      			"filestatus": "1",
+      			"filedownloadcount": "",
+      			"folderid": "22x1",
+      			"note_no": "DOC5",
+      			"modifiedby": "19x1",
+      			"source": "CRM",
+      			"starred": false,
+      			"tags": [
+      				""
+      			],
+      			"id": "15x69",
+      			"imageattachmentids": "15x70"
+      		}
+      	],
+      	"count": 2,
+      	"page": 1,
+      	"size": 100
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_0489445b2f904fa7b90a967b465df029
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_fb298ce3832d4818a0805d4f55bc77a8
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686066201773
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1681752584161
+    created: 1681752584161
+    name: user
+    description: Operations about user
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1681752584161
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deb8d9c1dc
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
     modified: 1685902922971
@@ -3791,16 +3893,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1681752584161
-    created: 1681752584161
-    name: user
-    description: Operations about user
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1681752584161
-    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dee56f68e2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
     modified: 1685874193425
@@ -4334,7 +4426,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1685983296114
+    modified: 1686066201969
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -4686,6 +4778,40 @@ resources:
                   description: User or file not found
                 "403":
                   description: Operation not permitted
+        "/users/my/documents":
+          get:
+            tags:
+              - user
+            summary: My Documents
+            description: Returns list of attached to contact or account documents
+            operationId: getMyDocuments
+            security:
+              - bearerAuth: []
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Document"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid pagination params
+              "403":
+                description: Operation not permitted
         "/otp/generate":
           get:
             tags:

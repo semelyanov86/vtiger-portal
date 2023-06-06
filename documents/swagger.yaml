@@ -345,6 +345,40 @@ paths:
           description: User or file not found
         "403":
           description: Operation not permitted
+  "/users/my/documents":
+    get:
+      tags:
+        - user
+      summary: My Documents
+      description: Returns list of attached to contact or account documents
+      operationId: getMyDocuments
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Document"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid pagination params
+        "403":
+          description: Operation not permitted
   "/otp/generate":
     get:
       tags:

@@ -22,6 +22,7 @@ func (h *Handler) initTicketsRoutes(api *gin.RouterGroup) {
 		tickets.GET("/:id/comments", h.getComments)
 		tickets.POST("/:id/comments", h.addComment)
 		tickets.GET("/:id/documents", h.getDocuments)
+		tickets.POST("/:id/documents", h.uploadTicketDocuments)
 		tickets.GET("/:id/file/:file", h.getFile)
 	}
 }
@@ -130,6 +131,39 @@ func (h *Handler) getDocuments(c *gin.Context) {
 		Page:  1,
 		Size:  100,
 	})
+}
+
+func (h *Handler) uploadTicketDocuments(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+	userModel := h.getValidatedUser(c)
+
+	if id == "" || userModel == nil {
+		notPermittedResponse(c)
+		return
+	}
+	ticketModel, err := h.services.HelpDesk.GetHelpDeskById(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if userModel.AccountId != ticketModel.ParentID {
+		notPermittedResponse(c)
+		return
+	}
+
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
+		newResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	document, err := h.services.Documents.AttachFile(c.Request.Context(), file, id, *userModel, header)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, AloneDataResponse[domain.Document]{Data: document})
 }
 
 func (h *Handler) getFile(c *gin.Context) {

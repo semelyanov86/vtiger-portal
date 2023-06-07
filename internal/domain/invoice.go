@@ -154,6 +154,10 @@ func (i *InvoiceFloat) UnmarshalJSON(jsonValue []byte) error {
 	if err != nil {
 		return utils.ErrInvalidRuntimeFormat
 	}
+	if unquotedJSONValue == "" {
+		*i = InvoiceFloat(0)
+		return nil
+	}
 	value, err := strconv.ParseFloat(unquotedJSONValue, 64)
 	if err != nil {
 		return err
@@ -166,6 +170,10 @@ func (i *InvoiceInt) UnmarshalJSON(jsonValue []byte) error {
 	unquotedJSONValue, err := strconv.Unquote(string(jsonValue))
 	if err != nil {
 		return utils.ErrInvalidRuntimeFormat
+	}
+	if unquotedJSONValue == "" {
+		*i = InvoiceInt(0)
+		return nil
 	}
 	value, err := strconv.Atoi(unquotedJSONValue)
 	if err != nil {

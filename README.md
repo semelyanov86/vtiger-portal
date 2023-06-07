@@ -94,6 +94,15 @@ Note, in old vtiger versions, we receive always empty attachment ids. In this ca
 
 Also for add_related endpoint currently we support GET, not POST request.
 
+If vtiger does not provide file contents in response, fix file `include/Webservices/Utils.php`, function `vtws_filedetails`, change filenamewithpath variable:
+```php
+        $storedName = $fileData['storedname'];
+        if (!$storedName) {
+            $storedName = $fileName;
+        }
+        $filenamewithpath = $fileData['path'].$fileData['attachmentsid'].'_'.$storedName;
+```
+
 ## Adding new custom field to module
 What if you created new custom field in Vtiger module and want to add it in Portal? Because we using golang type system in portal, you need to register it in our domain system.
 For example, you created field 'cf_543' in HelpDesk module. Here is three steps, how you can register this field in portal:

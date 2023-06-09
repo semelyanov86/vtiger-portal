@@ -19,11 +19,13 @@ import (
 
 func TestHandler_receiveInvoiceById(t *testing.T) {
 	type mockRepositoryInvoice func(r *mock_repository.MockInvoice)
+	type mockRepositoryCurrency func(r *mock_repository.MockCurrency)
 
 	tests := []struct {
 		name         string
 		id           string
 		mockInvoice  mockRepositoryInvoice
+		mockCurrency mockRepositoryCurrency
 		userModel    *domain.User
 		statusCode   int
 		responseBody string
@@ -35,7 +37,11 @@ func TestHandler_receiveInvoiceById(t *testing.T) {
 				r.EXPECT().RetrieveById(context.Background(), "2x53").Return(domain.Invoice{
 					Description: "This is test description",
 					AccountID:   "11x1",
+					CurrencyID:  "22x22",
 				}, nil)
+			},
+			mockCurrency: func(r *mock_repository.MockCurrency) {
+				r.EXPECT().RetrieveById(context.Background(), "22x22").Return(domain.Currency{}, nil)
 			},
 			statusCode:   http.StatusOK,
 			responseBody: `"description":"This is test description"`,
@@ -46,6 +52,8 @@ func TestHandler_receiveInvoiceById(t *testing.T) {
 			id:   "2x53",
 			mockInvoice: func(r *mock_repository.MockInvoice) {
 			},
+			mockCurrency: func(r *mock_repository.MockCurrency) {
+			},
 			statusCode:   http.StatusUnauthorized,
 			responseBody: `"error":"Anonymous Access",`,
 			userModel:    domain.AnonymousUser,
@@ -53,6 +61,8 @@ func TestHandler_receiveInvoiceById(t *testing.T) {
 			name: "Wrong ID",
 			id:   "17",
 			mockInvoice: func(r *mock_repository.MockInvoice) {
+			},
+			mockCurrency: func(r *mock_repository.MockCurrency) {
 			},
 			statusCode:   http.StatusUnprocessableEntity,
 			responseBody: `wrong id`,
@@ -67,6 +77,8 @@ func TestHandler_receiveInvoiceById(t *testing.T) {
 					AccountID:   "12x44",
 				}, nil)
 			},
+			mockCurrency: func(r *mock_repository.MockCurrency) {
+			},
 			statusCode:   http.StatusForbidden,
 			responseBody: `"message":"You are not allowed to view this record"`,
 			userModel:    &repository.MockedUser,
@@ -80,9 +92,13 @@ func TestHandler_receiveInvoiceById(t *testing.T) {
 			defer c.Finish()
 
 			rm := mock_repository.NewMockInvoice(c)
+			rc := mock_repository.NewMockCurrency(c)
 			tt.mockInvoice(rm)
+			tt.mockCurrency(rc)
 
-			invoiceService := service.NewInvoiceService(rm, cache.NewMemoryCache(), service.ModulesService{}, config.Config{})
+			currencyService := service.NewCurrencyService(rc, cache.NewMemoryCache())
+
+			invoiceService := service.NewInvoiceService(rm, cache.NewMemoryCache(), service.ModulesService{}, config.Config{}, currencyService)
 
 			services := &service.Services{Invoices: invoiceService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -110,11 +126,13 @@ func TestHandler_receiveInvoiceById(t *testing.T) {
 
 func TestHandler_getAllInvoices(t *testing.T) {
 	type mockRepositoryInvoice func(r *mock_repository.MockInvoice)
+	type mockRepositoryCurrency func(r *mock_repository.MockCurrency)
 
 	tests := []struct {
 		name         string
 		postfix      string
 		mockInvoice  mockRepositoryInvoice
+		mockCurrency mockRepositoryCurrency
 		userModel    *domain.User
 		statusCode   int
 		responseBody string
@@ -126,11 +144,15 @@ func TestHandler_getAllInvoices(t *testing.T) {
 					Page:     1,
 					PageSize: 20,
 					Client:   "11x1",
+					Sort:     "-invoice_no",
 				}).Return([]domain.Invoice{
 					{Description: "This is test description",
-						AccountID: "11x1"},
+						AccountID: "11x1", CurrencyID: "22x22"},
 				}, nil)
 				r.EXPECT().Count(context.Background(), "11x1").Return(1, nil)
+			},
+			mockCurrency: func(r *mock_repository.MockCurrency) {
+				r.EXPECT().RetrieveById(context.Background(), "22x22").Return(domain.Currency{}, nil)
 			},
 			statusCode:   http.StatusOK,
 			responseBody: `"description":"This is test description"`,
@@ -140,6 +162,8 @@ func TestHandler_getAllInvoices(t *testing.T) {
 			name: "Anonymous Access",
 			mockInvoice: func(r *mock_repository.MockInvoice) {
 			},
+			mockCurrency: func(r *mock_repository.MockCurrency) {
+			},
 			statusCode:   http.StatusUnauthorized,
 			responseBody: `"error":"Anonymous Access",`,
 			userModel:    domain.AnonymousUser,
@@ -148,6 +172,8 @@ func TestHandler_getAllInvoices(t *testing.T) {
 			name:    "Wrong Pagination",
 			postfix: "?page=notknown&size=smth",
 			mockInvoice: func(r *mock_repository.MockInvoice) {
+			},
+			mockCurrency: func(r *mock_repository.MockCurrency) {
 			},
 			statusCode:   http.StatusUnprocessableEntity,
 			responseBody: `Invalid page number`,
@@ -162,9 +188,13 @@ func TestHandler_getAllInvoices(t *testing.T) {
 			defer c.Finish()
 
 			rm := mock_repository.NewMockInvoice(c)
+			rc := mock_repository.NewMockCurrency(c)
 			tt.mockInvoice(rm)
+			tt.mockCurrency(rc)
 
-			invoiceService := service.NewInvoiceService(rm, cache.NewMemoryCache(), service.ModulesService{}, config.Config{})
+			curencyService := service.NewCurrencyService(rc, cache.NewMemoryCache())
+
+			invoiceService := service.NewInvoiceService(rm, cache.NewMemoryCache(), service.ModulesService{}, config.Config{}, curencyService)
 
 			services := &service.Services{Invoices: invoiceService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services, config: &config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultPagination: 20}}}}

@@ -1185,6 +1185,20 @@ paths:
             type: integer
             format: int32
             default: 20
+        - name: sort
+          in: query
+          description: Field, which accepts order by algorithm. Minus sign at the beginning means desc order.
+          required: false
+          schema:
+            type: string
+            example: -invoice_no
+        - name: search
+          in: query
+          description: Search with LIKE filter in invoice_no and subject
+          required: false
+          schema:
+            type: string
+            example: INV3
       responses:
         "200":
           description: successful operation
@@ -3020,6 +3034,8 @@ components:
         shipping_&_handling_shtax3:
           type: number
           example: 12.500
+        currency:
+          $ref: "#/components/schemas/Currency"
         LineItems:
           type: array
           items:

@@ -68,7 +68,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		Comments:         commentsService,
 		Documents:        documentService,
 		Faqs:             NewFaqsService(repos.Faqs, cache, modulesService, config),
-		Invoices:         NewInvoiceService(repos.Invoice, cache, modulesService, config),
+		Invoices:         NewInvoiceService(repos.Invoice, cache, modulesService, config, currencyService),
 		ServiceContracts: NewServiceContractsService(repos.ServiceContract, cache, documentService, modulesService, config),
 		Currencies:       currencyService,
 		Products:         NewProductService(repos.Product, cache, currencyService, repos.Documents, modulesService, config),

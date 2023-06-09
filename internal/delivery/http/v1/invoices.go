@@ -45,11 +45,19 @@ func (h *Handler) getAllInvoices(c *gin.Context) {
 	if userModel == nil || page < 0 || size < 0 {
 		return
 	}
+	sortString := c.DefaultQuery("sort", "-invoice_no")
+
+	if !isSortStringValid(sortString, []string{"invoice_no", "id", "subject", "invoicestatus", "invoicedate", "hdnGrandTotal"}) {
+		newResponse(c, http.StatusUnprocessableEntity, "sort value "+sortString+" is not allowed")
+		return
+	}
 
 	invoices, count, err := h.services.Invoices.GetAll(c.Request.Context(), repository.PaginationQueryFilter{
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,
+		Sort:     sortString,
+		Search:   c.DefaultQuery("search", ""),
 	})
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())

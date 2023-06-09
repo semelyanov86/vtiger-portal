@@ -88,6 +88,7 @@ type Invoice struct {
 	ShippingHandlingSHTax3 InvoiceFloat    `json:"shipping_&_handling_shtax3"`
 	LineItems              []LineItem      `json:"LineItems,omitempty"`
 	LineItemsFinalDetails  map[string]any  `json:"LineItems_FinalDetails,omitempty"`
+	Currency               Currency        `json:"currency"`
 }
 
 type InvoiceDate time.Time

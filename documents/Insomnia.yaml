@@ -1,6 +1,6 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-06T15:48:26.084Z
+__export_date: 2023-06-09T17:15:53.077Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de4e1785fd
@@ -1981,7 +1981,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9127d807
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
-    modified: 1685080146216
+    modified: 1686330906417
     created: 1682659418912
     url: "{{ base_url }}/invoices"
     name: Get Invoices
@@ -1998,6 +1998,14 @@ resources:
         disabled: true
         value: "20"
         id: pair_7945c57b1f7549428d1c5757539fa58c
+      - name: sort
+        disabled: true
+        value: -invoice_no
+        id: pair_845a457e2c5b462eb8df75d717069d92
+      - name: search
+        disabled: true
+        value: Addit
+        id: pair_046f2befa74a4c10a404a1a259019f70
     headers:
       - id: pair_9e6ce9a150434956bb54f8ef74ccba6f
         name: Accept
@@ -2032,7 +2040,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de68d60525
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
-    modified: 1685080305886
+    modified: 1686329262239
     created: 1682578221793
     url: "{{ base_url }}/invoices/{{ invoiceId }}"
     name: Find Invoice by id
@@ -3711,7 +3719,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de5073cc7f
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1686066483483
+    modified: 1686160224068
     created: 1686066201773
     url: "{{ base_url }}/users/my/documents"
     name: My Documents
@@ -4426,7 +4434,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1686066201969
+    modified: 1686330905930
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -5618,6 +5626,20 @@ resources:
                   type: integer
                   format: int32
                   default: 20
+              - name: sort
+                in: query
+                description: Field, which accepts order by algorithm. Minus sign at the beginning means desc order.
+                required: false
+                schema:
+                  type: string
+                  example: -invoice_no
+              - name: search
+                in: query
+                description: Search with LIKE filter in invoice_no and subject
+                required: false
+                schema:
+                  type: string
+                  example: INV3
             responses:
               "200":
                 description: successful operation
@@ -7453,6 +7475,8 @@ resources:
               shipping_&_handling_shtax3: 
                 type: number
                 example: 12.500
+              currency:
+                $ref: "#/components/schemas/Currency"
               LineItems: 
                 type: array
                 items: 

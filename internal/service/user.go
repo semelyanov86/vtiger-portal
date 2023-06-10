@@ -72,10 +72,11 @@ type UsersService struct {
 	tokenRepository repository.Tokens
 	document        repository.Document
 	cache           cache.Cache
+	account         AccountService
 }
 
-func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface, company Company, tokenRepository repository.Tokens, document repository.Document, cache cache.Cache) UsersService {
-	return UsersService{repo: repo, crm: crm, wg: wg, email: email, company: company, tokenRepository: tokenRepository, document: document, cache: cache}
+func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface, company Company, tokenRepository repository.Tokens, document repository.Document, cache cache.Cache, account AccountService) UsersService {
+	return UsersService{repo: repo, crm: crm, wg: wg, email: email, company: company, tokenRepository: tokenRepository, document: document, cache: cache, account: account}
 }
 
 func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput, cfg *config.Config) (*domain.User, error) {
@@ -100,6 +101,13 @@ func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput, cfg *co
 	}
 	if user == nil || user.Crmid == "" {
 		return user, e.Wrap("can not find user in vtiger", ErrUserNotFound)
+	}
+	if user.AccountId != "" {
+		account, err := s.account.GetAccountById(ctx, user.AccountId)
+		if err != nil {
+			return user, e.Wrap("can not get account info", err)
+		}
+		user.AccountName = account.AccountName
 	}
 
 	if err := s.repo.Insert(ctx, user); err != nil {
@@ -259,6 +267,14 @@ func (s UsersService) GetUserById(ctx context.Context, id int64) (*domain.User, 
 			logger.Error(logger.GenerateErrorMessageFromString(err.Error()))
 			return
 		}
+		if updatedUser.AccountId != "" {
+			account, err := s.account.GetAccountById(ctx2, updatedUser.AccountId)
+			if err != nil {
+				logger.Error(logger.GenerateErrorMessageFromString(err.Error()))
+				return
+			}
+			updatedUser.AccountName = account.AccountName
+		}
 		err = s.repo.Update(ctx2, &updatedUser)
 		if err != nil {
 			logger.Error(logger.GenerateErrorMessageFromString(err.Error()))
@@ -318,6 +334,13 @@ func (s UsersService) FindByCrmid(ctx context.Context, id string) (domain.User, 
 			if err == nil && file.Filecontents != "" {
 				user.Imagecontent = file.Filecontents
 			}
+		}
+		if user.AccountId != "" {
+			account, err := s.account.GetAccountById(ctx, user.AccountId)
+			if err != nil {
+				return user, e.Wrap("can not retrieve account", err)
+			}
+			user.AccountName = account.AccountName
 		}
 
 		err = StoreInCache[*domain.User](id, &user, CacheUsersTTL, s.cache)

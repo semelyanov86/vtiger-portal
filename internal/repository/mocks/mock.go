@@ -1259,3 +1259,41 @@ func (mr *MockProjectTaskMockRecorder) Revise(ctx, task interface{}) *gomock.Cal
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Revise", reflect.TypeOf((*MockProjectTask)(nil).Revise), ctx, task)
 }
+
+// MockAccount is a mock of Account interface.
+type MockAccount struct {
+	ctrl     *gomock.Controller
+	recorder *MockAccountMockRecorder
+}
+
+// MockAccountMockRecorder is the mock recorder for MockAccount.
+type MockAccountMockRecorder struct {
+	mock *MockAccount
+}
+
+// NewMockAccount creates a new mock instance.
+func NewMockAccount(ctrl *gomock.Controller) *MockAccount {
+	mock := &MockAccount{ctrl: ctrl}
+	mock.recorder = &MockAccountMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockAccount) EXPECT() *MockAccountMockRecorder {
+	return m.recorder
+}
+
+// RetrieveById mocks base method.
+func (m *MockAccount) RetrieveById(ctx context.Context, id string) (domain.Account, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveById", ctx, id)
+	ret0, _ := ret[0].(domain.Account)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveById indicates an expected call of RetrieveById.
+func (mr *MockAccountMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockAccount)(nil).RetrieveById), ctx, id)
+}

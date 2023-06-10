@@ -57,12 +57,14 @@ var mockedUser = []domain.User{
 
 func TestHandler_createUser(t *testing.T) {
 	type mockRepositoryCrm func(r *mock_repository.MockUsersCrm)
+	type mockRepositoryAccount func(r *mock_repository.MockAccount)
 
 	const email = "emelyanov86@Km.ru"
 	tests := []struct {
 		name         string
 		body         string
 		mockCrm      mockRepositoryCrm
+		mockAccount  mockRepositoryAccount
 		statusCode   int
 		responseBody string
 	}{
@@ -76,6 +78,9 @@ func TestHandler_createUser(t *testing.T) {
 			mockCrm: func(r *mock_repository.MockUsersCrm) {
 				r.EXPECT().FindByEmail(context.Background(), email).Return(mockedUser, nil)
 			},
+			mockAccount: func(r *mock_repository.MockAccount) {
+				r.EXPECT().RetrieveById(context.Background(), "11x6").Return(domain.Account{}, nil)
+			},
 			statusCode:   201,
 			responseBody: `"id":1,"crmid":"12x11",`,
 		}, {
@@ -87,6 +92,8 @@ func TestHandler_createUser(t *testing.T) {
 			}`, "wront-email"),
 			mockCrm: func(r *mock_repository.MockUsersCrm) {
 				//r.EXPECT().FindByEmail(context.Background(), email).Return(mockedUser, nil)
+			},
+			mockAccount: func(r *mock_repository.MockAccount) {
 			},
 			statusCode:   400,
 			responseBody: `Key: 'UserSignUpInput.Email' Error:Field validation for 'Email' failed on the 'email' tag`,
@@ -100,6 +107,8 @@ func TestHandler_createUser(t *testing.T) {
 			mockCrm: func(r *mock_repository.MockUsersCrm) {
 				//r.EXPECT().FindByEmail(context.Background(), email).Return(mockedUser, nil)
 			},
+			mockAccount: func(r *mock_repository.MockAccount) {
+			},
 			statusCode:   400,
 			responseBody: `Key: 'UserSignUpInput.Code' Error:Field validation for 'Code' failed on the 'required' tag`,
 		}, {
@@ -111,6 +120,8 @@ func TestHandler_createUser(t *testing.T) {
 			}`, email),
 			mockCrm: func(r *mock_repository.MockUsersCrm) {
 				//r.EXPECT().FindByEmail(context.Background(), email).Return(mockedUser, nil)
+			},
+			mockAccount: func(r *mock_repository.MockAccount) {
 			},
 			statusCode:   400,
 			responseBody: `Key: 'UserSignUpInput.Password' Error:Field validation for 'Password' failed on the 'min' tag`,
@@ -126,10 +137,12 @@ func TestHandler_createUser(t *testing.T) {
 			rdb := repository.NewUsersMock()
 
 			rcrm := mock_repository.NewMockUsersCrm(c)
+			ra := mock_repository.NewMockAccount(c)
 			tt.mockCrm(rcrm)
+			tt.mockAccount(ra)
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache())
+			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.NewAccountService(ra, cache.NewMemoryCache()))
 
 			services := &service.Services{Users: usersService}
 			handler := Handler{services: services, config: &config.Config{}}
@@ -266,9 +279,12 @@ func TestHandler_Login(t *testing.T) {
 }
 
 func TestHandler_userInfo(t *testing.T) {
+	type mockRepositoryAccount func(r *mock_repository.MockAccount)
+
 	tests := []struct {
 		name         string
 		userModel    *domain.User
+		mockAccount  mockRepositoryAccount
 		statusCode   int
 		responseBody string
 	}{
@@ -277,11 +293,16 @@ func TestHandler_userInfo(t *testing.T) {
 			statusCode:   http.StatusOK,
 			userModel:    &repository.MockedUser,
 			responseBody: `"email":"emelyanov86@km.ru",`,
+			mockAccount: func(r *mock_repository.MockAccount) {
+				r.EXPECT().RetrieveById(context.Background(), "11x1").Return(domain.Account{}, nil)
+			},
 		}, {
 			name:         "Get user if anonymous",
 			statusCode:   http.StatusUnauthorized,
 			userModel:    domain.AnonymousUser,
 			responseBody: `"error":"Anonymous Access",`,
+			mockAccount: func(r *mock_repository.MockAccount) {
+			},
 		},
 	}
 
@@ -295,9 +316,11 @@ func TestHandler_userInfo(t *testing.T) {
 			rc := repository.NewUsersCrmMock(repository.MockedUser)
 
 			rd := repository.NewUsersMock()
+			ra := mock_repository.NewMockAccount(c)
+			tt.mockAccount(ra)
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache())
+			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.NewAccountService(ra, cache.NewMemoryCache()))
 
 			services := &service.Services{Users: usersService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -457,7 +480,7 @@ func TestHandler_resetPassword(t *testing.T) {
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
 			rc := repository.NewUsersCrmMock(repository.MockedUser)
-			usersService := service.NewUsersService(repository.NewUsersMock(), rc, &wg, service.NewMockEmailService(), companyService, rt, mock_repository.NewMockDocument(c), cache.NewMemoryCache())
+			usersService := service.NewUsersService(repository.NewUsersMock(), rc, &wg, service.NewMockEmailService(), companyService, rt, mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.AccountService{})
 
 			services := &service.Services{Users: usersService}
 			handler := Handler{services: services}
@@ -517,7 +540,7 @@ func TestHandler_allUsers(t *testing.T) {
 			rd := repository.NewUsersMock()
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache())
+			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.AccountService{})
 
 			services := &service.Services{Users: usersService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services, config: &config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultPagination: 20}}}}

@@ -1,6 +1,6 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-10T06:36:31.669Z
+__export_date: 2023-06-10T15:41:05.349Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de4e1785fd
@@ -3750,9 +3750,104 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de98f31d73
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1686409376139
+    created: 1686408551901
+    url: "{{ base_url }}/users/my/account"
+    name: Get account data
+    description: |-
+      Get attached account data from contact
+
+      Example response:
+      ```json
+      {
+      	"data": {
+      		"accountname": "Центр информационных технологий",
+      		"account_no": "ACC1",
+      		"phone": "+78432023893",
+      		"website": "https://itvolga.com",
+      		"fax": "",
+      		"tickersymbol": "",
+      		"otherphone": "",
+      		"account_id": "",
+      		"email1": "info@itvolga.com",
+      		"employees": "0",
+      		"email2": "",
+      		"ownership": "",
+      		"rating": "Active",
+      		"industry": "Communications",
+      		"siccode": "",
+      		"accounttype": "Integrator",
+      		"annual_revenue": "12100.00000000",
+      		"emailoptout": "0",
+      		"notify_owner": "0",
+      		"assigned_user_id": "19x1",
+      		"createdtime": "2022-09-06 18:52:10",
+      		"modifiedtime": "2022-09-06 18:53:13",
+      		"modifiedby": "19x1",
+      		"bill_street": "Bulvar Yunosti, 3",
+      		"ship_street": "Bulvar Yunosti, 3",
+      		"bill_city": "Cheboksary",
+      		"ship_city": "Cheboksary",
+      		"bill_state": "Chuvashia",
+      		"ship_state": "Chuvashia",
+      		"bill_code": "428010",
+      		"ship_code": "428010",
+      		"bill_country": "Russia",
+      		"ship_country": "Russia",
+      		"bill_pobox": "",
+      		"ship_pobox": "",
+      		"description": "",
+      		"isconvertedfromlead": "0",
+      		"source": "CRM",
+      		"starred": "0",
+      		"tags": "",
+      		"imagename": "",
+      		"id": "11x6",
+      		"imageattachmentids": "11x8",
+      		"label": "Центр информационных технологий"
+      	}
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_dbecab7637d34d04b872a35c0368515a
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_55abfafbc88748fcb14b7089b82f3134
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686408551901
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1681752584161
+    created: 1681752584161
+    name: user
+    description: Operations about user
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1681752584161
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9fb4f5db
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1686378955098
+    modified: 1686408552535
     created: 1686377107387
     url: "{{ base_url }}/users/{{ userId }}/documents/{{ documentId }}"
     name: Delete file from user
@@ -3783,16 +3878,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1681752584161
-    created: 1681752584161
-    name: user
-    description: Operations about user
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1681752584161
-    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211decfe8c0ca
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
     modified: 1686377609428
@@ -4224,7 +4309,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de94b9a1a1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1686375730892
+    modified: 1686411324085
     created: 1681838399470
     url: "{{ base_url }}/users/my"
     name: Get data about authenticated user
@@ -4551,7 +4636,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1686378954639
+    modified: 1686408552101
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -4937,6 +5022,41 @@ resources:
                 description: Invalid pagination params
               "403":
                 description: Operation not permitted
+        /users/my/account:
+          get:
+            tags:
+              - user
+            summary: Get account data
+            description: Returns account data, attached to current contact
+            operationId: myAccount
+            security:
+              - bearerAuth: []
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          $ref: "#/components/schemas/Account"
+              "401":
+                description: anonymous access
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        error:
+                          type: string
+                          example: "Anonymous Access"
+                        field:
+                          type: string
+                          example: "crmid"
+                        message:
+                          type: string
+                          example: "Got anonymous user from token or user without crmid"
         "/users/{userId}/file/{fileId}":
           get:
             tags:
@@ -8610,6 +8730,141 @@ resources:
               otpauth_url:
                 type: string
                 example: "https://itvolga.com"
+          Account:
+            type: object
+            properties:
+              accountname:
+                type: string
+                example: "Центр информационных технологий"
+              account_no:
+                type: string
+                example: "ACC1"
+              phone:
+                type: string
+                example: "+78432023893"
+              website:
+                type: string
+                example: "https://itvolga.com"
+              fax:
+                type: string
+                example: ""
+              tickersymbol:
+                type: string
+                example: ""
+              otherphone:
+                type: string
+                example: ""
+              account_id:
+                type: string
+                example: ""
+              email1:
+                type: string
+                example: "info@itvolga.com"
+              employees:
+                type: string
+                example: "0"
+              email2:
+                type: string
+                example: ""
+              ownership:
+                type: string
+                example: ""
+              rating:
+                type: string
+                example: "Active"
+              industry:
+                type: string
+                example: "Communications"
+              siccode:
+                type: string
+                example: ""
+              accounttype:
+                type: string
+                example: "Integrator"
+              annual_revenue:
+                type: string
+                example: "12100.00000000"
+              emailoptout:
+                type: string
+                example: "0"
+              notify_owner:
+                type: string
+                example: "0"
+              assigned_user_id:
+                type: string
+                example: "19x1"
+              createdtime:
+                type: string
+                example: "2022-09-06 18:52:10"
+              modifiedtime:
+                type: string
+                example: "2022-09-06 18:53:13"
+              modifiedby:
+                type: string
+                example: "19x1"
+              bill_street:
+                type: string
+                example: "Bulvar Yunosti, 3"
+              ship_street:
+                type: string
+                example: "Bulvar Yunosti, 3"
+              bill_city:
+                type: string
+                example: "Cheboksary"
+              ship_city:
+                type: string
+                example: "Cheboksary"
+              bill_state:
+                type: string
+                example: "Chuvashia"
+              ship_state:
+                type: string
+                example: "Chuvashia"
+              bill_code:
+                type: string
+                example: "428010"
+              ship_code:
+                type: string
+                example: "428010"
+              bill_country:
+                type: string
+                example: "Russia"
+              ship_country:
+                type: string
+                example: "Russia"
+              bill_pobox:
+                type: string
+                example: ""
+              ship_pobox:
+                type: string
+                example: ""
+              description:
+                type: string
+                example: ""
+              isconvertedfromlead:
+                type: string
+                example: "0"
+              source:
+                type: string
+                example: "CRM"
+              starred:
+                type: string
+                example: "0"
+              tags:
+                type: string
+                example: ""
+              imagename:
+                type: string
+                example: ""
+              id:
+                type: string
+                example: "11x6"
+              imageattachmentids:
+                type: string
+                example: "11x8"
+              label:
+                type: string
+                example: "Центр информационных технологий"
     contentType: yaml
     _type: api_spec
   - _id: env_env_7051e4988ba662848196b333737a56823b214220_sub

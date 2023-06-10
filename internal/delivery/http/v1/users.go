@@ -19,6 +19,7 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 		users.GET("/my", h.getUserInfo)
 		users.PUT("/my", h.updateUserInfo)
 		users.GET("/my/documents", h.getUserDocuments)
+		users.GET("/my/account", h.getAccountData)
 		users.POST("/restore", h.sendRestoreToken)
 		users.PUT("/password", h.resetPassword)
 		users.GET("/all", h.usersFromAccount)
@@ -227,6 +228,28 @@ func (h *Handler) getUserDocuments(c *gin.Context) {
 		Count: len(documents),
 		Page:  1,
 		Size:  100,
+	})
+}
+
+func (h *Handler) getAccountData(c *gin.Context) {
+	userModel := h.getValidatedUser(c)
+
+	if userModel == nil {
+		return
+	}
+
+	account, err := h.services.Accounts.GetAccountById(c.Request.Context(), userModel.AccountId)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, AloneDataResponse[domain.Account]{
+		Data: account,
 	})
 }
 

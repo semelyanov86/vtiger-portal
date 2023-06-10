@@ -379,6 +379,41 @@ paths:
           description: Invalid pagination params
         "403":
           description: Operation not permitted
+  /users/my/account:
+    get:
+      tags:
+        - user
+      summary: Get account data
+      description: Returns account data, attached to current contact
+      operationId: myAccount
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Account"
+        "401":
+          description: anonymous access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Anonymous Access"
+                  field:
+                    type: string
+                    example: "crmid"
+                  message:
+                    type: string
+                    example: "Got anonymous user from token or user without crmid"
   "/users/{userId}/file/{fileId}":
     get:
       tags:
@@ -4052,3 +4087,138 @@ components:
         otpauth_url:
           type: string
           example: "https://itvolga.com"
+    Account:
+      type: object
+      properties:
+        accountname:
+          type: string
+          example: "Центр информационных технологий"
+        account_no:
+          type: string
+          example: "ACC1"
+        phone:
+          type: string
+          example: "+78432023893"
+        website:
+          type: string
+          example: "https://itvolga.com"
+        fax:
+          type: string
+          example: ""
+        tickersymbol:
+          type: string
+          example: ""
+        otherphone:
+          type: string
+          example: ""
+        account_id:
+          type: string
+          example: ""
+        email1:
+          type: string
+          example: "info@itvolga.com"
+        employees:
+          type: string
+          example: "0"
+        email2:
+          type: string
+          example: ""
+        ownership:
+          type: string
+          example: ""
+        rating:
+          type: string
+          example: "Active"
+        industry:
+          type: string
+          example: "Communications"
+        siccode:
+          type: string
+          example: ""
+        accounttype:
+          type: string
+          example: "Integrator"
+        annual_revenue:
+          type: string
+          example: "12100.00000000"
+        emailoptout:
+          type: string
+          example: "0"
+        notify_owner:
+          type: string
+          example: "0"
+        assigned_user_id:
+          type: string
+          example: "19x1"
+        createdtime:
+          type: string
+          example: "2022-09-06 18:52:10"
+        modifiedtime:
+          type: string
+          example: "2022-09-06 18:53:13"
+        modifiedby:
+          type: string
+          example: "19x1"
+        bill_street:
+          type: string
+          example: "Bulvar Yunosti, 3"
+        ship_street:
+          type: string
+          example: "Bulvar Yunosti, 3"
+        bill_city:
+          type: string
+          example: "Cheboksary"
+        ship_city:
+          type: string
+          example: "Cheboksary"
+        bill_state:
+          type: string
+          example: "Chuvashia"
+        ship_state:
+          type: string
+          example: "Chuvashia"
+        bill_code:
+          type: string
+          example: "428010"
+        ship_code:
+          type: string
+          example: "428010"
+        bill_country:
+          type: string
+          example: "Russia"
+        ship_country:
+          type: string
+          example: "Russia"
+        bill_pobox:
+          type: string
+          example: ""
+        ship_pobox:
+          type: string
+          example: ""
+        description:
+          type: string
+          example: ""
+        isconvertedfromlead:
+          type: string
+          example: "0"
+        source:
+          type: string
+          example: "CRM"
+        starred:
+          type: string
+          example: "0"
+        tags:
+          type: string
+          example: ""
+        imagename:
+          type: string
+          example: ""
+        id:
+          type: string
+          example: "11x6"
+        imageattachmentids:
+          type: string
+          example: "11x8"
+        label:
+          type: string
+          example: "Центр информационных технологий"

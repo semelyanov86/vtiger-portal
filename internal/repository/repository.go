@@ -123,6 +123,10 @@ type ProjectTask interface {
 	Revise(ctx context.Context, task map[string]any) (domain.ProjectTask, error)
 }
 
+type Account interface {
+	RetrieveById(ctx context.Context, id string) (domain.Account, error)
+}
+
 type PaginationQueryFilter struct {
 	Page     int
 	PageSize int
@@ -159,6 +163,7 @@ type Repositories struct {
 	ProjectTasks    ProjectTaskCrm
 	Statistics      StatisticsCrm
 	Leads           LeadCrm
+	Account         AccountCrm
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -182,5 +187,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		ProjectTasks:    NewProjectTaskCrm(config, cache),
 		Statistics:      NewStatisticsCrm(config, cache),
 		Leads:           NewLeadCrm(config, cache),
+		Account:         NewAccountCrm(config, cache),
 	}
 }

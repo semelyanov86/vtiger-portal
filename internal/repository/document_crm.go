@@ -60,3 +60,7 @@ func (d DocumentCrm) AttachFile(ctx context.Context, doc domain.Document, parent
 
 	return newDoc, nil
 }
+
+func (d DocumentCrm) DeleteFile(ctx context.Context, id string) error {
+	return d.vtiger.Delete(ctx, id)
+}

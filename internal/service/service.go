@@ -94,6 +94,7 @@ type DocumentServiceInterface interface {
 	GetRelated(ctx context.Context, id string) ([]domain.Document, error)
 	GetFile(ctx context.Context, id string, relatedId string) (vtiger.File, error)
 	AttachFile(ctx context.Context, file multipart.File, id string, userModel domain.User, header *multipart.FileHeader) (domain.Document, error)
+	DeleteFile(ctx context.Context, id string, related string) error
 }
 
 type SupportedTypes interface {

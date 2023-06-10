@@ -73,6 +73,7 @@ type Document interface {
 	RetrieveFromModule(ctx context.Context, id string) ([]domain.Document, error)
 	RetrieveFile(ctx context.Context, id string) (vtiger.File, error)
 	AttachFile(ctx context.Context, doc domain.Document, parent string) (domain.Document, error)
+	DeleteFile(ctx context.Context, id string) error
 }
 
 type Faq interface {

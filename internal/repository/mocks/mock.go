@@ -687,6 +687,20 @@ func (mr *MockDocumentMockRecorder) AttachFile(ctx, doc, parent interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachFile", reflect.TypeOf((*MockDocument)(nil).AttachFile), ctx, doc, parent)
 }
 
+// DeleteFile mocks base method.
+func (m *MockDocument) DeleteFile(ctx context.Context, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteFile", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteFile indicates an expected call of DeleteFile.
+func (mr *MockDocumentMockRecorder) DeleteFile(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFile", reflect.TypeOf((*MockDocument)(nil).DeleteFile), ctx, id)
+}
+
 // RetrieveFile mocks base method.
 func (m *MockDocument) RetrieveFile(ctx context.Context, id string) (vtiger.File, error) {
 	m.ctrl.T.Helper()

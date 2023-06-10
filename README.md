@@ -103,6 +103,8 @@ If vtiger does not provide file contents in response, fix file `include/Webservi
         $filenamewithpath = $fileData['path'].$fileData['attachmentsid'].'_'.$storedName;
 ```
 
+Currently for delete operation in vtiger we support GET request. To change REST api in Vtiger for this operation, change `vtiger_ws_operation` table, for delete operation name type from POST to GET.
+
 ## Adding new custom field to module
 What if you created new custom field in Vtiger module and want to add it in Portal? Because we using golang type system in portal, you need to register it in our domain system.
 For example, you created field 'cf_543' in HelpDesk module. Here is three steps, how you can register this field in portal:

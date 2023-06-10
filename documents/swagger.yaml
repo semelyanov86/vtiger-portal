@@ -379,6 +379,79 @@ paths:
           description: Invalid pagination params
         "403":
           description: Operation not permitted
+  "/users/{userId}/file/{fileId}":
+    get:
+      tags:
+        - user
+      summary: Get file from User
+      description: Returns a content of file from user. Need to pass as user ID crmid
+      operationId: getFileFromUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fileId
+          in: path
+          description: ID of file
+          required: true
+          schema:
+            type: string
+            format: string
+        - name: userId
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/File"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: User or file not found
+        "403":
+          description: Operation not permitted
+  "/users/{userId}/documents/{documentId}":
+    delete:
+      tags:
+        - user
+      summary: Delete file from user
+      description: Deletes document from related user
+      operationId: deleteDocumentFromUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: documentId
+          in: path
+          description: ID of document
+          required: true
+          schema:
+            type: string
+            format: string
+        - name: userId
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "204":
+          description: successful operation
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: User or file not found
+        "403":
+          description: Operation not permitted
   "/otp/generate":
     get:
       tags:
@@ -2155,6 +2228,53 @@ paths:
           description: Invalid ID supplied
         "404":
           description: Project not found
+        "403":
+          description: Operation not permitted
+  "/projects/{projectId}/tasks/{taskId}/file/{fileId}":
+    get:
+      tags:
+        - project
+      summary: Get file in Task
+      description: Returns a file content by ID
+      operationId: getFileFromProjectTask
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fileId
+          in: path
+          description: ID of file
+          required: true
+          schema:
+            type: string
+            format: string
+        - name: projectId
+          in: path
+          description: ID of project
+          required: true
+          schema:
+            type: string
+            format: string
+        - name: taskId
+          in: path
+          description: ID of task
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/File"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: HelpDesk or file not found
         "403":
           description: Operation not permitted
   "/statistics":

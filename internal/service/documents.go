@@ -112,3 +112,16 @@ func (d Documents) AttachFile(ctx context.Context, file multipart.File, id strin
 
 	return d.repository.AttachFile(ctx, doc, id)
 }
+
+func (d Documents) DeleteFile(ctx context.Context, id string, related string) error {
+	documents, err := d.GetRelated(ctx, related)
+	if err != nil {
+		return e.Wrap("can not check for related documents", err)
+	}
+	for _, document := range documents {
+		if document.Id == id {
+			return d.repository.DeleteFile(ctx, id)
+		}
+	}
+	return ErrOperationNotPermitted
+}

@@ -1,6 +1,6 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-09T17:15:53.077Z
+__export_date: 2023-06-10T06:36:31.669Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de4e1785fd
@@ -490,6 +490,49 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de456403d7
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    modified: 1686375720905
+    created: 1686374247095
+    url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}/file/{{ fileId
+      }}"
+    name: Get file in Task
+    description: Get file contents from passed file
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_8321bcd9177245c884de32c8727cab3c
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_49de52d85d4a45b3a33147fbc00f3169
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686374247095
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1684500052715
+    created: 1684500052715
+    name: project
+    description: Project module in Vtiger CRM
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1684500052715
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9ff0f9d2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
     modified: 1686066202394
@@ -552,16 +595,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1684500052715
-    created: 1684500052715
-    name: project
-    description: Project module in Vtiger CRM
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1684500052715
-    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de6c65dc60
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
     modified: 1685776182105
@@ -949,7 +982,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dedb7dde10
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1684567288523
+    modified: 1686374742522
     created: 1684566934447
     url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}/documents"
     name: Project Task Documents
@@ -1981,7 +2014,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9127d807
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
-    modified: 1686330906417
+    modified: 1686374247689
     created: 1682659418912
     url: "{{ base_url }}/invoices"
     name: Get Invoices
@@ -3717,9 +3750,103 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de9fb4f5db
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1686378955098
+    created: 1686377107387
+    url: "{{ base_url }}/users/{{ userId }}/documents/{{ documentId }}"
+    name: Delete file from user
+    description: Removes attached to user document. Note, that passed user id should
+      match crmid of authenticated user. Returns no content
+    method: DELETE
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_9e8606331cbe46f7a93f2e724cd26f1d
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_c274145c284841f0a07cef6b2e984d49
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686377107387
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1681752584161
+    created: 1681752584161
+    name: user
+    description: Operations about user
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1681752584161
+    _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211decfe8c0ca
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1686377609428
+    created: 1686375720363
+    url: "{{ base_url }}/users/{{ userId }}/file/{{ fileId }}"
+    name: Get file from User
+    description: >-
+      Gets a file content from user account. Note, that as userId you need to
+      pass your crmid. And this ID should match with crmid of authenticated
+      user. You are not allowed to view files from other users.
+
+      Example response:
+
+      ```json
+
+      {
+      	"data": {
+      		"fileid": "67",
+      		"filename": "getUser.ts",
+      		"filetype": "text/vnd.qt.linguist",
+      		"filesize": 161,
+      		"filecontents": "aW1wb3J0IHsgYXhpb3MgfSBmcm9tICdAL2xpYi9heGlvcyc7CgppbXBvcnQgeyBBdXRoVXNlciB9IGZyb20gJy4uL3R5cGVzJzsKCmV4cG9ydCBjb25zdCBnZXRVc2VyID0gKCk6IFByb21pc2U8QXV0aFVzZXI+ID0+IHsKICByZXR1cm4gYXhpb3MuZ2V0KCcvYXV0aC9tZScpOwp9Owo="
+      	}
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_dd1a48f4e78c4db5b5f6d320f222a00b
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_58e0cd1859aa426e81a16fb9724d80df
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686375720363
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de5073cc7f
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1686160224068
+    modified: 1686377612360
     created: 1686066201773
     url: "{{ base_url }}/users/my/documents"
     name: My Documents
@@ -3809,16 +3936,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1681752584161
-    created: 1681752584161
-    name: user
-    description: Operations about user
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1681752584161
-    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deb8d9c1dc
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
     modified: 1685902922971
@@ -4107,7 +4224,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de94b9a1a1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1685875915041
+    modified: 1686375730892
     created: 1681838399470
     url: "{{ base_url }}/users/my"
     name: Get data about authenticated user
@@ -4434,7 +4551,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1686330905930
+    modified: 1686378954639
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -4818,6 +4935,79 @@ resources:
                           example: 100
               "400":
                 description: Invalid pagination params
+              "403":
+                description: Operation not permitted
+        "/users/{userId}/file/{fileId}":
+          get:
+            tags:
+              - user
+            summary: Get file from User
+            description: Returns a content of file from user. Need to pass as user ID crmid
+            operationId: getFileFromUser
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: fileId
+                in: path
+                description: ID of file
+                required: true
+                schema:
+                  type: string
+                  format: string
+              - name: userId
+                in: path
+                description: ID of user
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          $ref: "#/components/schemas/File"                
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: User or file not found
+              "403":
+                description: Operation not permitted
+        "/users/{userId}/documents/{documentId}":
+          delete:
+            tags:
+              - user
+            summary: Delete file from user
+            description: Deletes document from related user
+            operationId: deleteDocumentFromUser
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: documentId
+                in: path
+                description: ID of document
+                required: true
+                schema:
+                  type: string
+                  format: string
+              - name: userId
+                in: path
+                description: ID of user
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "204":
+                description: successful operation
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: User or file not found
               "403":
                 description: Operation not permitted
         "/otp/generate":
@@ -6596,6 +6786,53 @@ resources:
                 description: Invalid ID supplied
               "404":
                 description: Project not found
+              "403":
+                description: Operation not permitted
+        "/projects/{projectId}/tasks/{taskId}/file/{fileId}":
+          get:
+            tags:
+              - project
+            summary: Get file in Task
+            description: Returns a file content by ID
+            operationId: getFileFromProjectTask
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: fileId
+                in: path
+                description: ID of file
+                required: true
+                schema:
+                  type: string
+                  format: string
+              - name: projectId
+                in: path
+                description: ID of project
+                required: true
+                schema:
+                  type: string
+                  format: string
+              - name: taskId
+                in: path
+                description: ID of task
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          $ref: "#/components/schemas/File"                
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: HelpDesk or file not found
               "403":
                 description: Operation not permitted
         "/statistics":
@@ -8407,7 +8644,7 @@ resources:
     _type: environment
   - _id: env_1bfede95dc144997a9155f6e79a3eaa5
     parentId: env_7051e4988ba662848196b333737a56823b214220
-    modified: 1685874163544
+    modified: 1686375750469
     created: 1681826841922
     name: Local
     data:
@@ -8427,6 +8664,7 @@ resources:
       serviceId: 25x52
       projectId: 29x54
       taskId: 28x56
+      userId: 12x11
     dataPropertyOrder:
       "&":
         - scheme
@@ -8445,6 +8683,7 @@ resources:
         - serviceId
         - projectId
         - taskId
+        - userId
     color: null
     isPrivate: false
     metaSortKey: 1681826841922

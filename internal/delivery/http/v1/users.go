@@ -23,6 +23,7 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 		users.PUT("/password", h.resetPassword)
 		users.GET("/all", h.usersFromAccount)
 		users.GET("/:id/file/:file", h.getUserFile)
+		users.DELETE("/:id/documents/:document", h.deleteUserFile)
 	}
 }
 
@@ -259,4 +260,34 @@ func (h *Handler) getUserFile(c *gin.Context) {
 		Data: file,
 	}
 	c.JSON(http.StatusOK, res)
+}
+
+func (h *Handler) deleteUserFile(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+
+	userModel := h.getValidatedUser(c)
+	fileId := h.getAndValidateId(c, "document")
+
+	if id == "" || userModel == nil || fileId == "" {
+		return
+	}
+
+	if userModel.Crmid != id {
+		notPermittedResponse(c)
+		return
+	}
+
+	err := h.services.Documents.DeleteFile(c.Request.Context(), fileId, id)
+
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusNoContent, nil)
 }

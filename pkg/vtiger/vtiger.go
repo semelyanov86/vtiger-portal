@@ -264,6 +264,41 @@ func (c VtigerConnector) Describe(ctx context.Context, element string) (*VtigerR
 	return processVtigerResponse[Module](resp, vtigerResponse)
 }
 
+func (c VtigerConnector) Delete(ctx context.Context, element string) error {
+	sessionID, err := c.sessionId()
+	if err != nil {
+		return err
+	}
+
+	webRequest := NewWebRequest(c.connection)
+
+	// send a request to retrieve a record
+	resp, err := webRequest.FetchBytes(ctx, url.Values{
+		"operation":   {"delete"},
+		"sessionName": {sessionID},
+		"id":          {element},
+	}.Encode())
+	if err != nil {
+		return e.Wrap("code 7", err)
+	}
+	m := VtigerResponse[Module]{}
+	err = json.Unmarshal(resp, &m)
+
+	if err != nil {
+		return e.Wrap("code 12", err)
+	}
+
+	if !m.Success {
+		return e.Wrap("code 15: "+m.Error.Message, ErrResponseError)
+	}
+
+	err = c.close(sessionID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c VtigerConnector) RetrieveFiles(ctx context.Context, id string) (*VtigerResponse[[]File], error) {
 	sessionID, err := c.sessionId()
 	if err != nil {

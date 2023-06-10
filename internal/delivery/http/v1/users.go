@@ -7,6 +7,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"net/http"
 )
 
@@ -21,6 +22,7 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 		users.POST("/restore", h.sendRestoreToken)
 		users.PUT("/password", h.resetPassword)
 		users.GET("/all", h.usersFromAccount)
+		users.GET("/:id/file/:file", h.getUserFile)
 	}
 }
 
@@ -225,4 +227,36 @@ func (h *Handler) getUserDocuments(c *gin.Context) {
 		Page:  1,
 		Size:  100,
 	})
+}
+
+func (h *Handler) getUserFile(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+
+	userModel := h.getValidatedUser(c)
+	fileId := h.getAndValidateId(c, "file")
+
+	if id == "" || userModel == nil || fileId == "" {
+		return
+	}
+
+	if userModel.Crmid != id {
+		notPermittedResponse(c)
+		return
+	}
+
+	file, err := h.services.Documents.GetFile(c.Request.Context(), fileId, userModel.AccountId)
+
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	res := AloneDataResponse[vtiger.File]{
+		Data: file,
+	}
+	c.JSON(http.StatusOK, res)
 }

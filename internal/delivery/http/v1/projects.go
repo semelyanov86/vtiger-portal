@@ -29,6 +29,7 @@ func (h *Handler) initProjectsRoutes(api *gin.RouterGroup) {
 		projects.POST("/:id/tasks/:task/comments", h.addProjectTaskComment)
 		projects.GET("/:id/tasks/:task/documents", h.getProjectTaskDocuments)
 		projects.POST("/:id/tasks/:task/documents", h.uploadProjectTaskDocument)
+		projects.GET("/:id/tasks/:task/file/:file", h.getTaskFile)
 	}
 }
 
@@ -248,6 +249,34 @@ func (h *Handler) getProjectFile(c *gin.Context) {
 	}
 
 	file, err := h.services.Documents.GetFile(c.Request.Context(), fileId, id)
+
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	res := AloneDataResponse[vtiger.File]{
+		Data: file,
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func (h *Handler) getTaskFile(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+	taskId := h.getAndValidateId(c, "id")
+
+	userModel := h.getValidatedUser(c)
+	fileId := h.getAndValidateId(c, "file")
+
+	if id == "" || userModel == nil || fileId == "" || taskId == "" {
+		return
+	}
+
+	file, err := h.services.Documents.GetFile(c.Request.Context(), fileId, taskId)
 
 	if errors.Is(service.ErrOperationNotPermitted, err) {
 		notPermittedResponse(c)

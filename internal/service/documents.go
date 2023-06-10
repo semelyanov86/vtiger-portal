@@ -62,6 +62,7 @@ func (d Documents) GetFile(ctx context.Context, id string, relatedId string) (vt
 	if err != nil {
 		return vtiger.File{}, e.Wrap("can not get related documents", err)
 	}
+
 	for _, document := range documents {
 		if document.Imageattachmentids == id {
 			return d.repository.RetrieveFile(ctx, id)

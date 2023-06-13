@@ -42,6 +42,7 @@ type Services struct {
 	Leads            Leads
 	Auth             AuthService
 	Accounts         AccountService
+	Searches         Search
 }
 
 var ErrOperationNotPermitted = errors.New("you are not permitted to view this record")
@@ -80,6 +81,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		Statistics:       NewStatisticsService(repos.Statistics, cache),
 		Leads:            NewLeads(repos.Leads, config),
 		Accounts:         accountService,
+		Searches:         NewSearchService(repos.Search, cache, config),
 	}
 }
 

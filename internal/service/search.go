@@ -28,5 +28,15 @@ func (s Search) GlobalSearch(ctx context.Context, query string, user domain.User
 	if err != nil {
 		return results, e.Wrap("can not get faqs", err)
 	}
-	return s.repository.SearchTickets(ctx, query, user)
+	tickets, err := s.repository.SearchTickets(ctx, query, user)
+	if err != nil {
+		return results, e.Wrap("can not get tickets", err)
+	}
+	results = append(results, tickets...)
+	projects, err := s.repository.SearchProjects(ctx, query, user)
+	if err != nil {
+		return results, e.Wrap("can not get projects", err)
+	}
+	results = append(results, projects...)
+	return results, nil
 }

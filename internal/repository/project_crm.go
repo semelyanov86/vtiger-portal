@@ -33,9 +33,9 @@ func (p ProjectCrm) RetrieveById(ctx context.Context, id string) (domain.Project
 func (p ProjectCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Project, error) {
 	// Calculate the offset for the given page number and page size
 	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT * FROM Project WHERE linktoaccountscontacts = " + filter.Client + " "
+	query := "SELECT * FROM Project WHERE "
 	if filter.Search == "" {
-		query += " OR linktoaccountscontacts = " + filter.Contact + " "
+		query += "linktoaccountscontacts = " + filter.Client + " OR linktoaccountscontacts = " + filter.Contact + " "
 	}
 
 	sort := filter.Sort
@@ -43,7 +43,7 @@ func (p ProjectCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([
 		sort = "-ticket_no"
 	}
 	if filter.Search != "" {
-		query += " AND project_no LIKE '%" + filter.Search + "%' OR projectname LIKE '%" + filter.Search + "%' OR projecttype LIKE '%" + filter.Search + "%' "
+		query += " project_no LIKE '%" + filter.Search + "%' OR projectname LIKE '%" + filter.Search + "%' OR projecttype LIKE '%" + filter.Search + "%' "
 	}
 	query += GenerateOrderByClause(sort)
 	query += " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
@@ -58,7 +58,9 @@ func (p ProjectCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([
 		if err != nil {
 			return projects, e.Wrap("can not convert map to project", err)
 		}
-		projects = append(projects, project)
+		if project.Linktoaccountscontacts == filter.Client || project.Linktoaccountscontacts == filter.Contact {
+			projects = append(projects, project)
+		}
 	}
 	return projects, nil
 }

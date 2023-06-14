@@ -52,3 +52,20 @@ func (s SearchCrm) SearchTickets(ctx context.Context, query string, user domain.
 	}
 	return searches, nil
 }
+
+func (s SearchCrm) SearchProjects(ctx context.Context, query string, user domain.User) ([]domain.Search, error) {
+	sql := "SELECT id, projectname, linktoaccountscontacts FROM Project WHERE projectname LIKE '%" + query + "%' OR project_no LIKE '%" + query + "%';"
+	searches := make([]domain.Search, 0)
+	result, err := s.vtiger.Query(ctx, sql)
+	if err != nil {
+		return searches, e.Wrap("can not execute query "+sql+", got error: "+result.Error.Message, err)
+	}
+	for _, data := range result.Result {
+		search := domain.ConvertMapToSearch(data)
+		search.Module = "Project"
+		if data["linktoaccountscontacts"] == user.AccountId || data["linktoaccountscontacts"] == user.Crmid {
+			searches = append(searches, search)
+		}
+	}
+	return searches, nil
+}

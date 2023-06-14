@@ -32,6 +32,7 @@ type Services struct {
 	Documents        DocumentServiceInterface
 	Faqs             Faqs
 	Invoices         Invoices
+	SalesOrders      SalesOrders
 	ServiceContracts ServiceContracts
 	Currencies       CurrencyService
 	Products         ProductService
@@ -72,6 +73,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		Documents:        documentService,
 		Faqs:             NewFaqsService(repos.Faqs, cache, modulesService, config),
 		Invoices:         NewInvoiceService(repos.Invoice, cache, modulesService, config, currencyService),
+		SalesOrders:      NewSalesOrderService(repos.SalesOrder, cache, modulesService, config, currencyService),
 		ServiceContracts: NewServiceContractsService(repos.ServiceContract, cache, documentService, modulesService, config),
 		Currencies:       currencyService,
 		Products:         NewProductService(repos.Product, cache, currencyService, repos.Documents, modulesService, config),

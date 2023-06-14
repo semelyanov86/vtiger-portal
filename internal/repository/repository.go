@@ -155,6 +155,7 @@ type Repositories struct {
 	Documents       Document
 	Faqs            Faq
 	Invoice         Invoice
+	SalesOrder      SalesOrderCrm
 	ServiceContract ServiceContract
 	Currency        CurrencyCrm
 	Product         ProductCrm
@@ -180,6 +181,7 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		Documents:       NewDocumentCrm(config, cache),
 		Faqs:            NewFaqsCrm(config, cache),
 		Invoice:         NewInvoiceCrm(config, cache),
+		SalesOrder:      NewSalesOrderCrm(config, cache),
 		ServiceContract: NewServiceContractCrm(config, cache),
 		Currency:        NewCurrencyCrm(config, cache),
 		Product:         NewProductCrm(config, cache),

@@ -33,6 +33,8 @@ tags:
     externalDocs:
       description: Invoices module
       url: https://help.vtiger.com/article/117268545-Creating-and-Managing-Invoices
+  - name: sales-order
+    description: Endpoints for getting sales orders
   - name: service-contracts
     description: Service contracts data
   - name: product
@@ -47,6 +49,8 @@ tags:
     description: Storing leads in crm
   - name: otp
     description: Routes for handling 2FA processes
+  - name: search
+    description: Routes for doing global search
 paths:
   /users:
     post:
@@ -1122,7 +1126,7 @@ paths:
       tags:
         - tickets
       summary: Get Tickets
-      description: This endpoint returns a list of tickets based on the provided page number and page size. You can see tickets attached to company of authorized user.
+      description: This endpoint returns a list of tickets based on the provided page number and page size. You can see tickets attached to company of authorized user. Note, there is a known problem with count param. Currently we count all tickets. If you pass search param, we return all tickets of user, not searched one.
       operationId: getAllTickets
       security:
         - bearerAuth: []
@@ -1267,6 +1271,48 @@ paths:
           description: Invalid pagination params
         "403":
           description: Operation not permitted
+  "/search":
+    get:
+      tags:
+        - search
+      summary: Global Search
+      description: Doing search in faq, tickets and project tasks
+      operationId: globalSearch
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          description: Search with LIKE filter in ticket_no and ticket_title fields
+          required: false
+          schema:
+            type: string
+            example: TT3
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Search"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid pagination params
+        "403":
+          description: Operation not permitted
   "/invoices":
     get:
       tags:
@@ -1302,7 +1348,105 @@ paths:
             example: -invoice_no
         - name: search
           in: query
-          description: Search with LIKE filter in invoice_no and subject
+          description: Search with LIKE filter in salesorder_no and subject
+          required: false
+          schema:
+            type: string
+            example: SO3
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SalesOrderShort"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid pagination params
+        "403":
+          description: Operation not permitted
+  "/sales-orders/{salesOrderId}":
+    get:
+      tags:
+        - sales-order
+      summary: Find Sales Order by id
+      description: Returns a single Sales Order
+      operationId: getSalesOrderById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: salesOrderId
+          in: path
+          description: ID of sales order to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/SalesOrder"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Sales Order not found
+        "403":
+          description: Operation not permitted
+  "/sales-orders":
+    get:
+      tags:
+        - sales-order
+      summary: Get Sales Orders
+      description: This endpoint returns a list of sales orders based on the provided page number and page size.
+      operationId: getAllSalesOrders
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: The page number to retrieve (default is 1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          description: The number of items per page (default is 20)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: sort
+          in: query
+          description: Field, which accepts order by algorithm. Minus sign at the beginning means desc order.
+          required: false
+          schema:
+            type: string
+            example: -salesorder_no
+        - name: search
+          in: query
+          description: Search with LIKE filter in salesorder_no and subject
           required: false
           schema:
             type: string
@@ -1634,7 +1778,7 @@ paths:
       tags:
         - project
       summary: Get Projects
-      description: This endpoint returns a list of projects based on the provided page number and page size.
+      description: This endpoint returns a list of projects based on the provided page number and page size. Currently there is known problem abount count key. It calculates all project, not filtered by search param.
       operationId: getAllProjects
       security:
         - bearerAuth: []
@@ -3430,6 +3574,326 @@ components:
         shipping_&_handling_shtax3:
           type: number
           example: 12.500
+    SalesOrderShort:
+      type: object
+      properties:
+        salesorder_no:
+          type: string
+        subject:
+          type: string
+        potential_id:
+          type: string
+        customerno:
+          type: string
+        quote_id:
+          type: string
+        vtiger_purchaseorder:
+          type: string
+        contact_id:
+          type: string
+        duedate:
+          type: string
+        carrier:
+          type: string
+        pending:
+          type: string
+        sostatus:
+          type: string
+        txtAdjustment:
+          type: string
+        salescommission:
+          type: string
+        exciseduty:
+          type: string
+        hdnGrandTotal:
+          type: string
+        hdnSubTotal:
+          type: string
+        hdnTaxType:
+          type: string
+        hdnDiscountPercent:
+          type: string
+        hdnDiscountAmount:
+          type: string
+        hdnS_H_Amount:
+          type: string
+        account_id:
+          type: string
+        assigned_user_id:
+          type: string
+        createdtime:
+          type: string
+        modifiedtime:
+          type: string
+        modifiedby:
+          type: string
+        currency_id:
+          type: string
+        conversion_rate:
+          type: number
+        bill_street:
+          type: string
+        ship_street:
+          type: string
+        bill_city:
+          type: string
+        ship_city:
+          type: string
+        bill_state:
+          type: string
+        ship_state:
+          type: string
+        bill_code:
+          type: string
+        ship_code:
+          type: string
+        bill_country:
+          type: string
+        ship_country:
+          type: string
+        bill_pobox:
+          type: string
+        ship_pobox:
+          type: string
+        description:
+          type: string
+        terms_conditions:
+          type: string
+        enable_recurring:
+          type: string
+        recurring_frequency:
+          type: string
+        start_period:
+          type: string
+        end_period:
+          type: string
+        payment_duration:
+          type: string
+        invoicestatus:
+          type: string
+        fromsite:
+          type: string
+        pre_tax_total:
+          type: string
+        hdnS_H_Percent:
+          type: string
+        spcompany:
+          type: string
+        created_user_id:
+          type: string
+        source:
+          type: string
+        starred:
+          type: boolean
+        tags:
+          type: string
+        region_id:
+          type: string
+        id:
+          type: string
+        label:
+          type: string
+        shipping_and_handling:
+          type: number
+        shipping_and_handling_shtax1:
+          type: number
+        currency:
+          $ref: "#/components/schemas/Currency"
+    SalesOrder:
+      type: object
+      properties:
+        salesorder_no:
+          type: string
+        subject:
+          type: string
+        potential_id:
+          type: string
+        customerno:
+          type: string
+        quote_id:
+          type: string
+        vtiger_purchaseorder:
+          type: string
+        contact_id:
+          type: string
+        duedate:
+          type: string
+        carrier:
+          type: string
+        pending:
+          type: string
+        sostatus:
+          type: string
+        txtAdjustment:
+          type: string
+        salescommission:
+          type: string
+        exciseduty:
+          type: string
+        hdnGrandTotal:
+          type: string
+        hdnSubTotal:
+          type: string
+        hdnTaxType:
+          type: string
+        hdnDiscountPercent:
+          type: string
+        hdnDiscountAmount:
+          type: string
+        hdnS_H_Amount:
+          type: string
+        account_id:
+          type: string
+        assigned_user_id:
+          type: string
+        createdtime:
+          type: string
+        modifiedtime:
+          type: string
+        modifiedby:
+          type: string
+        currency_id:
+          type: string
+        conversion_rate:
+          type: number
+        bill_street:
+          type: string
+        ship_street:
+          type: string
+        bill_city:
+          type: string
+        ship_city:
+          type: string
+        bill_state:
+          type: string
+        ship_state:
+          type: string
+        bill_code:
+          type: string
+        ship_code:
+          type: string
+        bill_country:
+          type: string
+        ship_country:
+          type: string
+        bill_pobox:
+          type: string
+        ship_pobox:
+          type: string
+        description:
+          type: string
+        terms_conditions:
+          type: string
+        enable_recurring:
+          type: string
+        recurring_frequency:
+          type: string
+        start_period:
+          type: string
+        end_period:
+          type: string
+        payment_duration:
+          type: string
+        invoicestatus:
+          type: string
+        fromsite:
+          type: string
+        pre_tax_total:
+          type: string
+        hdnS_H_Percent:
+          type: string
+        spcompany:
+          type: string
+        created_user_id:
+          type: string
+        source:
+          type: string
+        starred:
+          type: boolean
+        tags:
+          type: string
+        region_id:
+          type: string
+        id:
+          type: string
+        label:
+          type: string
+        shipping_and_handling:
+          type: number
+        shipping_and_handling_shtax1:
+          type: number
+        currency:
+          $ref: "#/components/schemas/Currency"
+        LineItems:
+          type: array
+          items:
+            type: object
+            properties:
+              parent_id:
+                type: string
+                example: 2xArray
+              productid:
+                type: string
+                example: 14x10
+              sequence_no:
+                type: number
+                example: 1
+              quantity:
+                type: number
+                example: 1.000
+              listprice:
+                type: number
+                example: 1000.00000000
+              discount_percent:
+                type: string
+                example: ""
+              discount_amount:
+                type: string
+                example: ""
+              comment:
+                type: string
+                example: "Some comment"
+              description:
+                type: string
+                example: "Some description"
+              incrementondel:
+                type: string
+                example: "1"
+              tax1:
+                type: number
+                example: 4.500
+              tax2:
+                type: number
+                example: 10.000
+              tax3:
+                type: number
+                example: 12.500
+              image:
+                type: string
+                example: ""
+              purchase_cost:
+                type: number
+                example: 500.00000000
+              margin:
+                type: number
+                example: 500.00000000
+              id:
+                type: string
+                example: 33x4
+              product_name:
+                type: string
+                example: Laptop HP
+              entity_type:
+                type: string
+                example: Products
+              deleted:
+                type: string
+                example: "0"
+        productid:
+          type: string
+          example: 14x10
+        LineItems_FinalDetails:
+          type: object
     ServiceContract:
       type: object
       properties:
@@ -4087,6 +4551,21 @@ components:
         otpauth_url:
           type: string
           example: "https://itvolga.com"
+    Search:
+      type: object
+      properties:
+        label:
+          type: string
+          example: "Test search result"
+        crmid:
+          type: string
+          example: "15x223"
+        parent:
+          type: string
+          example: "11x243"
+        module:
+          type: string
+          example: "HelpDesk"
     Account:
       type: object
       properties:

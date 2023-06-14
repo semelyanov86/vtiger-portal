@@ -33,7 +33,7 @@ func (m InvoiceCrm) RetrieveById(ctx context.Context, id string) (domain.Invoice
 func (m InvoiceCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Invoice, error) {
 	// Calculate the offset for the given page number and page size
 	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT * FROM Invoice WHERE account_id = " + filter.Client + " "
+	query := "SELECT * FROM Invoice WHERE "
 
 	sort := filter.Sort
 	if sort == "" {
@@ -41,7 +41,9 @@ func (m InvoiceCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([
 	}
 
 	if filter.Search != "" {
-		query += " AND invoice_no LIKE '%" + filter.Search + "%' OR subject LIKE '%" + filter.Search + "%' OR invoicestatus LIKE '%" + filter.Search + "%' "
+		query += " invoice_no LIKE '%" + filter.Search + "%' OR subject LIKE '%" + filter.Search + "%' OR invoicestatus LIKE '%" + filter.Search + "%' "
+	} else {
+		query += "account_id = " + filter.Client + " "
 	}
 	query += GenerateOrderByClause(sort)
 	query += " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
@@ -56,7 +58,9 @@ func (m InvoiceCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([
 		if err != nil {
 			return invoices, e.Wrap("can not convert map to invoice", err)
 		}
-		invoices = append(invoices, invoice)
+		if invoice.AccountID == filter.Client {
+			invoices = append(invoices, invoice)
+		}
 	}
 	return invoices, nil
 }

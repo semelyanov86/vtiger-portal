@@ -33,13 +33,15 @@ func (m HelpDeskCrm) RetrieveById(ctx context.Context, id string) (domain.HelpDe
 func (m HelpDeskCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.HelpDesk, error) {
 	// Calculate the offset for the given page number and page size
 	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT * FROM HelpDesk WHERE parent_id = " + filter.Client + " "
+	query := "SELECT * FROM HelpDesk WHERE "
 	sort := filter.Sort
 	if sort == "" {
 		sort = "-ticket_no"
 	}
 	if filter.Search != "" {
-		query += " AND ticket_no LIKE '%" + filter.Search + "%' OR ticket_title LIKE '%" + filter.Search + "%' "
+		query += "ticket_title LIKE '%" + filter.Search + "%' OR ticket_no LIKE '%" + filter.Search + "%' "
+	} else {
+		query += "parent_id = " + filter.Client + " "
 	}
 	query += GenerateOrderByClause(sort)
 	query += " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
@@ -53,7 +55,9 @@ func (m HelpDeskCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) (
 		if err != nil {
 			return tickets, e.Wrap("can not convert map to helpdesk", err)
 		}
-		tickets = append(tickets, ticket)
+		if ticket.ParentID == filter.Client {
+			tickets = append(tickets, ticket)
+		}
 	}
 	return tickets, nil
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
+	"github.com/semelyanov86/vtiger-portal/pkg/e"
 )
 
 type Search struct {
@@ -22,6 +23,10 @@ func NewSearchService(repository repository.SearchCrm, cache cache.Cache, config
 	}
 }
 
-func (s Search) GlobalSearch(ctx context.Context, query string) ([]domain.Search, error) {
-	return s.repository.SearchFaqs(ctx, query)
+func (s Search) GlobalSearch(ctx context.Context, query string, user domain.User) ([]domain.Search, error) {
+	results, err := s.repository.SearchFaqs(ctx, query)
+	if err != nil {
+		return results, e.Wrap("can not get faqs", err)
+	}
+	return s.repository.SearchTickets(ctx, query, user)
 }

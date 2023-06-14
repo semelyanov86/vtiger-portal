@@ -26,7 +26,7 @@ func (h *Handler) globalSearch(c *gin.Context) {
 		return
 	}
 
-	searches, err := h.services.Searches.GlobalSearch(c.Request.Context(), query)
+	searches, err := h.services.Searches.GlobalSearch(c.Request.Context(), query, *userModel)
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return

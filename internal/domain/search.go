@@ -15,6 +15,8 @@ func ConvertMapToSearch(m map[string]any) Search {
 			search.Label = v.(string)
 		case "question":
 			search.Label = v.(string)
+		case "ticket_title":
+			search.Label = v.(string)
 		case "id":
 			search.Crmid = v.(string)
 		case "parent_id":

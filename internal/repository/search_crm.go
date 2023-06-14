@@ -35,3 +35,20 @@ func (s SearchCrm) SearchFaqs(ctx context.Context, query string) ([]domain.Searc
 	}
 	return searches, nil
 }
+
+func (s SearchCrm) SearchTickets(ctx context.Context, query string, user domain.User) ([]domain.Search, error) {
+	sql := "SELECT id, ticket_title, parent_id FROM HelpDesk WHERE ticket_title LIKE '%" + query + "%' OR ticket_no LIKE '%" + query + "%';"
+	searches := make([]domain.Search, 0)
+	result, err := s.vtiger.Query(ctx, sql)
+	if err != nil {
+		return searches, e.Wrap("can not execute query "+sql+", got error: "+result.Error.Message, err)
+	}
+	for _, data := range result.Result {
+		search := domain.ConvertMapToSearch(data)
+		search.Module = "HelpDesk"
+		if data["parent_id"] == user.AccountId {
+			searches = append(searches, search)
+		}
+	}
+	return searches, nil
+}

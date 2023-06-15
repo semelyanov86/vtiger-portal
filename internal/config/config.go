@@ -20,9 +20,10 @@ type (
 		Cors        struct {
 			TrustedOrigins []string `yaml:"trustedOrigins"`
 		}
-		Email  EmailConfig  `yaml:"email"`
-		Vtiger VtigerConfig `yaml:"vtiger"`
-		Otp    OtpConfig    `yaml:"otp"`
+		Email   EmailConfig   `yaml:"email"`
+		Vtiger  VtigerConfig  `yaml:"vtiger"`
+		Otp     OtpConfig     `yaml:"otp"`
+		Payment PaymentConfig `json:"payment"`
 	}
 	HTTPConfig struct {
 		Host               string        `yaml:"host"`
@@ -91,6 +92,10 @@ type (
 		Issuer      string `yaml:"issuer"`
 		AccountName string `yaml:"accountName"`
 		SecretSize  uint   `yaml:"secretSize"`
+	}
+	PaymentConfig struct {
+		StripeKey    string `yaml:"stripe_key"`
+		StripePublic string `yaml:"stripe_public"`
 	}
 )
 

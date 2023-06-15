@@ -60,3 +60,6 @@ otp:
   issuer: "portal.itvolga.com"
   accountName: "info@itvolga.com"
   secretSize: 15
+payment:
+  stripe_key: ""
+  stripe_public: ""

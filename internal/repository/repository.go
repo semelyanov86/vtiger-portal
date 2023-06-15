@@ -166,6 +166,7 @@ type Repositories struct {
 	Leads           LeadCrm
 	Account         AccountCrm
 	Search          SearchCrm
+	Payment         *PaymentsRepo
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -192,5 +193,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		Leads:           NewLeadCrm(config, cache),
 		Account:         NewAccountCrm(config, cache),
 		Search:          NewSearchCrm(config, cache),
+		Payment:         NewPaymentsRepo(db),
 	}
 }

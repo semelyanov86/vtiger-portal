@@ -35,7 +35,7 @@ func (h Handler) corsMiddleware(c *gin.Context) {
 }
 
 func (h Handler) authenticate(c *gin.Context) {
-	if c.FullPath() == "/api/v1/users/" || c.FullPath() == "/api/v1/users/restore" || c.FullPath() == "/api/v1/users/password" || c.FullPath() == "/api/v1/users/login" {
+	if c.FullPath() == "/api/v1/users/" || c.FullPath() == "/api/v1/users/restore" || c.FullPath() == "/api/v1/users/password" || c.FullPath() == "/api/v1/users/login" || c.FullPath() == "/api/v1/payments/webhook" {
 		c.Next()
 		return
 	}

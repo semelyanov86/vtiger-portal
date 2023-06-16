@@ -10,20 +10,22 @@ import (
 )
 
 type SalesOrders struct {
-	repository repository.SalesOrderCrm
-	cache      cache.Cache
-	module     ModulesService
-	config     config.Config
-	currency   CurrencyService
+	repository        repository.SalesOrderCrm
+	invoiceRepository repository.Invoice
+	cache             cache.Cache
+	module            ModulesService
+	config            config.Config
+	currency          CurrencyService
 }
 
-func NewSalesOrderService(repository repository.SalesOrderCrm, cache cache.Cache, module ModulesService, config config.Config, currency CurrencyService) SalesOrders {
+func NewSalesOrderService(repository repository.SalesOrderCrm, cache cache.Cache, module ModulesService, config config.Config, currency CurrencyService, invoice repository.Invoice) SalesOrders {
 	return SalesOrders{
-		repository: repository,
-		cache:      cache,
-		module:     module,
-		config:     config,
-		currency:   currency,
+		repository:        repository,
+		cache:             cache,
+		module:            module,
+		config:            config,
+		currency:          currency,
+		invoiceRepository: invoice,
 	}
 }
 
@@ -39,6 +41,11 @@ func (h SalesOrders) GetSalesOrderById(ctx context.Context, id string) (domain.S
 		}
 		salesOrder.Currency = currency
 	}
+	invoices, err := h.invoiceRepository.GetFromSalesOrder(ctx, id)
+	if err != nil {
+		return salesOrder, e.Wrap("can not get invoices from sales order", err)
+	}
+	salesOrder.Invoices = invoices
 	return salesOrder, nil
 }
 

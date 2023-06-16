@@ -61,6 +61,7 @@ type SalesOrder struct {
 	Currency                  Currency        `json:"currency"`
 	LineItems                 []LineItem      `json:"LineItems,omitempty"`
 	LineItemsFinalDetails     map[string]any  `json:"LineItems_FinalDetails,omitempty"`
+	Invoices                  []Invoice       `json:"invoices,omitempty"`
 }
 
 func ConvertMapToSalesOrder(m map[string]any) (SalesOrder, error) {

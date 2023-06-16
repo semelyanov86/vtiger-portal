@@ -70,3 +70,20 @@ func (m InvoiceCrm) Count(ctx context.Context, client string) (int, error) {
 	body["account_id"] = client
 	return m.vtiger.Count(ctx, "Invoice", body)
 }
+
+func (m InvoiceCrm) GetFromSalesOrder(ctx context.Context, soId string) ([]domain.Invoice, error) {
+	query := "SELECT * FROM Invoice WHERE salesorder_id = " + soId + ";"
+	invoices := make([]domain.Invoice, 0)
+	result, err := m.vtiger.Query(ctx, query)
+	if err != nil {
+		return invoices, e.Wrap("can not execute query "+query+", got error", err)
+	}
+	for _, data := range result.Result {
+		invoice, err := domain.ConvertMapToInvoice(data)
+		if err != nil {
+			return invoices, e.Wrap("can not convert map to invoice", err)
+		}
+		invoices = append(invoices, invoice)
+	}
+	return invoices, nil
+}

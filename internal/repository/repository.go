@@ -85,6 +85,7 @@ type Invoice interface {
 	RetrieveById(ctx context.Context, id string) (domain.Invoice, error)
 	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Invoice, error)
 	Count(ctx context.Context, client string) (int, error)
+	GetFromSalesOrder(ctx context.Context, soId string) ([]domain.Invoice, error)
 }
 
 type ServiceContract interface {

@@ -837,6 +837,21 @@ func (mr *MockInvoiceMockRecorder) GetAll(ctx, filter interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockInvoice)(nil).GetAll), ctx, filter)
 }
 
+// GetFromSalesOrder mocks base method.
+func (m *MockInvoice) GetFromSalesOrder(ctx context.Context, soId string) ([]domain.Invoice, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFromSalesOrder", ctx, soId)
+	ret0, _ := ret[0].([]domain.Invoice)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFromSalesOrder indicates an expected call of GetFromSalesOrder.
+func (mr *MockInvoiceMockRecorder) GetFromSalesOrder(ctx, soId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFromSalesOrder", reflect.TypeOf((*MockInvoice)(nil).GetFromSalesOrder), ctx, soId)
+}
+
 // RetrieveById mocks base method.
 func (m *MockInvoice) RetrieveById(ctx context.Context, id string) (domain.Invoice, error) {
 	m.ctrl.T.Helper()

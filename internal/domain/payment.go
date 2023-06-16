@@ -10,6 +10,7 @@ type Payment struct {
 	ID              int64     `json:"id"`
 	StripePaymentId string    `json:"stripe_payment_id"`
 	UserId          string    `json:"user_id"`
+	AccountId       string    `json:"account_id"`
 	Amount          float64   `json:"amount"`
 	Currency        string    `json:"currency"`
 	PaymentMethod   string    `json:"payment_method"`

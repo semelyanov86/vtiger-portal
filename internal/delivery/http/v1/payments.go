@@ -69,6 +69,7 @@ func (h *Handler) createPaymentIntent(c *gin.Context) {
 		return
 	}
 	req.UserId = userModel.Crmid
+	req.AccountId = userModel.AccountId
 
 	pi, err := h.services.Payments.CreatePaymentIntent(c.Request.Context(), req)
 

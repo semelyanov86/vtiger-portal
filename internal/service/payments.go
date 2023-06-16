@@ -41,6 +41,7 @@ type PaymentIntent struct {
 	InvoiceId         string  `json:"invoice_id"`
 	Amount            float64 `json:"amount"`
 	UserId            string  `json:"userId"`
+	AccountId         string  `json:"accountId"`
 }
 
 func NewPaymentsService(cache cache.Cache, config config.Config, currency CurrencyService, repository repository.PaymentsRepo) Payments {
@@ -100,6 +101,7 @@ func (p Payments) CreatePaymentIntent(ctx context.Context, req PaymentIntent) (*
 	payment := domain.Payment{
 		StripePaymentId: res.ID,
 		UserId:          req.UserId,
+		AccountId:       req.AccountId,
 		Amount:          req.Amount,
 		Currency:        req.Currency,
 		PaymentMethod:   req.PaymentMethodType,

@@ -1,8 +1,601 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-10T15:41:05.349Z
+__export_date: 2023-06-16T15:15:10.004Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211dedac29f22
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211dee86256b2
+    modified: 1686928495653
+    created: 1686928375601
+    url: "{{ base_url }}/payments/confirm"
+    name: Confirm Payment
+    description: Confirms a payment and changes payment status in table
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+          "id": "pi_3NJaRqAMEMdfzJss11r1Z0XS",
+          "object": "payment_intent",
+          "amount": 450000,
+          "amount_details": {
+            "tip": {}
+          },
+          "capture_method": "automatic",
+          "client_secret": "pi_3NJaRqAMEMdfzJss11r1Z0XS_secret_Hx0HO0fDX1eWeKSXger4x7Nsk",
+          "confirmation_method": "automatic",
+          "created": 1686913450,
+          "currency": "rub",
+          "livemode": true,
+          "payment_method": "pm_1NJaRqAMEMdfzJ",
+          "payment_method_types": [
+            "card"
+          ],
+          "status": "succeeded"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_eaffa864bcbc4cc18c585c97b005a365
+      - id: pair_c5cde19bebac4d8597c52a4f59ce6e6c
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686928375601
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211dee86256b2
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1686846003641
+    created: 1686846003641
+    name: payment
+    description: Accepting stripe payments
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1686846003641
+    _type: request_group
+  - _id: wrk_66e74e4b495c4404841a78c723c211de
+    parentId: null
+    modified: 1681752522262
+    created: 1681752522262
+    name: Vtiger Customer Portal
+    description: ""
+    scope: design
+    _type: workspace
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de363fed5a
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211dee86256b2
+    modified: 1686846066012
+    created: 1686846003171
+    url: "{{ base_url }}/payments/config"
+    name: Get payment config
+    description: >-
+      Here you can get publishable key to display payment form. Example
+      response:
+
+
+      ```json
+
+      {
+      	"data": {
+      		"publishableKey": "pk_test_zJh"
+      	}
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_90b2b5aa4f034ffbbf3a8d683c1978e8
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_795226efb7724e89ba4d018240089296
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686846003171
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de9d8840f9
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211dee86256b2
+    modified: 1686892365252
+    created: 1686846003161
+    url: "{{ base_url }}/payments/create-payment-intent"
+    name: Create Payment Intent
+    description: Geting client secret for processing payment
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "currency": "EUR",
+          "paymentMethodType": "card",
+          "invoice_id": "5x23",
+          "so_id": "3x23",
+          "amount": 19.99
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_46867a8a4d254b10a76526dbe86d8280
+      - id: pair_9664038ab3134f9d8ee2eec96abc06bf
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686846003161
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211defbcd3679
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3f0e50d3
+    modified: 1686928376373
+    created: 1686765985835
+    url: "{{ base_url }}/sales-orders/{{ salesOrderId }}"
+    name: Find Sales Order by id
+    description: >-
+      Get sales order by id. It also passes array of related invoices in
+      invoices key.
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"data": {
+      		"salesorder_no": "SO1",
+      		"subject": "Laptop with keyboard",
+      		"potential_id": "",
+      		"customerno": "112",
+      		"quote_id": "",
+      		"vtiger_purchaseorder": "",
+      		"contact_id": "",
+      		"duedate": "2023-06-13",
+      		"carrier": "FedEx",
+      		"pending": "",
+      		"sostatus": "Approved",
+      		"txtAdjustment": 0,
+      		"salescommission": 0,
+      		"exciseduty": 78.54,
+      		"hdnGrandTotal": 1333.5,
+      		"hdnSubTotal": 1050,
+      		"hdnTaxType": "group",
+      		"hdnDiscountPercent": "",
+      		"hdnDiscountAmount": "",
+      		"hdnS_H_Amount": 0,
+      		"account_id": "11x6",
+      		"assigned_user_id": "19x1",
+      		"createdtime": "2022-09-19 10:02:07",
+      		"modifiedtime": "2023-06-14 15:34:12",
+      		"modifiedby": "19x1",
+      		"currency_id": "21x1",
+      		"conversion_rate": 1,
+      		"bill_street": "Bulvar Yunosti, 3",
+      		"ship_street": "Bulvar Yunosti, 3",
+      		"bill_city": "Cheboksary",
+      		"ship_city": "Cheboksary",
+      		"bill_state": "Chuvashia",
+      		"ship_state": "Chuvashia",
+      		"bill_code": "428010",
+      		"ship_code": "428010",
+      		"bill_country": "Russia",
+      		"ship_country": "Russia",
+      		"bill_pobox": "",
+      		"ship_pobox": "",
+      		"description": "",
+      		"terms_conditions": "- Unless otherwise agreed in writing by the supplier all invoices are payable within thirty (30) days of the date of invoice, in the currency of the invoice, drawn on a bank based in India or by such other method as is agreed in advance by the Supplier.\n\n - All prices are not inclusive of VAT which shall be payable in addition by the Customer at the applicable rate.",
+      		"payment_duration": "",
+      		"invoicestatus": "",
+      		"fromsite": "",
+      		"pre_tax_total": 1050,
+      		"hdnS_H_Percent": "0",
+      		"spcompany": "",
+      		"created_user_id": "",
+      		"source": "CRM",
+      		"starred": "0",
+      		"region_id": "0",
+      		"id": "3x12",
+      		"label": "Laptop with keyboard",
+      		"shipping_&_handling": 0,
+      		"shipping_&_handling_shtax1": 4.5,
+      		"currency": {
+      			"id": "21x1",
+      			"currency_name": "Euro",
+      			"currency_code": "EUR",
+      			"currency_symbol": "€",
+      			"conversion_rate": 0,
+      			"currency_status": "Active",
+      			"defaultid": "-11",
+      			"deleted": false
+      		},
+      		"LineItems": [
+      			{
+      				"parent_id": "3xArray",
+      				"productid": "14x10",
+      				"sequence_no": 1,
+      				"quantity": 1,
+      				"listprice": 1000,
+      				"discount_percent": "",
+      				"discount_amount": "",
+      				"comment": "",
+      				"description": "",
+      				"incrementondel": false,
+      				"tax1": 4.5,
+      				"tax2": 10,
+      				"tax3": 12.5,
+      				"image": "",
+      				"purchase_cost": 500,
+      				"margin": 500,
+      				"id": "33x20",
+      				"product_name": "Laptop HP",
+      				"entity_type": "Products",
+      				"deleted": false
+      			},
+      			{
+      				"parent_id": "3xArray",
+      				"productid": "14x9",
+      				"sequence_no": 2,
+      				"quantity": 1,
+      				"listprice": 50,
+      				"discount_percent": "",
+      				"discount_amount": "",
+      				"comment": "",
+      				"description": "",
+      				"incrementondel": false,
+      				"tax1": 4.5,
+      				"tax2": 10,
+      				"tax3": 12.5,
+      				"image": "",
+      				"purchase_cost": 0,
+      				"margin": 50,
+      				"id": "33x21",
+      				"product_name": "Keyboard Logitech",
+      				"entity_type": "Products",
+      				"deleted": false
+      			}
+      		],
+      		"LineItems_FinalDetails": {
+      			"1": {
+      				"checked_discount_zero1": " checked",
+      				"comment1": "",
+      				"discountTotal1": "0.00",
+      				"discount_amount1": 0,
+      				"discount_percent1": 0,
+      				"entityType1": "Products",
+      				"final_details": {
+      					"adjustment": "0.00",
+      					"chargesAndItsTaxes": {
+      						"1": {
+      							"taxes": {
+      								"1": "4.500",
+      								"2": "10.000",
+      								"3": "12.500"
+      							},
+      							"value": "0"
+      						}
+      					},
+      					"deductTaxes": [],
+      					"deductTaxesTotalAmount": "0.00",
+      					"discountTotal_final": "0.00",
+      					"discount_amount_final": "0.00",
+      					"discount_percentage_final": 0,
+      					"discount_type_final": "zero",
+      					"grandTotal": "1333.50",
+      					"hdnSubTotal": "1050.00",
+      					"preTaxTotal": "1050.00",
+      					"sh_taxes": [
+      						{
+      							"amount": 0,
+      							"compoundon": [],
+      							"method": "Simple",
+      							"percentage": 0,
+      							"regions": [],
+      							"taxid": "1",
+      							"taxlabel": "VAT",
+      							"taxname": "shtax1",
+      							"type": "Fixed"
+      						},
+      						{
+      							"amount": 0,
+      							"compoundon": [],
+      							"method": "Simple",
+      							"percentage": 0,
+      							"regions": [],
+      							"taxid": "2",
+      							"taxlabel": "Sales",
+      							"taxname": "shtax2",
+      							"type": "Fixed"
+      						},
+      						{
+      							"amount": 0,
+      							"compoundon": [],
+      							"method": "Simple",
+      							"percentage": 0,
+      							"regions": [],
+      							"taxid": "3",
+      							"taxlabel": "Service",
+      							"taxname": "shtax3",
+      							"type": "Fixed"
+      						}
+      					],
+      					"shipping_handling_charge": "0.00",
+      					"shtax_totalamount": "0.00",
+      					"tax_totalamount": "283.50",
+      					"taxes": {
+      						"1": {
+      							"amount": "47.25",
+      							"compoundon": [],
+      							"method": "Simple",
+      							"percentage": "4.500",
+      							"regions": [],
+      							"taxid": "1",
+      							"taxlabel": "VAT",
+      							"taxname": "tax1",
+      							"type": "Fixed"
+      						},
+      						"2": {
+      							"amount": "105.00",
+      							"compoundon": [],
+      							"method": "Simple",
+      							"percentage": "10.000",
+      							"regions": [],
+      							"taxid": "2",
+      							"taxlabel": "Sales",
+      							"taxname": "tax2",
+      							"type": "Fixed"
+      						},
+      						"3": {
+      							"amount": "131.25",
+      							"compoundon": [],
+      							"method": "Simple",
+      							"percentage": "12.500",
+      							"regions": [],
+      							"taxid": "3",
+      							"taxlabel": "Service",
+      							"taxname": "tax3",
+      							"type": "Fixed"
+      						}
+      					},
+      					"taxtype": "group",
+      					"totalAfterDiscount": "1050.00"
+      				},
+      				"hdnProductId1": "10",
+      				"hdnProductcode1": "PRO2",
+      				"listPrice1": "1000.00",
+      				"margin1": "500.00",
+      				"netPrice1": "1000.00",
+      				"productDeleted1": false,
+      				"productDescription1": null,
+      				"productImage1": "storage/2023/May/week3/61_dress1.jpg",
+      				"productName1": "Laptop HP",
+      				"productTotal1": "1000.00",
+      				"purchaseCost1": "500.00",
+      				"qty1": "1",
+      				"qtyInStock1": "493",
+      				"subprod_names1": "",
+      				"subprod_qty_list1": [],
+      				"subproduct_ids1": "",
+      				"taxTotal1": "0.00",
+      				"totalAfterDiscount1": "1000.00",
+      				"unitPrice1": "1000.00"
+      			},
+      			"2": {
+      				"checked_discount_zero2": " checked",
+      				"comment2": "",
+      				"delRow2": "Del",
+      				"discountTotal2": "0.00",
+      				"discount_amount2": 0,
+      				"discount_percent2": 0,
+      				"entityType2": "Products",
+      				"hdnProductId2": "9",
+      				"hdnProductcode2": "PRO1",
+      				"listPrice2": "50.00",
+      				"margin2": "50.00",
+      				"netPrice2": "50.00",
+      				"productDeleted2": false,
+      				"productDescription2": null,
+      				"productImage2": "storage/2023/May/week3/62_dress2.jpg",
+      				"productName2": "Keyboard Logitech",
+      				"productTotal2": "50.00",
+      				"purchaseCost2": "0.00",
+      				"qty2": "1",
+      				"qtyInStock2": "100.6",
+      				"subprod_names2": "",
+      				"subprod_qty_list2": [],
+      				"subproduct_ids2": "",
+      				"taxTotal2": "0.00",
+      				"totalAfterDiscount2": "50.00",
+      				"unitPrice2": "50.50"
+      			}
+      		}
+      	}
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_85ab9541d82b4f10ad6f09bea72c10bc
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_1c3abb5bbe60461db0816a3a7b60e83c
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686765985835
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de3f0e50d3
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1686765985892
+    created: 1686765985892
+    name: sales-order
+    description: Endpoints for getting sales orders
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1686765985892
+    _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211debac3638d
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3f0e50d3
+    modified: 1686766445352
+    created: 1686765985835
+    url: "{{ base_url }}/sales-orders"
+    name: Get Sales Orders
+    description: Allows to get list of sales orders, attached to account
+    method: GET
+    body: {}
+    parameters:
+      - name: page
+        disabled: true
+        value: "1"
+        id: pair_2731150a53c3449b959292be0741bc07
+      - name: size
+        disabled: true
+        value: "20"
+        id: pair_8412c6b3b192467ba3f8522bdf4b46bc
+      - name: sort
+        disabled: true
+        value: -salesorder_no
+        id: pair_add2d121fa394750b5bc982fe795ad91
+      - name: search
+        disabled: true
+        value: INV3
+        id: pair_ea393497e6fd4ae68a4e8573739b4676
+    headers:
+      - id: pair_2816268cac85409fa1c3ce472e204cb5
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_7dc853c1ca4c49dcbead1d2fbbfe5b73
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686765985835
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211dee34cce75
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3559d7ac
+    modified: 1686764220627
+    created: 1686634306124
+    url: "{{ base_url }}/search"
+    name: Global Search
+    description: >-
+      This endpoint for executing global search by faq, tickets, project tasks
+      modules
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"data": [
+      		{
+      			"label": "How to write text?",
+      			"crmid": "6x49",
+      			"parent": "",
+      			"module": "Faq"
+      		}
+      	],
+      	"count": 1,
+      	"page": 1,
+      	"size": 100
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters:
+      - name: search
+        disabled: false
+        value: Asterisk
+        id: pair_86c0c3bd4e2249bc9103e49722bcd37b
+    headers:
+      - id: pair_1a7b5333aafa4e53a2d1e158363a8735
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_ca4830af01b94cf99e363839105db338
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686634306124
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de3559d7ac
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1686634306161
+    created: 1686634306161
+    name: search
+    description: Routes for doing global search
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1686634306161
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de4e1785fd
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de7a20aecd
     modified: 1685982659183
@@ -50,14 +643,6 @@ resources:
     environmentPropertyOrder: null
     metaSortKey: -1685861984150
     _type: request_group
-  - _id: wrk_66e74e4b495c4404841a78c723c211de
-    parentId: null
-    modified: 1681752522262
-    created: 1681752522262
-    name: Vtiger Customer Portal
-    description: ""
-    scope: design
-    _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deb42fed91
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de7a20aecd
     modified: 1685874183201
@@ -1123,7 +1708,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de8d9cdc46
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1685638230272
+    modified: 1686722976562
     created: 1684500052658
     url: "{{ base_url }}/projects"
     name: Get Projects
@@ -1217,7 +1802,7 @@ resources:
         id: pair_f3908a90e06b42538ae8bb9542117618
       - name: search
         disabled: true
-        value: PROJ2
+        value: PROJ4
         id: pair_8a23d75d547049b0957a8ffb6296205f
     headers:
       - id: pair_2eceff9f1a4e4ea6826f6a348aeeb387
@@ -2014,7 +2599,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9127d807
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
-    modified: 1686374247689
+    modified: 1686765986535
     created: 1682659418912
     url: "{{ base_url }}/invoices"
     name: Get Invoices
@@ -2073,7 +2658,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de68d60525
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
-    modified: 1686329262239
+    modified: 1686764224053
     created: 1682578221793
     url: "{{ base_url }}/invoices/{{ invoiceId }}"
     name: Find Invoice by id
@@ -2775,7 +3360,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de46f4f7b3
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1685197190425
+    modified: 1686722419272
     created: 1682171278798
     url: "{{ base_url }}/tickets"
     name: Get Tickets
@@ -2871,7 +3456,7 @@ resources:
         id: pair_c7e0f105a0594dd4a8f06275cefa002c
       - name: search
         disabled: true
-        value: new
+        value: TT1
         id: pair_1f98e09450484cc5880a8ad2926b2c27
         description: ""
     headers: []
@@ -3752,7 +4337,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de98f31d73
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1686409376139
+    modified: 1686417341339
     created: 1686408551901
     url: "{{ base_url }}/users/my/account"
     name: Get account data
@@ -4309,7 +4894,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de94b9a1a1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1686411324085
+    modified: 1686413251709
     created: 1681838399470
     url: "{{ base_url }}/users/my"
     name: Get data about authenticated user
@@ -4636,7 +5221,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1686408552101
+    modified: 1686928495173
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -4676,6 +5261,8 @@ resources:
           externalDocs:
             description: Invoices module
             url: https://help.vtiger.com/article/117268545-Creating-and-Managing-Invoices
+        - name: sales-order
+          description: Endpoints for getting sales orders
         - name: service-contracts
           description: Service contracts data
         - name: product
@@ -4690,6 +5277,10 @@ resources:
           description: Storing leads in crm
         - name: otp
           description: Routes for handling 2FA processes
+        - name: search
+          description: Routes for doing global search
+        - name: payment
+          description: Accepting stripe payments
       paths:
         /users:
           post:
@@ -5765,7 +6356,7 @@ resources:
             tags:
               - tickets
             summary: Get Tickets
-            description: This endpoint returns a list of tickets based on the provided page number and page size. You can see tickets attached to company of authorized user.
+            description: This endpoint returns a list of tickets based on the provided page number and page size. You can see tickets attached to company of authorized user. Note, there is a known problem with count param. Currently we count all tickets. If you pass search param, we return all tickets of user, not searched one.
             operationId: getAllTickets
             security:
               - bearerAuth: []
@@ -5910,6 +6501,48 @@ resources:
                   description: Invalid pagination params
                 "403":
                   description: Operation not permitted
+        "/search":
+          get:
+            tags:
+              - search
+            summary: Global Search
+            description: Doing search in faq, tickets and project tasks
+            operationId: globalSearch
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: search
+                in: query
+                description: Search with LIKE filter in ticket_no and ticket_title fields
+                required: false
+                schema:
+                  type: string
+                  example: TT3
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Search"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid pagination params
+              "403":
+                description: Operation not permitted
         "/invoices":
           get:
             tags:
@@ -5945,7 +6578,105 @@ resources:
                   example: -invoice_no
               - name: search
                 in: query
-                description: Search with LIKE filter in invoice_no and subject
+                description: Search with LIKE filter in salesorder_no and subject
+                required: false
+                schema:
+                  type: string
+                  example: SO3
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/SalesOrderShort"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid pagination params
+              "403":
+                description: Operation not permitted
+        "/sales-orders/{salesOrderId}":
+          get:
+            tags:
+              - sales-order
+            summary: Find Sales Order by id
+            description: Returns a single Sales Order
+            operationId: getSalesOrderById
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: salesOrderId
+                in: path
+                description: ID of sales order to return
+                required: true
+                schema:
+                  type: string
+                  format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          $ref: "#/components/schemas/SalesOrder"
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Sales Order not found
+              "403":
+                description: Operation not permitted
+        "/sales-orders":
+          get:
+            tags:
+              - sales-order
+            summary: Get Sales Orders
+            description: This endpoint returns a list of sales orders based on the provided page number and page size.
+            operationId: getAllSalesOrders
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: page
+                in: query
+                description: The page number to retrieve (default is 1)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 1
+              - name: size
+                in: query
+                description: The number of items per page (default is 20)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 20
+              - name: sort
+                in: query
+                description: Field, which accepts order by algorithm. Minus sign at the beginning means desc order.
+                required: false
+                schema:
+                  type: string
+                  example: -salesorder_no
+              - name: search
+                in: query
+                description: Search with LIKE filter in salesorder_no and subject
                 required: false
                 schema:
                   type: string
@@ -6277,7 +7008,7 @@ resources:
             tags:
               - project
             summary: Get Projects
-            description: This endpoint returns a list of projects based on the provided page number and page size.
+            description: This endpoint returns a list of projects based on the provided page number and page size. Currently there is known problem abount count key. It calculates all project, not filtered by search param.
             operationId: getAllProjects
             security:
               - bearerAuth: []
@@ -7050,6 +7781,117 @@ resources:
                     application/json:
                       schema:
                         $ref: "#/components/schemas/Lead"                
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "403":
+                  description: Operation not permitted
+        "/payments/config":
+          get:
+            tags:
+              - payment
+            summary: Get payment config
+            description: Get payment config
+            operationId: getPaymentCOnfig
+            security:
+              - bearerAuth: []
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: object
+                          properties:
+                            publishableKey:
+                              type: string
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Project not found
+              "403":
+                description: Operation not permitted
+        "/payments/create-payment-intent":
+          post:
+              tags:
+                - payment
+              summary: Create Payment Intent
+              description: Send generic payment data and get token
+              operationId: createPaymentIntent
+              security:
+                - bearerAuth: []
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        currency:
+                          description: Currency
+                          type: string
+                          example: "EUR"
+                        paymentMethodType:
+                          description: Payment Method Type
+                          type: string
+                          example: "card"
+                        invoice_id:
+                          description: Invoice ID
+                          type: string
+                          example: "5x23"
+                        so_id:
+                          description: Sales Order ID
+                          type: string
+                          example: "3x23"
+                        amount:
+                          description: Payment amount
+                          type: number
+                          example: 19.99
+              responses:
+                "200":
+                  description: Payment acceepted
+                  content:
+                    application/json:
+                      schema:
+                        type: object
+                        properties:
+                          clientSecret:
+                            description: Client secret
+                            type: string
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "403":
+                  description: Operation not permitted
+        "/payments/confirm":
+          post:
+              tags:
+                - payment
+              summary: Confirm Payment
+              description: Changes payment status to success
+              operationId: confirmPayment
+              security:
+                - bearerAuth: []
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/PaymentIntent"
+              responses:
+                "200":
+                  description: Payment confirmed
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/Payment"
                 "422":
                   description: Validation error
                   content:
@@ -8073,6 +8915,326 @@ resources:
               shipping_&_handling_shtax3: 
                 type: number
                 example: 12.500
+          SalesOrderShort:
+            type: object
+            properties:
+              salesorder_no:
+                type: string
+              subject:
+                type: string
+              potential_id:
+                type: string
+              customerno:
+                type: string
+              quote_id:
+                type: string
+              vtiger_purchaseorder:
+                type: string
+              contact_id:
+                type: string
+              duedate:
+                type: string
+              carrier:
+                type: string
+              pending:
+                type: string
+              sostatus:
+                type: string
+              txtAdjustment:
+                type: string
+              salescommission:
+                type: string
+              exciseduty:
+                type: string
+              hdnGrandTotal:
+                type: string
+              hdnSubTotal:
+                type: string
+              hdnTaxType:
+                type: string
+              hdnDiscountPercent:
+                type: string
+              hdnDiscountAmount:
+                type: string
+              hdnS_H_Amount:
+                type: string
+              account_id:
+                type: string
+              assigned_user_id:
+                type: string
+              createdtime:
+                type: string
+              modifiedtime:
+                type: string
+              modifiedby:
+                type: string
+              currency_id:
+                type: string
+              conversion_rate:
+                type: number
+              bill_street:
+                type: string
+              ship_street:
+                type: string
+              bill_city:
+                type: string
+              ship_city:
+                type: string
+              bill_state:
+                type: string
+              ship_state:
+                type: string
+              bill_code:
+                type: string
+              ship_code:
+                type: string
+              bill_country:
+                type: string
+              ship_country:
+                type: string
+              bill_pobox:
+                type: string
+              ship_pobox:
+                type: string
+              description:
+                type: string
+              terms_conditions:
+                type: string
+              enable_recurring:
+                type: string
+              recurring_frequency:
+                type: string
+              start_period:
+                type: string
+              end_period:
+                type: string
+              payment_duration:
+                type: string
+              invoicestatus:
+                type: string
+              fromsite:
+                type: string
+              pre_tax_total:
+                type: string
+              hdnS_H_Percent:
+                type: string
+              spcompany:
+                type: string
+              created_user_id:
+                type: string
+              source:
+                type: string
+              starred:
+                type: boolean
+              tags:
+                type: string
+              region_id:
+                type: string
+              id:
+                type: string
+              label:
+                type: string
+              shipping_and_handling:
+                type: number
+              shipping_and_handling_shtax1:
+                type: number
+              currency:
+                $ref: "#/components/schemas/Currency"
+          SalesOrder:
+            type: object
+            properties:
+              salesorder_no:
+                type: string
+              subject:
+                type: string
+              potential_id:
+                type: string
+              customerno:
+                type: string
+              quote_id:
+                type: string
+              vtiger_purchaseorder:
+                type: string
+              contact_id:
+                type: string
+              duedate:
+                type: string
+              carrier:
+                type: string
+              pending:
+                type: string
+              sostatus:
+                type: string
+              txtAdjustment:
+                type: string
+              salescommission:
+                type: string
+              exciseduty:
+                type: string
+              hdnGrandTotal:
+                type: string
+              hdnSubTotal:
+                type: string
+              hdnTaxType:
+                type: string
+              hdnDiscountPercent:
+                type: string
+              hdnDiscountAmount:
+                type: string
+              hdnS_H_Amount:
+                type: string
+              account_id:
+                type: string
+              assigned_user_id:
+                type: string
+              createdtime:
+                type: string
+              modifiedtime:
+                type: string
+              modifiedby:
+                type: string
+              currency_id:
+                type: string
+              conversion_rate:
+                type: number
+              bill_street:
+                type: string
+              ship_street:
+                type: string
+              bill_city:
+                type: string
+              ship_city:
+                type: string
+              bill_state:
+                type: string
+              ship_state:
+                type: string
+              bill_code:
+                type: string
+              ship_code:
+                type: string
+              bill_country:
+                type: string
+              ship_country:
+                type: string
+              bill_pobox:
+                type: string
+              ship_pobox:
+                type: string
+              description:
+                type: string
+              terms_conditions:
+                type: string
+              enable_recurring:
+                type: string
+              recurring_frequency:
+                type: string
+              start_period:
+                type: string
+              end_period:
+                type: string
+              payment_duration:
+                type: string
+              invoicestatus:
+                type: string
+              fromsite:
+                type: string
+              pre_tax_total:
+                type: string
+              hdnS_H_Percent:
+                type: string
+              spcompany:
+                type: string
+              created_user_id:
+                type: string
+              source:
+                type: string
+              starred:
+                type: boolean
+              tags:
+                type: string
+              region_id:
+                type: string
+              id:
+                type: string
+              label:
+                type: string
+              shipping_and_handling:
+                type: number
+              shipping_and_handling_shtax1:
+                type: number
+              currency:
+                $ref: "#/components/schemas/Currency"
+              LineItems: 
+                type: array
+                items: 
+                  type: object
+                  properties: 
+                    parent_id: 
+                      type: string
+                      example: 2xArray
+                    productid: 
+                      type: string
+                      example: 14x10
+                    sequence_no: 
+                      type: number
+                      example: 1
+                    quantity: 
+                      type: number
+                      example: 1.000
+                    listprice: 
+                      type: number
+                      example: 1000.00000000
+                    discount_percent: 
+                      type: string
+                      example: ""
+                    discount_amount: 
+                      type: string
+                      example: ""
+                    comment: 
+                      type: string
+                      example: "Some comment"
+                    description: 
+                      type: string
+                      example: "Some description"
+                    incrementondel: 
+                      type: string
+                      example: "1"
+                    tax1: 
+                      type: number
+                      example: 4.500
+                    tax2: 
+                      type: number
+                      example: 10.000
+                    tax3: 
+                      type: number
+                      example: 12.500
+                    image: 
+                      type: string
+                      example: ""
+                    purchase_cost: 
+                      type: number
+                      example: 500.00000000
+                    margin: 
+                      type: number
+                      example: 500.00000000
+                    id: 
+                      type: string
+                      example: 33x4
+                    product_name: 
+                      type: string
+                      example: Laptop HP
+                    entity_type: 
+                      type: string
+                      example: Products
+                    deleted: 
+                      type: string
+                      example: "0"
+              productid: 
+                type: string
+                example: 14x10
+              LineItems_FinalDetails: 
+                type: object
           ServiceContract:
                 type: object
                 properties:
@@ -8730,6 +9892,21 @@ resources:
               otpauth_url:
                 type: string
                 example: "https://itvolga.com"
+          Search:
+            type: object
+            properties:
+              label:
+                type: string
+                example: "Test search result"
+              crmid:
+                type: string
+                example: "15x223"
+              parent:
+                type: string
+                example: "11x243"
+              module:
+                type: string
+                example: "HelpDesk"
           Account:
             type: object
             properties:
@@ -8865,6 +10042,92 @@ resources:
               label:
                 type: string
                 example: "Центр информационных технологий"
+          PaymentIntent:
+            type: object
+            properties:
+              id:
+                type: string
+                example: pi_3NJaRqAMEMdfzJss11r1Z0XS
+              object:
+                type: string
+                example: payment_intent
+              amount:
+                type: integer
+                example: 450000
+              amount_details:
+                type: object
+                properties:
+                  tip:
+                    type: object
+                example:
+                  tip: {}
+              capture_method:
+                type: string
+                example: automatic
+              client_secret:
+                type: string
+                example: pi_3NJaRqAMEMdfzJss11r1Z0XS_secret_Hx0HO0fDX1eWeKSXger4x7Nsk
+              confirmation_method:
+                type: string
+                example: automatic
+              created:
+                type: integer
+                example: 1686913450
+              currency:
+                type: string
+                example: rub
+              livemode:
+                type: boolean
+                example: false
+              payment_method:
+                type: string
+                example: pm_1NJaRqAMEMdfzJ
+              payment_method_types:
+                type: array
+                items:
+                  type: string
+                example:
+                  - card
+              status:
+                type: string
+                example: succeeded
+          Payment:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+                example: 1
+              stripe_payment_id:
+                type: string
+                example: pi_3NJaRqAMEMdfzJss11r1Z0XS
+              user_id:
+                type: string
+                example: user_123
+              amount:
+                type: number
+                format: float
+                example: 4500.00
+              currency:
+                type: string
+                example: usd
+              payment_method:
+                type: string
+                example: card
+              status:
+                type: integer
+                example: 1
+              parent_id:
+                type: string
+                example: parent_123
+              created_at:
+                type: string
+                format: date-time
+                example: '2023-01-01T12:00:00Z'
+              updated_at:
+                type: string
+                format: date-time
+                example: '2023-01-01T12:00:00Z'
     contentType: yaml
     _type: api_spec
   - _id: env_env_7051e4988ba662848196b333737a56823b214220_sub
@@ -8899,7 +10162,7 @@ resources:
     _type: environment
   - _id: env_1bfede95dc144997a9155f6e79a3eaa5
     parentId: env_7051e4988ba662848196b333737a56823b214220
-    modified: 1686375750469
+    modified: 1686766018193
     created: 1681826841922
     name: Local
     data:
@@ -8920,6 +10183,7 @@ resources:
       projectId: 29x54
       taskId: 28x56
       userId: 12x11
+      salesOrderId: 3x12
     dataPropertyOrder:
       "&":
         - scheme
@@ -8939,6 +10203,7 @@ resources:
         - projectId
         - taskId
         - userId
+        - salesOrderId
     color: null
     isPrivate: false
     metaSortKey: 1681826841922

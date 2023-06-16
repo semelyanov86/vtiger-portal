@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
@@ -25,6 +24,7 @@ func (h *Handler) initPaymentRoutes(api *gin.RouterGroup) {
 		products.GET("/config", h.getPaymentConfig)
 		products.POST("/create-payment-intent", h.createPaymentIntent)
 		products.POST("/webhook", h.handleWebhook)
+		products.POST("/confirm", h.confirmPayment)
 	}
 }
 
@@ -105,7 +105,42 @@ func (h *Handler) handleWebhook(c *gin.Context) {
 		log.Printf("webhook.ConstructEvent: %v", err)
 		return
 	}
-	if event.Type == "checkout.session.completed" {
-		fmt.Println("Checkout Session completed!")
+	if event.Type == "payment_intent.succeeded" || event.Type == "payment_intent.processing" || event.Type == "payment_intent.canceled" || event.Type == "payment_intent.created" || event.Type == "payment_intent.requires_action" {
+		h.services.Payments.AcceptPayment(c.Request.Context(), event)
+		logger.Debug(logger.LogMessage{
+			Msg:  "Got webhook from stripe",
+			Code: "102",
+			Properties: map[string]string{
+				"id":     event.ID,
+				"object": event.Object,
+			},
+		})
 	}
+}
+
+func (h *Handler) confirmPayment(c *gin.Context) {
+	userModel := h.getValidatedUser(c)
+
+	if userModel == nil {
+		return
+	}
+
+	req := stripe.PaymentIntent{}
+	if err := c.BindJSON(&req); err != nil {
+		for _, fieldErr := range err.(validator.ValidationErrors) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": fieldErr.Field(), "message": fieldErr.Error()})
+			return // exit on first error
+		}
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "/", "message": "Please pass correct data"})
+		return
+	}
+	payment, err := h.services.Payments.ConfirmPayment(c.Request.Context(), req)
+	if err != nil {
+		c.AbortWithError(500, err)
+		return
+	}
+	res := AloneDataResponse[domain.Payment]{
+		Data: payment,
+	}
+	c.JSON(http.StatusOK, res)
 }

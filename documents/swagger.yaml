@@ -51,6 +51,8 @@ tags:
     description: Routes for handling 2FA processes
   - name: search
     description: Routes for doing global search
+  - name: payment
+    description: Accepting stripe payments
 paths:
   /users:
     post:
@@ -2559,6 +2561,117 @@ paths:
                 $ref: "#/components/schemas/ValidationResponse"
         "403":
           description: Operation not permitted
+  "/payments/config":
+    get:
+      tags:
+        - payment
+      summary: Get payment config
+      description: Get payment config
+      operationId: getPaymentCOnfig
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      publishableKey:
+                        type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Project not found
+        "403":
+          description: Operation not permitted
+  "/payments/create-payment-intent":
+    post:
+      tags:
+        - payment
+      summary: Create Payment Intent
+      description: Send generic payment data and get token
+      operationId: createPaymentIntent
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currency:
+                  description: Currency
+                  type: string
+                  example: "EUR"
+                paymentMethodType:
+                  description: Payment Method Type
+                  type: string
+                  example: "card"
+                invoice_id:
+                  description: Invoice ID
+                  type: string
+                  example: "5x23"
+                so_id:
+                  description: Sales Order ID
+                  type: string
+                  example: "3x23"
+                amount:
+                  description: Payment amount
+                  type: number
+                  example: 19.99
+      responses:
+        "200":
+          description: Payment acceepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clientSecret:
+                    description: Client secret
+                    type: string
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        "403":
+          description: Operation not permitted
+  "/payments/confirm":
+    post:
+      tags:
+        - payment
+      summary: Confirm Payment
+      description: Changes payment status to success
+      operationId: confirmPayment
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentIntent"
+      responses:
+        "200":
+          description: Payment confirmed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        "403":
+          description: Operation not permitted
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
@@ -4701,3 +4814,89 @@ components:
         label:
           type: string
           example: "Центр информационных технологий"
+    PaymentIntent:
+      type: object
+      properties:
+        id:
+          type: string
+          example: pi_3NJaRqAMEMdfzJss11r1Z0XS
+        object:
+          type: string
+          example: payment_intent
+        amount:
+          type: integer
+          example: 450000
+        amount_details:
+          type: object
+          properties:
+            tip:
+              type: object
+          example:
+            tip: {}
+        capture_method:
+          type: string
+          example: automatic
+        client_secret:
+          type: string
+          example: pi_3NJaRqAMEMdfzJss11r1Z0XS_secret_Hx0HO0fDX1eWeKSXger4x7Nsk
+        confirmation_method:
+          type: string
+          example: automatic
+        created:
+          type: integer
+          example: 1686913450
+        currency:
+          type: string
+          example: rub
+        livemode:
+          type: boolean
+          example: false
+        payment_method:
+          type: string
+          example: pm_1NJaRqAMEMdfzJ
+        payment_method_types:
+          type: array
+          items:
+            type: string
+          example:
+            - card
+        status:
+          type: string
+          example: succeeded
+    Payment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        stripe_payment_id:
+          type: string
+          example: pi_3NJaRqAMEMdfzJss11r1Z0XS
+        user_id:
+          type: string
+          example: user_123
+        amount:
+          type: number
+          format: float
+          example: 4500.00
+        currency:
+          type: string
+          example: usd
+        payment_method:
+          type: string
+          example: card
+        status:
+          type: integer
+          example: 1
+        parent_id:
+          type: string
+          example: parent_123
+        created_at:
+          type: string
+          format: date-time
+          example: '2023-01-01T12:00:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2023-01-01T12:00:00Z'

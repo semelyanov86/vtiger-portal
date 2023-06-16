@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
+	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/paymentintent"
 	_ "github.com/stripe/stripe-go/v72/webhook"
@@ -23,7 +25,13 @@ type Payments struct {
 const (
 	PENDING = iota
 	SUCCEEDED
-	FAILED
+	CANCELLED
+	PROCESSING
+	REQUIRES_ACTION
+	REQUIRES_CAPTURE
+	REQUIRES_CONFIRMATION
+	REQUIRES_PAYMENT_METHOD
+	CREATED
 )
 
 type PaymentIntent struct {
@@ -104,12 +112,45 @@ func (p Payments) CreatePaymentIntent(ctx context.Context, req PaymentIntent) (*
 	return res, err
 }
 
-func (p Payments) AcceptPayment(ctx context.Context, e stripe.Event) error {
-	payment, err := p.repository.GetByStripeId(ctx, e.ID)
+func (p Payments) AcceptPayment(ctx context.Context, e stripe.Event) (domain.Payment, error) {
+	var paymentIntent stripe.PaymentIntent
+	err := json.Unmarshal(e.Data.Raw, &paymentIntent)
 	if err != nil {
-		return err
+		return domain.Payment{}, err
 	}
-	payment.Status = SUCCEEDED
+	payment, err := p.repository.GetByStripeId(ctx, paymentIntent.ID)
+	if err != nil {
+		return payment, err
+	}
+	payment.Status = p.getNumericIntentStatus(paymentIntent)
 
 	return p.repository.UpdatePayment(ctx, payment)
+}
+
+func (p Payments) ConfirmPayment(ctx context.Context, event stripe.PaymentIntent) (domain.Payment, error) {
+	payment, err := p.repository.GetByStripeId(ctx, event.ID)
+	if err != nil {
+		return payment, e.Wrap("can not get payment by stripe id "+event.ID, err)
+	}
+	payment.Status = p.getNumericIntentStatus(event)
+
+	return p.repository.UpdatePayment(ctx, payment)
+}
+
+func (p Payments) getNumericIntentStatus(intent stripe.PaymentIntent) int {
+	switch intent.Status {
+	case stripe.PaymentIntentStatusCanceled:
+		return CANCELLED
+	case stripe.PaymentIntentStatusProcessing:
+		return PROCESSING
+	case stripe.PaymentIntentStatusRequiresAction:
+		return REQUIRES_ACTION
+	case stripe.PaymentIntentStatusRequiresCapture:
+		return REQUIRES_CAPTURE
+	case stripe.PaymentIntentStatusRequiresPaymentMethod:
+		return REQUIRES_PAYMENT_METHOD
+	case stripe.PaymentIntentStatusSucceeded:
+		return SUCCEEDED
+	}
+	return CREATED
 }

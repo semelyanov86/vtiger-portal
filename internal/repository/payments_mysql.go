@@ -54,13 +54,13 @@ func (r *PaymentsRepo) GetByStripeId(ctx context.Context, id string) (domain.Pay
 	return payment, nil
 }
 
-func (r *PaymentsRepo) UpdatePayment(ctx context.Context, payment domain.Payment) error {
+func (r *PaymentsRepo) UpdatePayment(ctx context.Context, payment domain.Payment) (domain.Payment, error) {
 	var query = `UPDATE payments SET stripe_payment_id = ?, user_id = ?, amount = ?, currency = ?, payment_method = ?, status = ?, updated_at = NOW(), parent_id = ?`
 	var args = []any{payment.StripePaymentId, payment.UserId, payment.Amount, payment.Currency, payment.PaymentMethod, payment.Status, payment.ParentId}
 	_, err := r.db.ExecContext(ctx, query, args...)
 	if err != nil {
-		return err
+		return payment, err
 	}
 	payment.UpdatedAt = time.Now()
-	return nil
+	return payment, nil
 }

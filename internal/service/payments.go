@@ -8,6 +8,8 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/logger"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/paymentintent"
 	_ "github.com/stripe/stripe-go/v72/webhook"
@@ -20,6 +22,7 @@ type Payments struct {
 	config     config.Config
 	currency   CurrencyService
 	repository repository.PaymentsRepo
+	vtiger     vtiger.VtigerConnector
 }
 
 const (
@@ -59,6 +62,7 @@ func NewPaymentsService(cache cache.Cache, config config.Config, currency Curren
 		config:     config,
 		currency:   currency,
 		repository: repository,
+		vtiger:     vtiger.NewVtigerConnector(cache, config.Vtiger.Connection, vtiger.NewWebRequest(config.Vtiger.Connection)),
 	}
 }
 
@@ -136,7 +140,30 @@ func (p Payments) ConfirmPayment(ctx context.Context, event stripe.PaymentIntent
 	}
 	payment.Status = p.getNumericIntentStatus(event)
 
+	if payment.Status == SUCCEEDED {
+		go func() {
+			err := p.reviseModuleSuccessStatus(payment.ParentId)
+			if err != nil {
+				logger.Error(logger.GenerateErrorMessageFromString(err.Error()))
+			}
+		}()
+	}
 	return p.repository.UpdatePayment(ctx, payment)
+}
+
+func (p Payments) reviseModuleSuccessStatus(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	m := make(map[string]any)
+	m["id"] = id
+	m["invoicestatus"] = p.config.Payment.PaidInvoiceStatus
+	m["sostatus"] = p.config.Payment.PaidSoStatus
+	_, err := p.vtiger.Revise(ctx, m)
+	return err
+}
+
+func (p Payments) GetPayments(ctx context.Context, id string) ([]domain.Payment, error) {
+	return p.repository.GetPaymentsFromAccountId(ctx, id)
 }
 
 func (p Payments) getNumericIntentStatus(intent stripe.PaymentIntent) int {

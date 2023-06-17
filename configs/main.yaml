@@ -63,3 +63,5 @@ otp:
 payment:
   stripe_key: ""
   stripe_public: ""
+  payed_so_status: "Delivered"
+  payed_invoice_status: "Paid"

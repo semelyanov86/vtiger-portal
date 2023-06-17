@@ -19,12 +19,13 @@ type PaymentIntentResponse struct {
 }
 
 func (h *Handler) initPaymentRoutes(api *gin.RouterGroup) {
-	products := api.Group("/payments")
+	payments := api.Group("/payments")
 	{
-		products.GET("/config", h.getPaymentConfig)
-		products.POST("/create-payment-intent", h.createPaymentIntent)
-		products.POST("/webhook", h.handleWebhook)
-		products.POST("/confirm", h.confirmPayment)
+		payments.GET("", h.getAllPayments)
+		payments.GET("/config", h.getPaymentConfig)
+		payments.POST("/create-payment-intent", h.createPaymentIntent)
+		payments.POST("/webhook", h.handleWebhook)
+		payments.POST("/confirm", h.confirmPayment)
 	}
 }
 
@@ -36,6 +37,25 @@ func (h *Handler) getPaymentConfig(c *gin.Context) {
 	paymentConfig := domain.PaymentConfig{PublishableKey: h.config.Payment.StripePublic}
 	res := AloneDataResponse[domain.PaymentConfig]{
 		Data: paymentConfig,
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func (h *Handler) getAllPayments(c *gin.Context) {
+	userModel := h.getValidatedUser(c)
+	if userModel == nil {
+		return
+	}
+	payments, err := h.services.Payments.GetPayments(c.Request.Context(), userModel.AccountId)
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	res := DataResponse[domain.Payment]{
+		Data:  payments,
+		Count: len(payments),
+		Page:  1,
+		Size:  20,
 	}
 	c.JSON(http.StatusOK, res)
 }

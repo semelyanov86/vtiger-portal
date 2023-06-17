@@ -343,7 +343,6 @@ func (c VtigerConnector) doUpdate(ctx context.Context, data map[string]any, oper
 	webRequest := NewWebRequest(c.connection)
 	// send a request to retrieve a record
 	resp, err := webRequest.SendObject(ctx, operation, sessionID, "", data)
-
 	if err != nil {
 		return nil, e.Wrap("code 7", err)
 	}

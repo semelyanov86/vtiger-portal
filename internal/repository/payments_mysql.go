@@ -55,7 +55,7 @@ func (r *PaymentsRepo) GetByStripeId(ctx context.Context, id string) (domain.Pay
 }
 
 func (r *PaymentsRepo) GetPaymentsFromAccountId(ctx context.Context, id string) ([]domain.Payment, error) {
-	var query = `SELECT id, stripe_payment_id, user_id, amount, currency, payment_method, status, created_at, updated_at, parent_id, account_id FROM payments WHERE account_id = ? LIMIT 20`
+	var query = `SELECT id, stripe_payment_id, user_id, amount, currency, payment_method, status, created_at, updated_at, parent_id, account_id FROM payments WHERE account_id = ? ORDER BY updated_at DESC LIMIT 20`
 	var payments = make([]domain.Payment, 0)
 	rows, err := r.db.QueryContext(ctx, query, id)
 	if err != nil {

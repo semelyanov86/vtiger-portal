@@ -94,8 +94,10 @@ type (
 		SecretSize  uint   `yaml:"secretSize"`
 	}
 	PaymentConfig struct {
-		StripeKey    string `yaml:"stripe_key"`
-		StripePublic string `yaml:"stripe_public"`
+		StripeKey         string `yaml:"stripe_key"`
+		StripePublic      string `yaml:"stripe_public"`
+		PaidSoStatus      string `yaml:"payed_so_status"`
+		PaidInvoiceStatus string `yaml:"payed_invoice_status"`
 	}
 )
 

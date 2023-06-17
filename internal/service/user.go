@@ -73,10 +73,11 @@ type UsersService struct {
 	document        repository.Document
 	cache           cache.Cache
 	account         AccountService
+	config          config.Config
 }
 
-func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface, company Company, tokenRepository repository.Tokens, document repository.Document, cache cache.Cache, account AccountService) UsersService {
-	return UsersService{repo: repo, crm: crm, wg: wg, email: email, company: company, tokenRepository: tokenRepository, document: document, cache: cache, account: account}
+func NewUsersService(repo repository.Users, crm repository.UsersCrm, wg *sync.WaitGroup, email EmailServiceInterface, company Company, tokenRepository repository.Tokens, document repository.Document, cache cache.Cache, account AccountService, config config.Config) UsersService {
+	return UsersService{repo: repo, crm: crm, wg: wg, email: email, company: company, tokenRepository: tokenRepository, document: document, cache: cache, account: account, config: config}
 }
 
 func (s UsersService) SignUp(ctx context.Context, input UserSignUpInput, cfg *config.Config) (*domain.User, error) {
@@ -371,6 +372,28 @@ func (s UsersService) ResetUserPassword(ctx context.Context, input PasswordReset
 		return *user, err
 	}
 	return *user, nil
+}
+
+func (s UsersService) GetUserSettings(ctx context.Context, id string) (map[string]bool, error) {
+	result := make(map[string]bool)
+	contact, err := s.crm.RetrieveContactMap(ctx, id)
+	if err != nil {
+		return result, e.Wrap("can not get user info", err)
+	}
+	settingsFields := s.config.Vtiger.Business.UserSettingsFields
+
+	for _, field := range settingsFields {
+		if contact[field] == "1" || contact[field] == 1 {
+			result[field] = true
+		} else {
+			result[field] = false
+		}
+	}
+	return result, nil
+}
+
+func (s UsersService) ChangeUserSetting(ctx context.Context, id string, field string, value bool) error {
+	return s.crm.ChangeSettingField(ctx, id, field, value)
 }
 
 func FillVtigerContactWithAdditionalValues(user *domain.User, password string) error {

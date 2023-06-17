@@ -80,13 +80,14 @@ type (
 		Business   VtigerBusinessConfig          `yaml:"business"`
 	}
 	VtigerBusinessConfig struct {
-		EmailField        string `yaml:"emailField"`
-		CodeField         string `yaml:"codeField"`
-		SupportEmail      string `yaml:"supportEmail"`
-		CompanyId         string `yaml:"companyId"`
-		ClearCode         bool   `yaml:"clearCode"`
-		DefaultPagination int    `yaml:"defaultPagination"`
-		DefaultUser       string `yaml:"defaultUser"`
+		EmailField         string   `yaml:"emailField"`
+		CodeField          string   `yaml:"codeField"`
+		SupportEmail       string   `yaml:"supportEmail"`
+		CompanyId          string   `yaml:"companyId"`
+		ClearCode          bool     `yaml:"clearCode"`
+		DefaultPagination  int      `yaml:"defaultPagination"`
+		DefaultUser        string   `yaml:"defaultUser"`
+		UserSettingsFields []string `yaml:"userSettingsFields"`
 	}
 	OtpConfig struct {
 		Issuer      string `yaml:"issuer"`

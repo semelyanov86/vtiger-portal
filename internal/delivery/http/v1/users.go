@@ -17,6 +17,8 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 		users.POST("/", h.userSignUp)
 		users.POST("/login", h.signIn)
 		users.GET("/my", h.getUserInfo)
+		users.GET("/settings", h.getUserSettings)
+		users.PATCH("/settings", h.updateUserSettings)
 		users.PUT("/my", h.updateUserInfo)
 		users.GET("/my/documents", h.getUserDocuments)
 		users.GET("/my/account", h.getAccountData)
@@ -51,6 +53,37 @@ func (h *Handler) userSignUp(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, user)
+}
+
+type userSettingInput map[string]bool
+
+func (h *Handler) updateUserSettings(c *gin.Context) {
+	userModel := h.getValidatedUser(c)
+	if userModel == nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Auth Error", "field": "crmid", "message": "User is not found in auth process"})
+		return
+	}
+	var inp userSettingInput
+	if err := c.BindJSON(&inp); err != nil {
+		for _, fieldErr := range err.(validator.ValidationErrors) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": fieldErr.Field(), "message": fieldErr.Error()})
+			return // exit on first error
+		}
+	}
+
+	fields := h.config.Vtiger.Business.UserSettingsFields
+	for _, field := range fields {
+		value, ok := inp[field]
+		if ok {
+			err := h.services.Users.ChangeUserSetting(c.Request.Context(), userModel.Crmid, field, value)
+			if err != nil {
+				newResponse(c, http.StatusInternalServerError, err.Error())
+				return
+			}
+		}
+	}
+
+	c.JSON(http.StatusAccepted, userModel)
 }
 
 func (h *Handler) updateUserInfo(c *gin.Context) {
@@ -126,6 +159,20 @@ func (h Handler) getUserInfo(c *gin.Context) {
 		Data: *user,
 	}
 	c.JSON(http.StatusOK, res)
+}
+
+func (h Handler) getUserSettings(c *gin.Context) {
+	userModel := h.getValidatedUser(c)
+	if userModel == nil {
+		return
+	}
+	settings, err := h.services.Users.GetUserSettings(c.Request.Context(), userModel.Crmid)
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, settings)
 }
 
 func (h Handler) sendRestoreToken(c *gin.Context) {

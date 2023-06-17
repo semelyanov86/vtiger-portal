@@ -56,6 +56,15 @@ vtiger:
     clearCode: true
     defaultPagination: 20
     defaultUser: "19x1"
+    userSettingsFields:
+      - emailoptout
+      - donotcall
+      - notify_owner
+      - cf_911
+      - cf_913
+      - cf_915
+      - cf_917
+      - cf_919
 otp:
   issuer: "portal.itvolga.com"
   accountName: "info@itvolga.com"

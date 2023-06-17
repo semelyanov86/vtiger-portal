@@ -65,3 +65,7 @@ func (r *UsersMock) VerifyOrInvalidateOtp(ctx context.Context, userId int64, val
 func (r *UsersMock) DisableOtp(ctx context.Context, userId int64) error {
 	return nil
 }
+
+func (r *UsersMock) RetrieveContactMap(ctx context.Context, id string) (map[string]any, error) {
+	return map[string]any{}, nil
+}

@@ -351,6 +351,73 @@ paths:
           description: User or file not found
         "403":
           description: Operation not permitted
+  /users/settings:
+    get:
+      tags:
+        - user
+      summary: Get User Settings
+      description: Get supported user settings fields. Currently supported only boolean. Returns - key as field name and value - boolean value of this field
+      operationId: userSettings
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/UserSettings"
+        "401":
+          description: anonymous access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Anonymous Access"
+                  field:
+                    type: string
+                    example: "crmid"
+                  message:
+                    type: string
+                    example: "Got anonymous user from token or user without crmid"
+    patch:
+      tags:
+        - user
+      summary: Update Settings
+      description: Allows user to change settings. Send key as a user name and boolean value
+      operationId: updateUserSettings
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSettings"
+      responses:
+        "202":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid ID supplied
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        "404":
+          description: User or file not found
+        "403":
+          description: Operation not permitted
   "/users/my/documents":
     get:
       tags:
@@ -2559,6 +2626,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ValidationResponse"
+        "403":
+          description: Operation not permitted
+  "/payments/":
+    get:
+      tags:
+        - payment
+      summary: Get Payments from account
+      description: Get list of last 20 payments
+      operationId: getPayments
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+        "400":
+          description: Invalid ID supplied
         "403":
           description: Operation not permitted
   "/payments/config":
@@ -4876,6 +4963,9 @@ components:
         user_id:
           type: string
           example: user_123
+        account_id:
+          type: string
+          example: 2x33
         amount:
           type: number
           format: float
@@ -4900,3 +4990,12 @@ components:
           type: string
           format: date-time
           example: '2023-01-01T12:00:00Z'
+    UserSettings:
+      type: object
+      properties:
+        emailoptout:
+          type: boolean
+          example: true
+        donotcall:
+          type: boolean
+          example: false

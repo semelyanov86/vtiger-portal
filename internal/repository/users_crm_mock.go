@@ -36,3 +36,11 @@ func (receiver UsersCrmMock) FindContactsInAccount(ctx context.Context, filter P
 func (receiver UsersCrmMock) Update(ctx context.Context, id string, user domain.User) (domain.User, error) {
 	return receiver.user, nil
 }
+
+func (receiver UsersCrmMock) RetrieveContactMap(ctx context.Context, id string) (map[string]any, error) {
+	return map[string]any{}, nil
+}
+
+func (receiver UsersCrmMock) ChangeSettingField(ctx context.Context, id string, field string, value bool) error {
+	return nil
+}

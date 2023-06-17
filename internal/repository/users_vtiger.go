@@ -94,3 +94,23 @@ func (receiver UsersVtiger) Update(ctx context.Context, id string, user domain.U
 	user = domain.ConvertMapToUser(result.Result)
 	return user, nil
 }
+
+func (receiver UsersVtiger) RetrieveContactMap(ctx context.Context, id string) (map[string]any, error) {
+	result, err := receiver.vtiger.Retrieve(ctx, id)
+	if err != nil {
+		return map[string]any{}, e.Wrap("can not retrieve user with id"+id, err)
+	}
+	return result.Result, nil
+}
+
+func (receiver UsersVtiger) ChangeSettingField(ctx context.Context, id string, field string, value bool) error {
+	input := make(map[string]any)
+	input["id"] = id
+	if value {
+		input[field] = "1"
+	} else {
+		input[field] = "0"
+	}
+	_, err := receiver.vtiger.Revise(ctx, input)
+	return err
+}

@@ -190,6 +190,20 @@ func (m *MockUsersCrm) EXPECT() *MockUsersCrmMockRecorder {
 	return m.recorder
 }
 
+// ChangeSettingField mocks base method.
+func (m *MockUsersCrm) ChangeSettingField(ctx context.Context, id, field string, value bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ChangeSettingField", ctx, id, field, value)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ChangeSettingField indicates an expected call of ChangeSettingField.
+func (mr *MockUsersCrmMockRecorder) ChangeSettingField(ctx, id, field, value interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangeSettingField", reflect.TypeOf((*MockUsersCrm)(nil).ChangeSettingField), ctx, id, field, value)
+}
+
 // ClearUserCodeField mocks base method.
 func (m *MockUsersCrm) ClearUserCodeField(ctx context.Context, id string) (domain.User, error) {
 	m.ctrl.T.Helper()
@@ -248,6 +262,21 @@ func (m *MockUsersCrm) RetrieveById(ctx context.Context, id string) (domain.User
 func (mr *MockUsersCrmMockRecorder) RetrieveById(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveById", reflect.TypeOf((*MockUsersCrm)(nil).RetrieveById), ctx, id)
+}
+
+// RetrieveContactMap mocks base method.
+func (m *MockUsersCrm) RetrieveContactMap(ctx context.Context, id string) (map[string]any, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveContactMap", ctx, id)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveContactMap indicates an expected call of RetrieveContactMap.
+func (mr *MockUsersCrmMockRecorder) RetrieveContactMap(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveContactMap", reflect.TypeOf((*MockUsersCrm)(nil).RetrieveContactMap), ctx, id)
 }
 
 // Update mocks base method.

@@ -142,7 +142,7 @@ func TestHandler_createUser(t *testing.T) {
 			tt.mockAccount(ra)
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.NewAccountService(ra, cache.NewMemoryCache()))
+			usersService := service.NewUsersService(rdb, rcrm, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.NewAccountService(ra, cache.NewMemoryCache()), config.Config{})
 
 			services := &service.Services{Users: usersService}
 			handler := Handler{services: services, config: &config.Config{}}
@@ -323,7 +323,7 @@ func TestHandler_userInfo(t *testing.T) {
 			tt.mockAccount(ra)
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.NewAccountService(ra, cache.NewMemoryCache()))
+			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.NewAccountService(ra, cache.NewMemoryCache()), config.Config{})
 
 			services := &service.Services{Users: usersService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services}
@@ -483,7 +483,7 @@ func TestHandler_resetPassword(t *testing.T) {
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
 			rc := repository.NewUsersCrmMock(repository.MockedUser)
-			usersService := service.NewUsersService(repository.NewUsersMock(), rc, &wg, service.NewMockEmailService(), companyService, rt, mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.AccountService{})
+			usersService := service.NewUsersService(repository.NewUsersMock(), rc, &wg, service.NewMockEmailService(), companyService, rt, mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.AccountService{}, config.Config{})
 
 			services := &service.Services{Users: usersService}
 			handler := Handler{services: services}
@@ -543,7 +543,7 @@ func TestHandler_allUsers(t *testing.T) {
 			rd := repository.NewUsersMock()
 
 			companyService := service.NewCompanyService(repository.NewCompanyMock(), cache.NewMemoryCache())
-			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.AccountService{})
+			usersService := service.NewUsersService(rd, rc, &wg, service.NewMockEmailService(), companyService, mock_repository.NewMockTokens(c), mock_repository.NewMockDocument(c), cache.NewMemoryCache(), service.AccountService{}, config.Config{})
 
 			services := &service.Services{Users: usersService, Context: service.MockedContextService{MockedUser: tt.userModel}}
 			handler := Handler{services: services, config: &config.Config{Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{DefaultPagination: 20}}}}

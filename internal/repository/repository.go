@@ -31,6 +31,8 @@ type UsersCrm interface {
 	ClearUserCodeField(ctx context.Context, id string) (domain.User, error)
 	FindContactsInAccount(ctx context.Context, filter PaginationQueryFilter) ([]string, error)
 	Update(ctx context.Context, id string, user domain.User) (domain.User, error)
+	RetrieveContactMap(ctx context.Context, id string) (map[string]any, error)
+	ChangeSettingField(ctx context.Context, id string, field string, value bool) error
 }
 
 type Tokens interface {

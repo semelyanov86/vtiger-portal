@@ -23,6 +23,7 @@ type Users interface {
 	EnableAndVerifyOtp(ctx context.Context, userId int64) error
 	VerifyOrInvalidateOtp(ctx context.Context, userId int64, valid bool) error
 	DisableOtp(ctx context.Context, userId int64) error
+	GetAllByAccountId(ctx context.Context, account string) ([]domain.User, error)
 }
 
 type UsersCrm interface {
@@ -147,55 +148,59 @@ var ErrWrongCrmId = errors.New("wrong crm id")
 var ErrCanNotParseCountObject = errors.New("can not parse count object")
 
 type Repositories struct {
-	Users           Users
-	UsersCrm        UsersCrm
-	Tokens          *TokensRepo
-	Managers        Managers
-	Modules         ModulesCrm
-	Company         Company
-	HelpDesk        HelpDesk
-	Comments        Comment
-	Documents       Document
-	Faqs            Faq
-	Invoice         Invoice
-	SalesOrder      SalesOrderCrm
-	ServiceContract ServiceContract
-	Currency        CurrencyCrm
-	Product         ProductCrm
-	Service         ServicesCrm
-	Projects        ProjectCrm
-	ProjectTasks    ProjectTaskCrm
-	Statistics      StatisticsCrm
-	Leads           LeadCrm
-	Account         AccountCrm
-	Search          SearchCrm
-	Payment         *PaymentsRepo
+	Users            Users
+	UsersCrm         UsersCrm
+	Tokens           *TokensRepo
+	Managers         Managers
+	Modules          ModulesCrm
+	Company          Company
+	HelpDesk         HelpDesk
+	Comments         Comment
+	Documents        Document
+	Faqs             Faq
+	Invoice          Invoice
+	SalesOrder       SalesOrderCrm
+	ServiceContract  ServiceContract
+	Currency         CurrencyCrm
+	Product          ProductCrm
+	Service          ServicesCrm
+	Projects         ProjectCrm
+	ProjectTasks     ProjectTaskCrm
+	Statistics       StatisticsCrm
+	Leads            LeadCrm
+	Account          AccountCrm
+	Search           SearchCrm
+	Payment          *PaymentsRepo
+	Notifications    *NotificationsRepo
+	NotificationsCrm NotificationsCrm
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
 	return &Repositories{
-		Users:           NewUsersRepo(db),
-		UsersCrm:        NewUsersVtiger(config, cache),
-		Tokens:          NewTokensRepo(db),
-		Managers:        NewManagersCrm(config, cache),
-		Modules:         NewModulesCrm(config, cache),
-		Company:         NewCompanyCrm(config, cache),
-		HelpDesk:        NewHelpDeskCrm(config, cache),
-		Comments:        NewCommentCrm(config, cache),
-		Documents:       NewDocumentCrm(config, cache),
-		Faqs:            NewFaqsCrm(config, cache),
-		Invoice:         NewInvoiceCrm(config, cache),
-		SalesOrder:      NewSalesOrderCrm(config, cache),
-		ServiceContract: NewServiceContractCrm(config, cache),
-		Currency:        NewCurrencyCrm(config, cache),
-		Product:         NewProductCrm(config, cache),
-		Service:         NewServicesCRM(config, cache),
-		Projects:        NewProjectCrm(config, cache),
-		ProjectTasks:    NewProjectTaskCrm(config, cache),
-		Statistics:      NewStatisticsCrm(config, cache),
-		Leads:           NewLeadCrm(config, cache),
-		Account:         NewAccountCrm(config, cache),
-		Search:          NewSearchCrm(config, cache),
-		Payment:         NewPaymentsRepo(db),
+		Users:            NewUsersRepo(db),
+		UsersCrm:         NewUsersVtiger(config, cache),
+		Tokens:           NewTokensRepo(db),
+		Managers:         NewManagersCrm(config, cache),
+		Modules:          NewModulesCrm(config, cache),
+		Company:          NewCompanyCrm(config, cache),
+		HelpDesk:         NewHelpDeskCrm(config, cache),
+		Comments:         NewCommentCrm(config, cache),
+		Documents:        NewDocumentCrm(config, cache),
+		Faqs:             NewFaqsCrm(config, cache),
+		Invoice:          NewInvoiceCrm(config, cache),
+		SalesOrder:       NewSalesOrderCrm(config, cache),
+		ServiceContract:  NewServiceContractCrm(config, cache),
+		Currency:         NewCurrencyCrm(config, cache),
+		Product:          NewProductCrm(config, cache),
+		Service:          NewServicesCRM(config, cache),
+		Projects:         NewProjectCrm(config, cache),
+		ProjectTasks:     NewProjectTaskCrm(config, cache),
+		Statistics:       NewStatisticsCrm(config, cache),
+		Leads:            NewLeadCrm(config, cache),
+		Account:          NewAccountCrm(config, cache),
+		Search:           NewSearchCrm(config, cache),
+		Payment:          NewPaymentsRepo(db),
+		Notifications:    NewNotificationsRepo(db),
+		NotificationsCrm: NewNotificationsCrm(config, cache),
 	}
 }

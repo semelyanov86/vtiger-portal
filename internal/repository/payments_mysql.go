@@ -77,8 +77,8 @@ func (r *PaymentsRepo) GetPaymentsFromAccountId(ctx context.Context, id string) 
 }
 
 func (r *PaymentsRepo) UpdatePayment(ctx context.Context, payment domain.Payment) (domain.Payment, error) {
-	var query = `UPDATE payments SET stripe_payment_id = ?, user_id = ?, amount = ?, currency = ?, payment_method = ?, status = ?, updated_at = NOW(), parent_id = ?, account_id = ?`
-	var args = []any{payment.StripePaymentId, payment.UserId, payment.Amount, payment.Currency, payment.PaymentMethod, payment.Status, payment.ParentId, payment.AccountId}
+	var query = `UPDATE payments SET stripe_payment_id = ?, user_id = ?, amount = ?, currency = ?, payment_method = ?, status = ?, updated_at = NOW(), parent_id = ?, account_id = ? WHERE id = ?`
+	var args = []any{payment.StripePaymentId, payment.UserId, payment.Amount, payment.Currency, payment.PaymentMethod, payment.Status, payment.ParentId, payment.AccountId, payment.ID}
 	_, err := r.db.ExecContext(ctx, query, args...)
 	if err != nil {
 		return payment, err

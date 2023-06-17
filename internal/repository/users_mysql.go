@@ -229,3 +229,25 @@ func (r *UsersRepo) DisableOtp(ctx context.Context, userId int64) error {
 	}
 	return nil
 }
+
+func (r *UsersRepo) GetAllByAccountId(ctx context.Context, account string) ([]domain.User, error) {
+	var query = `SELECT id, crmid, first_name, last_name, description, account_id, account_name, title, department, email, created_at, updated_at, is_active, mailingcity, mailingstreet, mailingcountry, othercountry, mailingstate, mailingpobox, othercity, otherstate, mailingzip, otherzip, otherstreet, otherpobox, image, version, imageattachmentids, phone, assigned_user_id, otp_enabled, otp_verified, otp_secret, otp_auth_url FROM users WHERE account_id = ?`
+	var users = make([]domain.User, 0)
+	rows, err := r.db.QueryContext(ctx, query, account)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var user domain.User
+		err = rows.Scan(&user.Id, &user.Crmid, &user.FirstName, &user.LastName, &user.Description, &user.AccountId, &user.AccountName, &user.Title, &user.Department, &user.Email, &user.CreatedAt, &user.UpdatedAt, &user.IsActive, &user.MailingCity, &user.MailingStreet, &user.MailingCountry, &user.OtherCountry, &user.MailingState, &user.MailingPoBox, &user.OtherCity, &user.OtherState, &user.MailingZip, &user.OtherZip, &user.OtherStreet, &user.OtherPoBox, &user.Image, &user.Version, &user.Imageattachmentids, &user.Phone, &user.AssignedUserId, &user.Otp_enabled, &user.Otp_verified, &user.Otp_secret, &user.Otp_auth_url)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return users, nil
+}

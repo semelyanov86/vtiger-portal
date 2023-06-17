@@ -69,3 +69,7 @@ func (r *UsersMock) DisableOtp(ctx context.Context, userId int64) error {
 func (r *UsersMock) RetrieveContactMap(ctx context.Context, id string) (map[string]any, error) {
 	return map[string]any{}, nil
 }
+
+func (r *UsersMock) GetAllByAccountId(ctx context.Context, account string) ([]domain.User, error) {
+	return nil, nil
+}

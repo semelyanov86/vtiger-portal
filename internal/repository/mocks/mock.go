@@ -66,6 +66,21 @@ func (mr *MockUsersMockRecorder) EnableAndVerifyOtp(ctx, userId interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableAndVerifyOtp", reflect.TypeOf((*MockUsers)(nil).EnableAndVerifyOtp), ctx, userId)
 }
 
+// GetAllByAccountId mocks base method.
+func (m *MockUsers) GetAllByAccountId(ctx context.Context, account string) ([]domain.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllByAccountId", ctx, account)
+	ret0, _ := ret[0].([]domain.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllByAccountId indicates an expected call of GetAllByAccountId.
+func (mr *MockUsersMockRecorder) GetAllByAccountId(ctx, account interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllByAccountId", reflect.TypeOf((*MockUsers)(nil).GetAllByAccountId), ctx, account)
+}
+
 // GetByEmail mocks base method.
 func (m *MockUsers) GetByEmail(ctx context.Context, email string) (domain.User, error) {
 	m.ctrl.T.Helper()

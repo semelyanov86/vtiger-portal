@@ -45,6 +45,7 @@ type Services struct {
 	Accounts         AccountService
 	Searches         Search
 	Payments         Payments
+	Notifications    Notifications
 }
 
 var ErrOperationNotPermitted = errors.New("you are not permitted to view this record")
@@ -86,6 +87,7 @@ func NewServices(repos repository.Repositories, email email.Sender, wg *sync.Wai
 		Accounts:         accountService,
 		Searches:         NewSearchService(repos.Search, cache, config),
 		Payments:         NewPaymentsService(cache, config, currencyService, *repos.Payment),
+		Notifications:    NewNotificationsService(cache, config, managersService, *repos.Notifications, repos.NotificationsCrm, repos.Users),
 	}
 }
 

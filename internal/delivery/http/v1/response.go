@@ -20,7 +20,7 @@ type AloneDataResponse[T DataResponseModules] struct {
 }
 
 type DataResponseModules interface {
-	domain.Comment | domain.HelpDesk | domain.Document | domain.Faq | domain.Invoice | domain.Company | domain.User | domain.ServiceContract | domain.Product | domain.Manager | vtiger.Module | vtiger.File | domain.Service | domain.Project | domain.ProjectTask | domain.Statistics | domain.Account | domain.Search | domain.SalesOrder | domain.PaymentConfig | PaymentIntentResponse | domain.Payment | domain.Notification
+	domain.Comment | domain.HelpDesk | domain.Document | domain.Faq | domain.Invoice | domain.Company | domain.User | domain.ServiceContract | domain.Product | domain.Manager | vtiger.Module | vtiger.File | domain.Service | domain.Project | domain.ProjectTask | domain.Statistics | domain.Account | domain.Search | domain.SalesOrder | domain.PaymentConfig | PaymentIntentResponse | domain.Payment | domain.Notification | map[string]any
 }
 
 type response struct {

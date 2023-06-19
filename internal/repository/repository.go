@@ -173,6 +173,7 @@ type Repositories struct {
 	Payment          *PaymentsRepo
 	Notifications    *NotificationsRepo
 	NotificationsCrm NotificationsCrm
+	CustomModule     CustomModuleCrm
 }
 
 func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repositories {
@@ -202,5 +203,6 @@ func NewRepositories(db *sql.DB, config config.Config, cache cache.Cache) *Repos
 		Payment:          NewPaymentsRepo(db),
 		Notifications:    NewNotificationsRepo(db),
 		NotificationsCrm: NewNotificationsCrm(config, cache),
+		CustomModule:     NewCustomModuleCrm(config, cache),
 	}
 }

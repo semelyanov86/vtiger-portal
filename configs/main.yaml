@@ -65,6 +65,11 @@ vtiger:
       - cf_915
       - cf_917
       - cf_919
+    customModules:
+      SPPayments:
+        - pay_no
+        - pay_no
+        - pay_type
 otp:
   issuer: "portal.itvolga.com"
   accountName: "info@itvolga.com"

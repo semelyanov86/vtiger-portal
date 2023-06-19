@@ -55,6 +55,8 @@ tags:
     description: Accepting stripe payments
   - name: notification
     description: Notification messages for users
+  - name: custom-modules
+    description: Endpoints to get data from custom modules
 paths:
   /users:
     post:
@@ -2818,6 +2820,78 @@ paths:
           description: Invalid ID supplied
         "404":
           description: Notification not found
+        "403":
+          description: Operation not permitted
+  "/custom-modules/{module}":
+    get:
+      tags:
+        - custom-modules
+      summary: Get All Records
+      description: Get all records from custom module
+      operationId: getCustomModuleRecords
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: module
+          in: path
+          description: Module name
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid ID supplied
+        "403":
+          description: Operation not permitted
+  "/custom-modules/{module}/{id}":
+    get:
+      tags:
+        - custom-modules
+      summary: Get Record
+      description: Get custom module record by ID
+      operationId: getCustomModuleRecordById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: module
+          in: path
+          description: Module name
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: Record ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid ID supplied
         "403":
           description: Operation not permitted
 externalDocs:

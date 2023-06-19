@@ -1,11 +1,391 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-16T15:15:10.004Z
+__export_date: 2023-06-19T17:51:39.836Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de13b323bc
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
+    modified: 1687197050437
+    created: 1687197050437
+    url: "{{ base_url }}/custom-modules/{{ module }}/{{ id }}"
+    name: Get Record
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1687197050437
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1687195039789
+    created: 1687195039789
+    name: custom-modules
+    description: Endpoints to get data from custom modules
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1687195039789
+    _type: request_group
+  - _id: wrk_66e74e4b495c4404841a78c723c211de
+    parentId: null
+    modified: 1681752522262
+    created: 1681752522262
+    name: Vtiger Customer Portal
+    description: ""
+    scope: design
+    _type: workspace
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211decc46869f
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
+    modified: 1687197074069
+    created: 1687195039711
+    url: "{{ base_url }}/custom-modules/{{ module }}"
+    name: Get All Records
+    description: >-
+      Get all records from custom module. Note, as value there will be only
+      string.
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"data": [
+      		{
+      			"amount": "1212.00000000",
+      			"analytics_code": "",
+      			"assigned_user_id": "19x1",
+      			"coracc_subacc": "",
+      			"created_user_id": "19x1",
+      			"createdtime": "2023-06-19 06:04:17",
+      			"debit": "",
+      			"description": "",
+      			"doc_no": "0",
+      			"id": "41x120",
+      			"modifiedby": "19x1",
+      			"modifiedtime": "2023-06-19 06:04:17",
+      			"pay_date": "2023-06-19",
+      			"pay_details": "",
+      			"pay_no": "1",
+      			"pay_type": "Receipt",
+      			"payer": "11x6",
+      			"related_to": "",
+      			"source": "CRM",
+      			"spstatus": "Executed",
+      			"starred": "0",
+      			"tags": "",
+      			"target_code": "",
+      			"type_payment": ""
+      		},
+      		{
+      			"amount": "85665.00000000",
+      			"analytics_code": "",
+      			"assigned_user_id": "19x1",
+      			"coracc_subacc": "",
+      			"created_user_id": "19x1",
+      			"createdtime": "2023-06-19 17:22:33",
+      			"debit": "",
+      			"description": "For services",
+      			"doc_no": "0",
+      			"id": "41x122",
+      			"modifiedby": "19x1",
+      			"modifiedtime": "2023-06-19 17:22:33",
+      			"pay_date": "2023-06-21",
+      			"pay_details": "",
+      			"pay_no": "3",
+      			"pay_type": "Receipt",
+      			"payer": "11x6",
+      			"related_to": "",
+      			"source": "CRM",
+      			"spstatus": "Executed",
+      			"starred": "0",
+      			"tags": "",
+      			"target_code": "",
+      			"type_payment": "Cash Payment"
+      		}
+      	],
+      	"count": 2,
+      	"page": 1,
+      	"size": 20
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_4ed21a690ea64711864db2524cdec477
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_1f768615072245a0b2785a90e5f09414
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1687195039711
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de14df6c4d
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de310ec4e6
+    modified: 1687068582843
+    created: 1687027470125
+    url: "{{ base_url }}/notifications/"
+    name: Get All Notifications
+    description: |-
+      Get all attached to user notifications
+
+      Example response:
+      ```json
+      {
+      	"data": [
+      		{
+      			"id": 1,
+      			"crmid": "12x34",
+      			"module": "Project",
+      			"label": "Some notification",
+      			"description": "Some description",
+      			"manager": {
+      				"id": "19x1",
+      				"user_name": "admin",
+      				"first_name": "",
+      				"last_name": "Administrator",
+      				"email2": "emelyanov86@km.ru",
+      				"title": "",
+      				"phone_work": "",
+      				"department": "",
+      				"description": "",
+      				"address_street": "",
+      				"address_city": "",
+      				"address_state": "",
+      				"address_postalcode": "",
+      				"address_country": "",
+      				"imagename": "borka.jpeg"
+      			},
+      			"is_read": false,
+      			"created_at": "0001-01-01T00:00:00Z",
+      			"updatead_at": "0001-01-01T00:00:00Z"
+      		}
+      	],
+      	"count": 1,
+      	"page": 1,
+      	"size": 100
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_f9c70d6865ce47efa5cab070f9598f18
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_7ecb0a0fe69a429ab48216dab4790760
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1687027470125
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de310ec4e6
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1687027470217
+    created: 1687027470217
+    name: notification
+    description: Notification messages for users
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1687027470217
+    _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de843e9b17
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de310ec4e6
+    modified: 1687027877290
+    created: 1687027470123
+    url: "{{ base_url }}/notifications/{{ id }}/"
+    name: Mark notification as Read
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_fe467c5d15e54169a74dbd20c8d7a2e6
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_1d7cad01dbd04150a9cd5f6ba320c23b
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1687027470123
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211ded9fe8889
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211dee86256b2
+    modified: 1687068659682
+    created: 1686979799114
+    url: "{{ base_url }}/payments/"
+    name: Get Payments from account
+    description: >-
+      Getting list of all payments, related to account. Only support last 20
+      payments, ordered by updated_at column.
+
+
+      Example response:
+
+      ```json
+
+      {
+      	"data": [
+      		{
+      			"id": 1,
+      			"stripe_payment_id": "pi_3NJsImAMEMdfzJss1QNy5p7B",
+      			"user_id": "12x11",
+      			"account_id": "11x6",
+      			"amount": 3848.1,
+      			"currency": "EUR",
+      			"payment_method": "card",
+      			"status": 1,
+      			"parent_id": "2x71",
+      			"created_at": "2023-06-15T16:32:51Z",
+      			"updated_at": "2023-06-17T08:08:01Z"
+      		},
+      		{
+      			"id": 2,
+      			"stripe_payment_id": "pi_3NJsImAMEMdfzJss1QNy5p7B",
+      			"user_id": "12x11",
+      			"account_id": "11x6",
+      			"amount": 3848.1,
+      			"currency": "EUR",
+      			"payment_method": "card",
+      			"status": 1,
+      			"parent_id": "2x71",
+      			"created_at": "2023-06-17T05:54:48Z",
+      			"updated_at": "2023-06-17T08:08:01Z"
+      		},
+      		{
+      			"id": 3,
+      			"stripe_payment_id": "pi_3NJsImAMEMdfzJss1QNy5p7B",
+      			"user_id": "12x11",
+      			"account_id": "11x6",
+      			"amount": 3848.1,
+      			"currency": "EUR",
+      			"payment_method": "card",
+      			"status": 1,
+      			"parent_id": "2x71",
+      			"created_at": "2023-06-17T05:55:08Z",
+      			"updated_at": "2023-06-17T08:08:01Z"
+      		},
+      		{
+      			"id": 4,
+      			"stripe_payment_id": "pi_3NJsImAMEMdfzJss1QNy5p7B",
+      			"user_id": "12x11",
+      			"account_id": "11x6",
+      			"amount": 3848.1,
+      			"currency": "EUR",
+      			"payment_method": "card",
+      			"status": 1,
+      			"parent_id": "2x71",
+      			"created_at": "2023-06-17T05:58:26Z",
+      			"updated_at": "2023-06-17T08:08:01Z"
+      		},
+      		{
+      			"id": 5,
+      			"stripe_payment_id": "pi_3NJsImAMEMdfzJss1QNy5p7B",
+      			"user_id": "12x11",
+      			"account_id": "11x6",
+      			"amount": 3848.1,
+      			"currency": "EUR",
+      			"payment_method": "card",
+      			"status": 1,
+      			"parent_id": "2x71",
+      			"created_at": "2023-06-17T06:08:00Z",
+      			"updated_at": "2023-06-17T08:08:01Z"
+      		}
+      	],
+      	"count": 5,
+      	"page": 1,
+      	"size": 20
+      }
+
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_b7abe68c1229452eafb9a3025bab835e
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_39d1854c1e004bab8a0d7b90da5f37fe
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686979799114
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211dee86256b2
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1686846003641
+    created: 1686846003641
+    name: payment
+    description: Accepting stripe payments
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1686846003641
+    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dedac29f22
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211dee86256b2
-    modified: 1686928495653
+    modified: 1686979799876
     created: 1686928375601
     url: "{{ base_url }}/payments/confirm"
     name: Confirm Payment
@@ -55,24 +435,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211dee86256b2
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1686846003641
-    created: 1686846003641
-    name: payment
-    description: Accepting stripe payments
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1686846003641
-    _type: request_group
-  - _id: wrk_66e74e4b495c4404841a78c723c211de
-    parentId: null
-    modified: 1681752522262
-    created: 1681752522262
-    name: Vtiger Customer Portal
-    description: ""
-    scope: design
-    _type: workspace
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de363fed5a
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211dee86256b2
     modified: 1686846066012
@@ -870,7 +1232,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de705e89df
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
-    modified: 1685983197204
+    modified: 1687068608843
     created: 1685776181238
     url: "{{ base_url }}/statistics/tasks"
     name: List of Progress Tasks
@@ -996,7 +1358,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de074600fd
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de3d18b2ea
-    modified: 1685358715076
+    modified: 1687068612635
     created: 1684649257100
     url: "{{ base_url }}/statistics"
     name: Statistics
@@ -2074,7 +2436,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de4ae3365e
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de4cf5bc59
-    modified: 1685040646057
+    modified: 1687068615752
     created: 1684494653803
     url: "{{ base_url }}/services"
     name: Get Services
@@ -2599,7 +2961,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9127d807
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
-    modified: 1686765986535
+    modified: 1687068618989
     created: 1682659418912
     url: "{{ base_url }}/invoices"
     name: Get Invoices
@@ -3144,7 +3506,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de29bcffbf
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1685287878476
+    modified: 1687068628221
     created: 1682489644953
     url: "{{ base_url }}/tickets/{{ ticketId }}/comments"
     name: Add comment
@@ -3360,7 +3722,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de46f4f7b3
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1686722419272
+    modified: 1687154588677
     created: 1682171278798
     url: "{{ base_url }}/tickets"
     name: Get Tickets
@@ -3601,7 +3963,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de01c821a8
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211defbd34a2b
-    modified: 1685253923481
+    modified: 1687197073626
     created: 1682057273135
     url: "{{ base_url }}/modules/{{ moduleName }}"
     name: Module Info
@@ -4144,7 +4506,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deaa5108ed
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de1a8565a9
-    modified: 1685872478277
+    modified: 1687068892710
     created: 1682010335863
     url: "{{ base_url }}/managers/{{ managerId }}"
     name: Find manager by ID
@@ -4335,9 +4697,112 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de038ba0b2
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1687027470900
+    created: 1686988215714
+    url: "{{ base_url }}/users/settings"
+    name: Update Settings
+    description: |-
+      Allows you to update user settings
+
+      Example request:
+      ```json
+      {
+        "emailoptout": true,
+        "donotcall": true
+      }
+      ```
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "emailoptout": true,
+          "donotcall": true
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_d09e163932ac4444b25c50c718e8c74b
+      - id: pair_051aee2283e5474e84d73b5b87f8580c
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686988215714
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    parentId: wrk_66e74e4b495c4404841a78c723c211de
+    modified: 1681752584161
+    created: 1681752584161
+    name: user
+    description: Operations about user
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1681752584161
+    _type: request_group
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de158431ae
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1687068647863
+    created: 1686986105984
+    url: "{{ base_url }}/users/settings"
+    name: Get User Settings
+    description: |-
+      Get list of user settings. Returns field key and boolean value.
+
+      Example response:
+      ```json
+      {
+      	"cf_911": false,
+      	"cf_913": false,
+      	"cf_915": false,
+      	"cf_917": false,
+      	"cf_919": false,
+      	"donotcall": false,
+      	"emailoptout": false,
+      	"notify_owner": false
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_ceb0179b9b9b401aa204663ff047be6a
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_4168b269736540ef84670526d53eee96
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1686986105984
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de98f31d73
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1686417341339
+    modified: 1687068635640
     created: 1686408551901
     url: "{{ base_url }}/users/my/account"
     name: Get account data
@@ -4420,16 +4885,6 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1681752584161
-    created: 1681752584161
-    name: user
-    description: Operations about user
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1681752584161
-    _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9fb4f5db
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
     modified: 1686408552535
@@ -5007,7 +5462,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de00ac9da2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1685875897597
+    modified: 1687068854008
     created: 1681827520782
     url: "{{ base_url }}/users/login"
     name: Login in system
@@ -5221,7 +5676,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1686928495173
+    modified: 1687197073193
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -5281,6 +5736,10 @@ resources:
           description: Routes for doing global search
         - name: payment
           description: Accepting stripe payments
+        - name: notification
+          description: Notification messages for users
+        - name: custom-modules
+          description: Endpoints to get data from custom modules
       paths:
         /users:
           post:
@@ -5560,6 +6019,73 @@ resources:
                   application/json:
                     schema:
                       $ref: "#/components/schemas/User" 
+              responses:
+                "202":
+                  description: User updated
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/User"                
+                "400":
+                  description: Invalid ID supplied
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "404":
+                  description: User or file not found
+                "403":
+                  description: Operation not permitted
+        /users/settings:
+          get:
+            tags:
+              - user
+            summary: Get User Settings
+            description: Get supported user settings fields. Currently supported only boolean. Returns - key as field name and value - boolean value of this field
+            operationId: userSettings
+            security:
+              - bearerAuth: []
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          $ref: "#/components/schemas/UserSettings"
+              "401":
+                description: anonymous access
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        error:
+                          type: string
+                          example: "Anonymous Access"
+                        field:
+                          type: string
+                          example: "crmid"
+                        message:
+                          type: string
+                          example: "Got anonymous user from token or user without crmid"
+          patch:
+              tags:
+                - user
+              summary: Update Settings
+              description: Allows user to change settings. Send key as a user name and boolean value
+              operationId: updateUserSettings
+              security:
+                - bearerAuth: []
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/UserSettings" 
               responses:
                 "202":
                   description: User updated
@@ -7789,6 +8315,26 @@ resources:
                         $ref: "#/components/schemas/ValidationResponse"
                 "403":
                   description: Operation not permitted
+        "/payments/":
+          get:
+            tags:
+              - payment
+            summary: Get Payments from account
+            description: Get list of last 20 payments
+            operationId: getPayments
+            security:
+              - bearerAuth: []
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/Payment"
+              "400":
+                description: Invalid ID supplied
+              "403":
+                description: Operation not permitted
         "/payments/config":
           get:
             tags:
@@ -7900,6 +8446,137 @@ resources:
                         $ref: "#/components/schemas/ValidationResponse"
                 "403":
                   description: Operation not permitted
+        "/notifications/":
+          get:
+            tags:
+              - notification
+            summary: Get All Notifications
+            description: Get all notifications attached to current user
+            operationId: getNotifications
+            security:
+              - bearerAuth: []
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Notification"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid ID supplied
+              "403":
+                description: Operation not permitted
+        "/notifications/{id}/":
+          delete:
+            tags:
+              - notification
+            summary: Mark notification as Read
+            description: Removes current notification from response
+            operationId: deleteNotification
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: id
+                in: path
+                description: ID of notification
+                required: true
+                schema:
+                  type: number
+            responses:
+              "204":
+                description: successful operation
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Notification not found
+              "403":
+                description: Operation not permitted
+        "/custom-modules/{module}":
+          get:
+            tags:
+              - custom-modules
+            summary: Get All Records
+            description: Get all records from custom module
+            operationId: getCustomModuleRecords
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: module
+                in: path
+                description: Module name
+                required: true
+                schema:
+                  type: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100
+              "400":
+                description: Invalid ID supplied
+              "403":
+                description: Operation not permitted
+        "/custom-modules/{module}/{id}":
+          get:
+            tags:
+              - custom-modules
+            summary: Get Record
+            description: Get custom module record by ID
+            operationId: getCustomModuleRecordById
+            security:
+              - bearerAuth: []
+            parameters:
+              - name: module
+                in: path
+                description: Module name
+                required: true
+                schema:
+                  type: string
+              - name: id
+                in: path
+                description: Record ID
+                required: true
+                schema:
+                  type: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+              "400":
+                description: Invalid ID supplied
+              "403":
+                description: Operation not permitted
       externalDocs:
         description: Find out more about Swagger
         url: http://swagger.io
@@ -10104,6 +10781,9 @@ resources:
               user_id:
                 type: string
                 example: user_123
+              account_id:
+                type: string
+                example: 2x33
               amount:
                 type: number
                 format: float
@@ -10125,6 +10805,47 @@ resources:
                 format: date-time
                 example: '2023-01-01T12:00:00Z'
               updated_at:
+                type: string
+                format: date-time
+                example: '2023-01-01T12:00:00Z'
+          UserSettings:
+            type: object
+            properties:
+              emailoptout:
+                type: boolean
+                example: true
+              donotcall:
+                type: boolean
+                example: false
+          Notification:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+                example: 1
+              crmid:
+                type: string
+                example: crm_123
+              module:
+                type: string
+                example: module_name
+              label:
+                type: string
+                example: label_name
+              description:
+                type: string
+                example: some description
+              manager:
+                $ref: "#/components/schemas/Manager"
+              is_read:
+                type: boolean
+                example: true
+              created_at:
+                type: string
+                format: date-time
+                example: '2023-01-01T12:00:00Z'
+              updatead_at:
                 type: string
                 format: date-time
                 example: '2023-01-01T12:00:00Z'

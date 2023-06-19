@@ -119,6 +119,17 @@ case "cf_543":
 ```
 3. Recompile a project by running `make build` command
 
+## Support for custom modules
+System has a support for custom modules. For example. what can you do if you have custom module in Vtiger with name SPPayments and you want to display it in customer portal? To enabme this feature, you need to insert configuration in portal.yaml:
+```yaml
+    customModules:
+      SPPayments:
+        - pay_no
+        - pay_no
+        - pay_type
+```
+Where SPPayments is the name of module. Below module name you need to insert minimum 2 fields. First field is default sorting field. Second field and more is fields, which support live search
+
 ## Command line arguments
 
 You can run executable script with following arguments:

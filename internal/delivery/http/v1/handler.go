@@ -43,6 +43,7 @@ func (h *Handler) Init(api *gin.RouterGroup) {
 		h.initSearchRoutes(v1)
 		h.initPaymentRoutes(v1)
 		h.initNotificationsRoutes(v1)
+		h.initCustomModulesRoutes(v1)
 	}
 }
 

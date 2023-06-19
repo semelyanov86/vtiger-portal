@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"strconv"
 	"time"
 )
@@ -43,4 +44,17 @@ func BytesToBool(jsonValue []byte) (bool, error) {
 	}
 
 	return unquotedJSONValue == "1", nil
+}
+
+func FindFieldByRefers(module vtiger.Module, refers string) *vtiger.ModuleField {
+	for _, field := range module.Fields {
+		if len(field.Type.RefersTo) > 0 {
+			for _, s := range field.Type.RefersTo {
+				if s == refers {
+					return &field
+				}
+			}
+		}
+	}
+	return nil
 }

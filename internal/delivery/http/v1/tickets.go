@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
-	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"net/http"
@@ -208,7 +207,7 @@ func (h *Handler) getAllTickets(c *gin.Context) {
 		return
 	}
 
-	tickets, count, err := h.services.HelpDesk.GetAll(c.Request.Context(), repository.PaginationQueryFilter{
+	tickets, count, err := h.services.HelpDesk.GetAll(c.Request.Context(), vtiger.PaginationQueryFilter{
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,

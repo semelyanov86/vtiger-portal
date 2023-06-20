@@ -30,7 +30,7 @@ type UsersCrm interface {
 	FindByEmail(ctx context.Context, email string) ([]domain.User, error)
 	RetrieveById(ctx context.Context, id string) (domain.User, error)
 	ClearUserCodeField(ctx context.Context, id string) (domain.User, error)
-	FindContactsInAccount(ctx context.Context, filter PaginationQueryFilter) ([]string, error)
+	FindContactsInAccount(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]string, error)
 	Update(ctx context.Context, id string, user domain.User) (domain.User, error)
 	RetrieveContactMap(ctx context.Context, id string) (map[string]any, error)
 	ChangeSettingField(ctx context.Context, id string, field string, value bool) error
@@ -56,7 +56,7 @@ type Company interface {
 
 type HelpDesk interface {
 	RetrieveById(ctx context.Context, id string) (domain.HelpDesk, error)
-	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.HelpDesk, error)
+	GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.HelpDesk, error)
 	Count(ctx context.Context, client string) (int, error)
 	Create(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error)
 	Update(ctx context.Context, ticket domain.HelpDesk) (domain.HelpDesk, error)
@@ -80,13 +80,13 @@ type Document interface {
 }
 
 type Faq interface {
-	GetAllFaqs(ctx context.Context, filter PaginationQueryFilter) ([]domain.Faq, error)
+	GetAllFaqs(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Faq, error)
 	Count(ctx context.Context, client string) (int, error)
 }
 
 type Invoice interface {
 	RetrieveById(ctx context.Context, id string) (domain.Invoice, error)
-	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Invoice, error)
+	GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Invoice, error)
 	Count(ctx context.Context, client string) (int, error)
 	GetFromSalesOrder(ctx context.Context, soId string) ([]domain.Invoice, error)
 }
@@ -94,7 +94,7 @@ type Invoice interface {
 type ServiceContract interface {
 	RetrieveById(ctx context.Context, id string) (domain.ServiceContract, error)
 	Count(ctx context.Context, client string, contact string) (int, error)
-	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.ServiceContract, error)
+	GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.ServiceContract, error)
 }
 
 type Currency interface {
@@ -103,25 +103,25 @@ type Currency interface {
 
 type Product interface {
 	RetrieveById(ctx context.Context, id string) (domain.Product, error)
-	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Product, error)
+	GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Product, error)
 	Count(ctx context.Context, filters map[string]any) (int, error)
 }
 
 type Service interface {
 	RetrieveById(ctx context.Context, id string) (domain.Service, error)
-	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Service, error)
+	GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Service, error)
 	Count(ctx context.Context, filters map[string]any) (int, error)
 }
 
 type Project interface {
 	RetrieveById(ctx context.Context, id string) (domain.Project, error)
-	GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Project, error)
+	GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Project, error)
 	Count(ctx context.Context, client string, contact string) (int, error)
 }
 
 type ProjectTask interface {
 	RetrieveById(ctx context.Context, id string) (domain.ProjectTask, error)
-	GetFromProject(ctx context.Context, filter PaginationQueryFilter) ([]domain.ProjectTask, error)
+	GetFromProject(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.ProjectTask, error)
 	Count(ctx context.Context, parent string) (int, error)
 	Create(ctx context.Context, task domain.ProjectTask) (domain.ProjectTask, error)
 	Revise(ctx context.Context, task map[string]any) (domain.ProjectTask, error)
@@ -129,17 +129,6 @@ type ProjectTask interface {
 
 type Account interface {
 	RetrieveById(ctx context.Context, id string) (domain.Account, error)
-}
-
-type PaginationQueryFilter struct {
-	Page     int
-	PageSize int
-	Client   string
-	Contact  string
-	Parent   string
-	Sort     string
-	Filters  map[string]any
-	Search   string
 }
 
 var ErrRecordNotFound = errors.New("record not found")

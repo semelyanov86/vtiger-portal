@@ -7,6 +7,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 type Invoices struct {
@@ -42,7 +43,7 @@ func (h Invoices) GetInvoiceById(ctx context.Context, id string) (domain.Invoice
 	return invoice, nil
 }
 
-func (h Invoices) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Invoice, int, error) {
+func (h Invoices) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Invoice, int, error) {
 	invoices, err := h.repository.GetAll(ctx, filter)
 	if err != nil {
 		return invoices, 0, err

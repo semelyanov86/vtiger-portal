@@ -30,7 +30,7 @@ func (s ServiceContractCrm) RetrieveById(ctx context.Context, id string) (domain
 	return domain.ConvertMapToServiceContract(result.Result)
 }
 
-func (s ServiceContractCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.ServiceContract, error) {
+func (s ServiceContractCrm) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.ServiceContract, error) {
 	// Calculate the offset for the given page number and page size
 	offset := (filter.Page - 1) * filter.PageSize
 	query := "SELECT * FROM ServiceContracts WHERE sc_related_to = " + filter.Client + " OR sc_related_to = " + filter.Contact + " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"

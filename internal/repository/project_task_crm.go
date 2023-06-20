@@ -7,7 +7,6 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
-	"strconv"
 )
 
 type ProjectTaskCrm struct {
@@ -30,16 +29,13 @@ func (p ProjectTaskCrm) RetrieveById(ctx context.Context, id string) (domain.Pro
 	return domain.ConvertMapToProjectTask(result.Result)
 }
 
-func (p ProjectTaskCrm) GetFromProject(ctx context.Context, filter PaginationQueryFilter) ([]domain.ProjectTask, error) {
-	// Calculate the offset for the given page number and page size
-	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT * FROM ProjectTask WHERE projectid = " + filter.Parent + " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
-	projectTasks := make([]domain.ProjectTask, 0)
-	result, err := p.vtiger.Query(ctx, query)
+func (p ProjectTaskCrm) GetFromProject(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.ProjectTask, error) {
+	items, err := p.vtiger.GetByWhereClause(ctx, filter, "projectid", filter.Parent, "ProjectTask")
 	if err != nil {
-		return projectTasks, e.Wrap("can not execute query "+query+", got error", err)
+		return nil, err
 	}
-	for _, data := range result.Result {
+	projectTasks := make([]domain.ProjectTask, 0, len(items))
+	for _, data := range items {
 		projectTask, err := domain.ConvertMapToProjectTask(data)
 		if err != nil {
 			return projectTasks, e.Wrap("can not convert map to projectTask", err)

@@ -10,6 +10,7 @@ import (
 	mock_repository "github.com/semelyanov86/vtiger-portal/internal/repository/mocks"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -121,7 +122,7 @@ func TestHandler_getAllServices(t *testing.T) {
 			name:    "Services received",
 			postfix: "?page=1&size=20",
 			mockService: func(r *mock_repository.MockService) {
-				r.EXPECT().GetAll(context.Background(), repository.PaginationQueryFilter{
+				r.EXPECT().GetAll(context.Background(), vtiger.PaginationQueryFilter{
 					Page:     1,
 					PageSize: 20,
 					Client:   "11x1",

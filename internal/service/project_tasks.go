@@ -8,6 +8,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 const CacheProjectTaskTtl = 5000
@@ -63,7 +64,7 @@ func (p ProjectTasksService) GetProjectTaskById(ctx context.Context, id string) 
 	}
 }
 
-func (p ProjectTasksService) GetAllFromProject(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.ProjectTask, int, error) {
+func (p ProjectTasksService) GetAllFromProject(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.ProjectTask, int, error) {
 	err := p.validateProjectPermissions(ctx, filter.Parent, filter.Client, filter.Contact)
 	if err != nil {
 		return nil, 0, err

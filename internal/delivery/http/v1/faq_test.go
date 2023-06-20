@@ -10,6 +10,7 @@ import (
 	mock_repository "github.com/semelyanov86/vtiger-portal/internal/repository/mocks"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -30,7 +31,7 @@ func TestHandler_getAllFaqs(t *testing.T) {
 		{
 			name: "faqs received",
 			mockFaq: func(r *mock_repository.MockFaq) {
-				r.EXPECT().GetAllFaqs(context.Background(), repository.PaginationQueryFilter{
+				r.EXPECT().GetAllFaqs(context.Background(), vtiger.PaginationQueryFilter{
 					Page:     1,
 					PageSize: 20,
 					Client:   "11x1",

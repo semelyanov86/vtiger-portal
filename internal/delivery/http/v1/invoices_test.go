@@ -10,6 +10,7 @@ import (
 	mock_repository "github.com/semelyanov86/vtiger-portal/internal/repository/mocks"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -140,7 +141,7 @@ func TestHandler_getAllInvoices(t *testing.T) {
 		{
 			name: "Invoices received",
 			mockInvoice: func(r *mock_repository.MockInvoice) {
-				r.EXPECT().GetAll(context.Background(), repository.PaginationQueryFilter{
+				r.EXPECT().GetAll(context.Background(), vtiger.PaginationQueryFilter{
 					Page:     1,
 					PageSize: 20,
 					Client:   "11x1",

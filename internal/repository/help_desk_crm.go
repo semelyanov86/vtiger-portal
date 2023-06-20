@@ -7,7 +7,6 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
-	"strconv"
 )
 
 type HelpDeskCrm struct {
@@ -30,27 +29,21 @@ func (m HelpDeskCrm) RetrieveById(ctx context.Context, id string) (domain.HelpDe
 	return domain.ConvertMapToHelpDesk(result.Result)
 }
 
-func (m HelpDeskCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.HelpDesk, error) {
-	// Calculate the offset for the given page number and page size
-	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT * FROM HelpDesk WHERE "
-	sort := filter.Sort
-	if sort == "" {
-		sort = "-ticket_no"
-	}
-	if filter.Search != "" {
-		query += "ticket_title LIKE '%" + filter.Search + "%' OR ticket_no LIKE '%" + filter.Search + "%' "
-	} else {
-		query += "parent_id = " + filter.Client + " "
-	}
-	query += GenerateOrderByClause(sort)
-	query += " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
-	tickets := make([]domain.HelpDesk, 0)
-	result, err := m.vtiger.Query(ctx, query)
+func (m HelpDeskCrm) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.HelpDesk, error) {
+	items, err := m.vtiger.GetAll(ctx, filter, vtiger.QueryFieldsProps{
+		DefaultSort:  "-ticket_no",
+		SearchFields: []string{"ticket_title", "ticket_no"},
+		ClientField:  "",
+		AccountField: "parent_id",
+		TableName:    "HelpDesk",
+	})
 	if err != nil {
-		return tickets, e.Wrap("can not execute query "+query+", got error", err)
+		return nil, err
 	}
-	for _, data := range result.Result {
+
+	tickets := make([]domain.HelpDesk, 0, len(items))
+
+	for _, data := range items {
 		ticket, err := domain.ConvertMapToHelpDesk(data)
 		if err != nil {
 			return tickets, e.Wrap("can not convert map to helpdesk", err)

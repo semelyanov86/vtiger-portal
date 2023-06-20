@@ -136,7 +136,7 @@ func TestHandler_getAllProducts(t *testing.T) {
 			name:    "Tickets received",
 			postfix: "?page=1&size=20",
 			mockProduct: func(r *mock_repository.MockProduct) {
-				r.EXPECT().GetAll(context.Background(), repository.PaginationQueryFilter{
+				r.EXPECT().GetAll(context.Background(), vtiger.PaginationQueryFilter{
 					Page:     1,
 					PageSize: 20,
 					Client:   "11x1",

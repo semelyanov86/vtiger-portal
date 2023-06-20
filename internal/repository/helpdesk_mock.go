@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 type HelpDeskMockRepository struct {
@@ -12,7 +13,7 @@ func (m HelpDeskMockRepository) RetrieveById(ctx context.Context, id string) (do
 	return domain.MockedHelpDesk, nil
 }
 
-func (m HelpDeskMockRepository) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.HelpDesk, error) {
+func (m HelpDeskMockRepository) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.HelpDesk, error) {
 	return []domain.HelpDesk{}, nil
 }
 

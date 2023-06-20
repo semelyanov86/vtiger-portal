@@ -7,6 +7,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 type Faqs struct {
@@ -25,7 +26,7 @@ func NewFaqsService(repository repository.Faq, cache cache.Cache, module Modules
 	}
 }
 
-func (f Faqs) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Faq, int, error) {
+func (f Faqs) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Faq, int, error) {
 	faqs, err := f.repository.GetAllFaqs(ctx, filter)
 	if err != nil {
 		return faqs, 0, err
@@ -35,7 +36,7 @@ func (f Faqs) GetAll(ctx context.Context, filter repository.PaginationQueryFilte
 }
 
 func (f Faqs) GetStarred(ctx context.Context) ([]domain.Faq, error) {
-	faqs, _, err := f.GetAll(ctx, repository.PaginationQueryFilter{
+	faqs, _, err := f.GetAll(ctx, vtiger.PaginationQueryFilter{
 		Page:     1,
 		PageSize: 100,
 	})

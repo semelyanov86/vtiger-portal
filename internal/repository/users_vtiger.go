@@ -7,7 +7,6 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
-	"strconv"
 )
 
 type UsersVtiger struct {
@@ -47,16 +46,14 @@ func (receiver UsersVtiger) RetrieveById(ctx context.Context, id string) (domain
 	return user, nil
 }
 
-func (receiver UsersVtiger) FindContactsInAccount(ctx context.Context, filter PaginationQueryFilter) ([]string, error) {
-	// Calculate the offset for the given page number and page size
-	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT id FROM Contacts WHERE account_id = " + filter.Client + " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
-	result, err := receiver.vtiger.Query(ctx, query)
-	ids := make([]string, 0)
+func (receiver UsersVtiger) FindContactsInAccount(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]string, error) {
+	items, err := receiver.vtiger.GetByWhereClause(ctx, filter, "account_id", filter.Client, "Contacts")
 	if err != nil {
-		return nil, e.Wrap("can not execute query "+query+", got error", err)
+		return nil, err
 	}
-	for _, data := range result.Result {
+
+	ids := make([]string, 0)
+	for _, data := range items {
 		ids = append(ids, data["id"].(string))
 	}
 	return ids, nil

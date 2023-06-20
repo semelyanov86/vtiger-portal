@@ -11,6 +11,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/service"
 	mock_service "github.com/semelyanov86/vtiger-portal/internal/service/mocks"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -38,7 +39,7 @@ func TestHandler_getProjectById(t *testing.T) {
 				r.EXPECT().RetrieveById(context.Background(), "29x54").Return(domain.MockedProject, nil)
 			},
 			mockProjectTask: func(r *mock_repository.MockProjectTask) {
-				r.EXPECT().GetFromProject(context.Background(), repository.PaginationQueryFilter{
+				r.EXPECT().GetFromProject(context.Background(), vtiger.PaginationQueryFilter{
 					Page:     1,
 					PageSize: 100,
 					Client:   "",
@@ -85,7 +86,7 @@ func TestHandler_getProjectById(t *testing.T) {
 				r.EXPECT().RetrieveById(context.Background(), "29x54").Return(project, nil)
 			},
 			mockProjectTask: func(r *mock_repository.MockProjectTask) {
-				r.EXPECT().GetFromProject(context.Background(), repository.PaginationQueryFilter{
+				r.EXPECT().GetFromProject(context.Background(), vtiger.PaginationQueryFilter{
 					Page:     1,
 					PageSize: 100,
 					Client:   "",
@@ -274,7 +275,7 @@ func TestHandler_getAllProjects(t *testing.T) {
 			name:    "Projects received",
 			postfix: "?page=1&size=20",
 			mockProject: func(r *mock_repository.MockProject) {
-				r.EXPECT().GetAll(context.Background(), repository.PaginationQueryFilter{
+				r.EXPECT().GetAll(context.Background(), vtiger.PaginationQueryFilter{
 					Page:     1,
 					PageSize: 20,
 					Client:   "11x1",

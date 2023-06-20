@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
-	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"net/http"
@@ -99,7 +98,7 @@ func (h *Handler) getAllProjects(c *gin.Context) {
 		return
 	}
 
-	projects, count, err := h.services.Projects.GetAll(c.Request.Context(), repository.PaginationQueryFilter{
+	projects, count, err := h.services.Projects.GetAll(c.Request.Context(), vtiger.PaginationQueryFilter{
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,
@@ -333,7 +332,7 @@ func (h *Handler) getAllProjectTasks(c *gin.Context) {
 		return
 	}
 
-	projectTasks, count, err := h.services.ProjectTasks.GetAllFromProject(c.Request.Context(), repository.PaginationQueryFilter{
+	projectTasks, count, err := h.services.ProjectTasks.GetAllFromProject(c.Request.Context(), vtiger.PaginationQueryFilter{
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,

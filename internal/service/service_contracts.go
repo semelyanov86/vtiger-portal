@@ -8,6 +8,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 const CacheServiceContractTtl = 5000
@@ -52,7 +53,7 @@ func (s ServiceContracts) GetServiceContractById(ctx context.Context, id string)
 	}
 }
 
-func (s ServiceContracts) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.ServiceContract, int, error) {
+func (s ServiceContracts) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.ServiceContract, int, error) {
 	serviceContracts, err := s.repository.GetAll(ctx, filter)
 	if err != nil {
 		return serviceContracts, 0, err

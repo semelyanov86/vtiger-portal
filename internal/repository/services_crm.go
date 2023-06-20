@@ -7,7 +7,6 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
-	"strconv"
 )
 
 type ServicesCrm struct {
@@ -30,17 +29,14 @@ func (s ServicesCrm) RetrieveById(ctx context.Context, id string) (domain.Servic
 	return domain.ConvertMapToService(result.Result)
 }
 
-func (s ServicesCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Service, error) {
-	// Calculate the offset for the given page number and page size
-	offset := (filter.Page - 1) * filter.PageSize
-	isActive := GetIsActiveFromFilter(filter.Filters)
-	query := "SELECT id FROM Services WHERE discontinued = " + isActive + " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
-	services := make([]domain.Service, 0)
-	result, err := s.vtiger.Query(ctx, query)
+func (s ServicesCrm) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Service, error) {
+	items, err := s.vtiger.GetByWhereClause(ctx, filter, "discontinued", GetIsActiveFromFilter(filter.Filters), "Services")
 	if err != nil {
-		return services, e.Wrap("can not execute query "+query+", got error: "+result.Error.Message, err)
+		return nil, err
 	}
-	for _, data := range result.Result {
+	services := make([]domain.Service, 0, len(items))
+
+	for _, data := range items {
 		product, err := domain.ConvertMapToService(data)
 		if err != nil {
 			return services, e.Wrap("can not convert map to product", err)

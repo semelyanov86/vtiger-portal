@@ -7,7 +7,6 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
-	"strconv"
 )
 
 type InvoiceCrm struct {
@@ -30,30 +29,21 @@ func (m InvoiceCrm) RetrieveById(ctx context.Context, id string) (domain.Invoice
 	return domain.ConvertMapToInvoice(result.Result)
 }
 
-func (m InvoiceCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Invoice, error) {
-	// Calculate the offset for the given page number and page size
-	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT * FROM Invoice WHERE "
-
-	sort := filter.Sort
-	if sort == "" {
-		sort = "-ticket_no"
-	}
-
-	if filter.Search != "" {
-		query += " invoice_no LIKE '%" + filter.Search + "%' OR subject LIKE '%" + filter.Search + "%' OR invoicestatus LIKE '%" + filter.Search + "%' "
-	} else {
-		query += "account_id = " + filter.Client + " "
-	}
-	query += GenerateOrderByClause(sort)
-	query += " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
-
-	invoices := make([]domain.Invoice, 0)
-	result, err := m.vtiger.Query(ctx, query)
+func (m InvoiceCrm) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Invoice, error) {
+	items, err := m.vtiger.GetAll(ctx, filter, vtiger.QueryFieldsProps{
+		DefaultSort:  "-invoice_no",
+		SearchFields: []string{"subject", "invoice_no", "invoicestatus"},
+		ClientField:  "",
+		AccountField: "account_id",
+		TableName:    "Invoice",
+	})
 	if err != nil {
-		return invoices, e.Wrap("can not execute query "+query+", got error", err)
+		return nil, err
 	}
-	for _, data := range result.Result {
+
+	invoices := make([]domain.Invoice, 0, len(items))
+
+	for _, data := range items {
 		invoice, err := domain.ConvertMapToInvoice(data)
 		if err != nil {
 			return invoices, e.Wrap("can not convert map to invoice", err)

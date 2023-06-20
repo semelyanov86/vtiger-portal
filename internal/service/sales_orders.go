@@ -7,6 +7,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 type SalesOrders struct {
@@ -49,7 +50,7 @@ func (h SalesOrders) GetSalesOrderById(ctx context.Context, id string) (domain.S
 	return salesOrder, nil
 }
 
-func (h SalesOrders) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.SalesOrder, int, error) {
+func (h SalesOrders) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.SalesOrder, int, error) {
 	salesOrders, err := h.repository.GetAll(ctx, filter)
 	if err != nil {
 		return salesOrders, 0, err

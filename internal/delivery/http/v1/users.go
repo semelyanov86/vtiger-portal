@@ -235,7 +235,7 @@ func (h Handler) usersFromAccount(c *gin.Context) {
 		newResponse(c, http.StatusBadRequest, "Wrong token or page size")
 		return
 	}
-	users, count, err := h.services.Users.FindContactsFromAccount(c.Request.Context(), repository.PaginationQueryFilter{
+	users, count, err := h.services.Users.FindContactsFromAccount(c.Request.Context(), vtiger.PaginationQueryFilter{
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,

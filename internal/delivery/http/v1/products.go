@@ -3,7 +3,7 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
-	"github.com/semelyanov86/vtiger-portal/internal/repository"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"net/http"
 	"strconv"
 )
@@ -56,7 +56,7 @@ func (h *Handler) getAllProducts(c *gin.Context) {
 		discontinued = tmpDiscontinued
 	}
 
-	products, count, err := h.services.Products.GetAll(c.Request.Context(), repository.PaginationQueryFilter{
+	products, count, err := h.services.Products.GetAll(c.Request.Context(), vtiger.PaginationQueryFilter{
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,

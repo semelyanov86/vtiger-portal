@@ -32,43 +32,30 @@ func NewCustomModuleCrm(config config.Config, cache cache.Cache) CustomModuleCrm
 	}
 }
 
-func (m CustomModuleCrm) GetAll(ctx context.Context, filter PaginationQueryFilter, custom vtiger.Module, fields []string) ([]map[string]any, error) {
-	// Calculate the offset for the given page number and page size
-	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT * FROM " + custom.Name + " WHERE "
-	sort := filter.Sort
+func (m CustomModuleCrm) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter, custom vtiger.Module, fields []string) ([]map[string]any, error) {
+	fieldProps := vtiger.QueryFieldsProps{
+		DefaultSort:  "id",
+		SearchFields: fields,
+		ClientField:  "",
+		AccountField: "",
+		TableName:    custom.Name,
+	}
 	accountField := m.findAccountField(custom)
 	contactField := m.findContactField(custom)
-	if filter.Search != "" {
-		for i, field := range fields {
-			if i == 0 {
-				continue
-			}
-			query += field + " LIKE '%" + filter.Search + "%' OR"
-		}
-		query = strings.Trim(query, "OR")
-		query += " "
-	} else {
-		if accountField != nil {
-			query += accountField.Name + " = " + filter.Client + " OR "
-		}
-		if contactField != nil {
-			query += contactField.Name + " = " + filter.Client + " "
-		}
-		query = strings.Trim(query, "OR")
-		query += " "
+	if accountField != nil {
+		fieldProps.AccountField = accountField.Name
 	}
-	query += GenerateOrderByClause(sort)
-	query += " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
+	if contactField != nil {
+		fieldProps.ClientField = contactField.Name
+	}
 
-	records := make([]map[string]any, 0)
-
-	result, err := m.vtiger.Query(ctx, query)
+	items, err := m.vtiger.GetAll(ctx, filter, fieldProps)
 	if err != nil {
-		return nil, e.Wrap("can not execute query "+query+", got error", err)
+		return nil, err
 	}
 	fieldsInfo := m.getFieldTypesInfo(custom)
-	for _, data := range result.Result {
+	records := make([]map[string]any, 0)
+	for _, data := range items {
 		data = m.convertData(ctx, fieldsInfo, data, false)
 		if accountField != nil && data[accountField.Name].(ReferenceField).Id == filter.Client {
 			records = append(records, data)

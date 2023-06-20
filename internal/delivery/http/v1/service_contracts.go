@@ -3,7 +3,7 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
-	"github.com/semelyanov86/vtiger-portal/internal/repository"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"net/http"
 )
 
@@ -48,7 +48,7 @@ func (h *Handler) getAllServiceContracts(c *gin.Context) {
 		return
 	}
 
-	serviceContracts, count, err := h.services.ServiceContracts.GetAll(c.Request.Context(), repository.PaginationQueryFilter{
+	serviceContracts, count, err := h.services.ServiceContracts.GetAll(c.Request.Context(), vtiger.PaginationQueryFilter{
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,

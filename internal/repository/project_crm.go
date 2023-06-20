@@ -7,7 +7,6 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
-	"strconv"
 )
 
 type ProjectCrm struct {
@@ -30,30 +29,22 @@ func (p ProjectCrm) RetrieveById(ctx context.Context, id string) (domain.Project
 	return domain.ConvertMapToProject(result.Result)
 }
 
-func (p ProjectCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Project, error) {
-	// Calculate the offset for the given page number and page size
-	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT * FROM Project WHERE "
-	if filter.Search == "" {
-		query += "linktoaccountscontacts = " + filter.Client + " OR linktoaccountscontacts = " + filter.Contact + " "
-	}
+func (p ProjectCrm) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Project, error) {
+	items, err := p.vtiger.GetAll(ctx, filter, vtiger.QueryFieldsProps{
+		DefaultSort:  "-project_no",
+		SearchFields: []string{"projectname", "project_no", "projecttype"},
+		ClientField:  "linktoaccountscontacts",
+		AccountField: "linktoaccountscontacts",
+		TableName:    "Project",
+	})
 
-	sort := filter.Sort
-	if sort == "" {
-		sort = "-ticket_no"
-	}
-	if filter.Search != "" {
-		query += " project_no LIKE '%" + filter.Search + "%' OR projectname LIKE '%" + filter.Search + "%' OR projecttype LIKE '%" + filter.Search + "%' "
-	}
-	query += GenerateOrderByClause(sort)
-	query += " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
-
-	projects := make([]domain.Project, 0)
-	result, err := p.vtiger.Query(ctx, query)
 	if err != nil {
-		return projects, e.Wrap("can not execute query "+query+", got error", err)
+		return nil, err
 	}
-	for _, data := range result.Result {
+
+	projects := make([]domain.Project, 0, len(items))
+
+	for _, data := range items {
 		project, err := domain.ConvertMapToProject(data)
 		if err != nil {
 			return projects, e.Wrap("can not convert map to project", err)

@@ -8,6 +8,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 const CacheServicesTtl = 5000
@@ -30,7 +31,7 @@ func NewServicesService(repository repository.Service, cache cache.Cache, curren
 	}
 }
 
-func (s ServicesService) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Service, int, error) {
+func (s ServicesService) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Service, int, error) {
 	services, err := s.repository.GetAll(ctx, filter)
 	if err != nil {
 		return services, 0, err

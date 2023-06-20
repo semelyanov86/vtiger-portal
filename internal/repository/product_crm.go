@@ -30,7 +30,7 @@ func (p ProductCrm) RetrieveById(ctx context.Context, id string) (domain.Product
 	return domain.ConvertMapToProduct(result.Result)
 }
 
-func (p ProductCrm) GetAll(ctx context.Context, filter PaginationQueryFilter) ([]domain.Product, error) {
+func (p ProductCrm) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Product, error) {
 	// Calculate the offset for the given page number and page size
 	offset := (filter.Page - 1) * filter.PageSize
 	isActive := GetIsActiveFromFilter(filter.Filters)

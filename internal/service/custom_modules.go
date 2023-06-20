@@ -8,6 +8,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 const CacheCustomModuleTtl = 500
@@ -34,7 +35,7 @@ func NewCustomModuleService(repository repository.CustomModuleCrm, cache cache.C
 	}
 }
 
-func (c CustomModule) GetAll(ctx context.Context, filter repository.PaginationQueryFilter, moduleName string) ([]map[string]any, int, error) {
+func (c CustomModule) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter, moduleName string) ([]map[string]any, int, error) {
 	module, err := c.module.Describe(ctx, moduleName)
 	if err != nil {
 		return nil, 0, e.Wrap("can not describe module "+moduleName, err)

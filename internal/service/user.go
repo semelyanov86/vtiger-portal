@@ -9,6 +9,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/logger"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"strconv"
 	"sync"
 	"time"
@@ -285,7 +286,7 @@ func (s UsersService) GetUserById(ctx context.Context, id int64) (*domain.User, 
 	return &user, nil
 }
 
-func (s UsersService) FindContactsFromAccount(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.User, int, error) {
+func (s UsersService) FindContactsFromAccount(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.User, int, error) {
 	users := make([]domain.User, 0)
 	err := GetFromCache[*[]domain.User]("account-"+filter.Client, &users, s.cache)
 	if err == nil {

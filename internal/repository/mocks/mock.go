@@ -11,7 +11,6 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	domain "github.com/semelyanov86/vtiger-portal/internal/domain"
-	repository "github.com/semelyanov86/vtiger-portal/internal/repository"
 	vtiger "github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
@@ -250,7 +249,7 @@ func (mr *MockUsersCrmMockRecorder) FindByEmail(ctx, email interface{}) *gomock.
 }
 
 // FindContactsInAccount mocks base method.
-func (m *MockUsersCrm) FindContactsInAccount(ctx context.Context, filter repository.PaginationQueryFilter) ([]string, error) {
+func (m *MockUsersCrm) FindContactsInAccount(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindContactsInAccount", ctx, filter)
 	ret0, _ := ret[0].([]string)
@@ -543,7 +542,7 @@ func (mr *MockHelpDeskMockRecorder) Create(ctx, ticket interface{}) *gomock.Call
 }
 
 // GetAll mocks base method.
-func (m *MockHelpDesk) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.HelpDesk, error) {
+func (m *MockHelpDesk) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.HelpDesk, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
 	ret0, _ := ret[0].([]domain.HelpDesk)
@@ -814,7 +813,7 @@ func (mr *MockFaqMockRecorder) Count(ctx, client interface{}) *gomock.Call {
 }
 
 // GetAllFaqs mocks base method.
-func (m *MockFaq) GetAllFaqs(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Faq, error) {
+func (m *MockFaq) GetAllFaqs(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Faq, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAllFaqs", ctx, filter)
 	ret0, _ := ret[0].([]domain.Faq)
@@ -867,7 +866,7 @@ func (mr *MockInvoiceMockRecorder) Count(ctx, client interface{}) *gomock.Call {
 }
 
 // GetAll mocks base method.
-func (m *MockInvoice) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Invoice, error) {
+func (m *MockInvoice) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Invoice, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
 	ret0, _ := ret[0].([]domain.Invoice)
@@ -950,7 +949,7 @@ func (mr *MockServiceContractMockRecorder) Count(ctx, client, contact interface{
 }
 
 // GetAll mocks base method.
-func (m *MockServiceContract) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.ServiceContract, error) {
+func (m *MockServiceContract) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.ServiceContract, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
 	ret0, _ := ret[0].([]domain.ServiceContract)
@@ -1056,7 +1055,7 @@ func (mr *MockProductMockRecorder) Count(ctx, filters interface{}) *gomock.Call 
 }
 
 // GetAll mocks base method.
-func (m *MockProduct) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Product, error) {
+func (m *MockProduct) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Product, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
 	ret0, _ := ret[0].([]domain.Product)
@@ -1124,7 +1123,7 @@ func (mr *MockServiceMockRecorder) Count(ctx, filters interface{}) *gomock.Call 
 }
 
 // GetAll mocks base method.
-func (m *MockService) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Service, error) {
+func (m *MockService) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Service, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
 	ret0, _ := ret[0].([]domain.Service)
@@ -1192,7 +1191,7 @@ func (mr *MockProjectMockRecorder) Count(ctx, client, contact interface{}) *gomo
 }
 
 // GetAll mocks base method.
-func (m *MockProject) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Project, error) {
+func (m *MockProject) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Project, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll", ctx, filter)
 	ret0, _ := ret[0].([]domain.Project)
@@ -1275,7 +1274,7 @@ func (mr *MockProjectTaskMockRecorder) Create(ctx, task interface{}) *gomock.Cal
 }
 
 // GetFromProject mocks base method.
-func (m *MockProjectTask) GetFromProject(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.ProjectTask, error) {
+func (m *MockProjectTask) GetFromProject(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.ProjectTask, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetFromProject", ctx, filter)
 	ret0, _ := ret[0].([]domain.ProjectTask)

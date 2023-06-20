@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 type UsersCrmMock struct {
@@ -29,7 +30,7 @@ func (receiver UsersCrmMock) ClearUserCodeField(ctx context.Context, id string) 
 	return receiver.user, nil
 }
 
-func (receiver UsersCrmMock) FindContactsInAccount(ctx context.Context, filter PaginationQueryFilter) ([]string, error) {
+func (receiver UsersCrmMock) FindContactsInAccount(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]string, error) {
 	return []string{"17x16"}, nil
 }
 

@@ -8,6 +8,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 )
 
 const CacheHelpDeskTtl = 500
@@ -93,7 +94,7 @@ func (h HelpDesk) GetRelatedDocuments(ctx context.Context, id string, companyId 
 	return h.document.GetRelated(ctx, id)
 }
 
-func (h HelpDesk) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.HelpDesk, int, error) {
+func (h HelpDesk) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.HelpDesk, int, error) {
 	tickets, err := h.repository.GetAll(ctx, filter)
 	if err != nil {
 		return tickets, 0, err

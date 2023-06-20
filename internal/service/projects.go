@@ -8,6 +8,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"strconv"
 )
 
@@ -67,7 +68,7 @@ func (p ProjectsService) GetProjectById(ctx context.Context, id string, calcStat
 
 func (p ProjectsService) calcProjectStatistics(ctx context.Context, id string) (domain.CurrentProjectStatistics, error) {
 	var stat domain.CurrentProjectStatistics
-	tasks, err := p.taskRepository.GetFromProject(ctx, repository.PaginationQueryFilter{
+	tasks, err := p.taskRepository.GetFromProject(ctx, vtiger.PaginationQueryFilter{
 		Page:     1,
 		PageSize: 100,
 		Client:   "",
@@ -114,7 +115,7 @@ func (p ProjectsService) calcProjectStatistics(ctx context.Context, id string) (
 	return stat, nil
 }
 
-func (p ProjectsService) GetAll(ctx context.Context, filter repository.PaginationQueryFilter) ([]domain.Project, int, error) {
+func (p ProjectsService) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.Project, int, error) {
 	projects, err := p.repository.GetAll(ctx, filter)
 	if err != nil {
 		return projects, 0, err

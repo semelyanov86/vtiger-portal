@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
+	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"net/http"
 )
 
@@ -30,7 +31,7 @@ func (h *Handler) getAllEntities(c *gin.Context) {
 	}
 	sortString := c.DefaultQuery("sort", "")
 
-	records, count, err := h.services.CustomModules.GetAll(c.Request.Context(), repository.PaginationQueryFilter{
+	records, count, err := h.services.CustomModules.GetAll(c.Request.Context(), vtiger.PaginationQueryFilter{
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,

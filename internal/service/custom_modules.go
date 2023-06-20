@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
+	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
@@ -51,4 +52,16 @@ func (c CustomModule) GetAll(ctx context.Context, filter repository.PaginationQu
 	}
 	count, err := c.repository.Count(ctx, filter.Client, filter.Contact, module)
 	return entities, count, err
+}
+
+func (c CustomModule) GetById(ctx context.Context, moduleName string, id string, user domain.User) (map[string]any, error) {
+	module, err := c.module.Describe(ctx, moduleName)
+	if err != nil {
+		return nil, e.Wrap("can not describe module "+moduleName, err)
+	}
+	_, ok := c.config.Vtiger.Business.CustomModules[moduleName]
+	if !ok {
+		return nil, ErrModuleNotSupported
+	}
+	return c.repository.GetById(ctx, id, module, user)
 }

@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"net/http"
@@ -10,6 +11,7 @@ func (h *Handler) initCustomModulesRoutes(api *gin.RouterGroup) {
 	tickets := api.Group("/custom-modules")
 	{
 		tickets.GET("/:module", h.getAllEntities)
+		tickets.GET("/:module/:id", h.getEntityById)
 	}
 }
 
@@ -46,4 +48,35 @@ func (h *Handler) getAllEntities(c *gin.Context) {
 		Page:  page,
 		Size:  size,
 	})
+}
+
+func (h *Handler) getEntityById(c *gin.Context) {
+	userModel := h.getValidatedUser(c)
+	if userModel == nil {
+		newResponse(c, http.StatusBadRequest, "Wrong auth user")
+		return
+	}
+	moduleName := c.Param("module")
+	if moduleName == "" {
+		newResponse(c, http.StatusBadRequest, "module is empty")
+		return
+	}
+	id := h.getAndValidateId(c, "id")
+	if id == "" {
+		notPermittedResponse(c)
+		return
+	}
+	result, err := h.services.CustomModules.GetById(c.Request.Context(), moduleName, id, *userModel)
+	if errors.Is(repository.ErrRecordNotFound, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	res := AloneDataResponse[map[string]any]{
+		Data: result,
+	}
+	c.JSON(http.StatusOK, res)
 }

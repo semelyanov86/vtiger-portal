@@ -70,6 +70,10 @@ vtiger:
         - pay_no
         - pay_no
         - pay_type
+      Assets:
+        - asset_no
+        - asset_no
+        - assetname
 otp:
   issuer: "portal.itvolga.com"
   accountName: "info@itvolga.com"

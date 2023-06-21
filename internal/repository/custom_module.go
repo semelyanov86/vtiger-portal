@@ -40,8 +40,8 @@ func (m CustomModuleCrm) GetAll(ctx context.Context, filter vtiger.PaginationQue
 		AccountField: "",
 		TableName:    custom.Name,
 	}
-	accountField := m.findAccountField(custom)
-	contactField := m.findContactField(custom)
+	accountField := m.FindAccountField(custom)
+	contactField := m.FindContactField(custom)
 	if accountField != nil {
 		fieldProps.AccountField = accountField.Name
 	}
@@ -78,8 +78,8 @@ func (m CustomModuleCrm) GetById(ctx context.Context, id string, custom vtiger.M
 	}
 	fieldsInfo := m.getFieldTypesInfo(custom)
 	result := m.convertData(ctx, fieldsInfo, entity.Result, true)
-	accountField := m.findAccountField(custom)
-	contactField := m.findContactField(custom)
+	accountField := m.FindAccountField(custom)
+	contactField := m.FindContactField(custom)
 	if accountField != nil && result[accountField.Name].(ReferenceField).Id == user.AccountId {
 		return result, nil
 	}
@@ -90,8 +90,8 @@ func (m CustomModuleCrm) GetById(ctx context.Context, id string, custom vtiger.M
 }
 
 func (m CustomModuleCrm) Count(ctx context.Context, client string, contact string, custom vtiger.Module) (int, error) {
-	accountField := m.findAccountField(custom)
-	contactField := m.findContactField(custom)
+	accountField := m.FindAccountField(custom)
+	contactField := m.FindContactField(custom)
 	body := make(map[string]string)
 	if accountField != nil && client != "" {
 		body[accountField.Name] = client
@@ -103,8 +103,8 @@ func (m CustomModuleCrm) Count(ctx context.Context, client string, contact strin
 }
 
 func (m CustomModuleCrm) Create(ctx context.Context, entity map[string]any, module vtiger.Module, user domain.User) (map[string]any, error) {
-	accountField := m.findAccountField(module)
-	contactField := m.findContactField(module)
+	accountField := m.FindAccountField(module)
+	contactField := m.FindContactField(module)
 	if accountField != nil {
 		entity[accountField.Name] = user.AccountId
 	}
@@ -118,11 +118,27 @@ func (m CustomModuleCrm) Create(ctx context.Context, entity map[string]any, modu
 	return result.Result, nil
 }
 
-func (m CustomModuleCrm) findAccountField(module vtiger.Module) *vtiger.ModuleField {
+func (m CustomModuleCrm) Update(ctx context.Context, entity map[string]any) (map[string]any, error) {
+	result, err := m.vtiger.Update(ctx, entity)
+	if err != nil {
+		return nil, e.Wrap("can send update map to vtiger", err)
+	}
+	return result.Result, nil
+}
+
+func (m CustomModuleCrm) Revise(ctx context.Context, entity map[string]any) (map[string]any, error) {
+	result, err := m.vtiger.Revise(ctx, entity)
+	if err != nil {
+		return nil, e.Wrap("can send update map to vtiger", err)
+	}
+	return result.Result, nil
+}
+
+func (m CustomModuleCrm) FindAccountField(module vtiger.Module) *vtiger.ModuleField {
 	return utils.FindFieldByRefers(module, "Accounts")
 }
 
-func (m CustomModuleCrm) findContactField(module vtiger.Module) *vtiger.ModuleField {
+func (m CustomModuleCrm) FindContactField(module vtiger.Module) *vtiger.ModuleField {
 	return utils.FindFieldByRefers(module, "Contacts")
 }
 

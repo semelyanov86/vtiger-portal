@@ -74,6 +74,11 @@ func (c CustomModule) CreateEntity(ctx context.Context, input map[string]any, us
 	if err != nil {
 		return nil, e.Wrap("can not describe module "+module, err)
 	}
+	_, ok := c.config.Vtiger.Business.CustomModules[module]
+	if !ok {
+		return nil, ErrModuleNotSupported
+	}
+
 	input["assigned_user_id"] = c.config.Vtiger.Business.DefaultUser
 	input["from_portal"] = "1"
 	input["source"] = "PORTAL"
@@ -84,6 +89,57 @@ func (c CustomModule) CreateEntity(ctx context.Context, input map[string]any, us
 	}
 
 	return c.repository.Create(ctx, input, custom, user)
+}
+
+func (c CustomModule) UpdateEntity(ctx context.Context, input map[string]any, id string, user domain.User, module string) (map[string]any, error) {
+	custom, err := c.module.Describe(ctx, module)
+	if err != nil {
+		return nil, e.Wrap("can not describe module "+module, err)
+	}
+	_, ok := c.config.Vtiger.Business.CustomModules[module]
+	if !ok {
+		return nil, ErrModuleNotSupported
+	}
+
+	entity, err := c.GetById(ctx, module, id, user)
+	if err != nil {
+		return entity, e.Wrap("can not retrieve entity during update", err)
+	}
+
+	for field, value := range input {
+		if value != "" {
+			entity[field] = value
+		}
+	}
+
+	err = c.validateInputFields(entity, custom)
+	if err != nil {
+		return entity, err
+	}
+	entity, err = c.repository.Update(ctx, entity)
+	if err != nil {
+		return entity, err
+	}
+
+	return entity, err
+}
+
+func (c CustomModule) Revise(ctx context.Context, input map[string]any, id string, user domain.User, module string) (map[string]any, error) {
+	ticket, err := c.GetById(ctx, module, id, user)
+	if err != nil {
+		return ticket, e.Wrap("can not retrieve helpdesk during update", err)
+	}
+	_, ok := c.config.Vtiger.Business.CustomModules[module]
+	if !ok {
+		return nil, ErrModuleNotSupported
+	}
+	input["id"] = id
+
+	ticket, err = c.repository.Revise(ctx, input)
+	if err != nil {
+		return ticket, err
+	}
+	return ticket, err
 }
 
 func (c CustomModule) validateInputFields(input map[string]any, module vtiger.Module) error {
@@ -115,7 +171,8 @@ func (c CustomModule) validateInputFields(input map[string]any, module vtiger.Mo
 			if err != nil {
 				return err
 			}
-			if !re.MatchString(input[field.Name].(string)) {
+
+			if input[field.Name].(repository.ReferenceField).Id != "" && !re.MatchString(input[field.Name].(repository.ReferenceField).Id) {
 				return e.Wrap("Wrong reference value for field "+field.Label, ErrValidation)
 			}
 		}

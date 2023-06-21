@@ -3,7 +3,9 @@ package v1
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
+	"github.com/semelyanov86/vtiger-portal/internal/service"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"net/http"
 )
@@ -13,6 +15,7 @@ func (h *Handler) initCustomModulesRoutes(api *gin.RouterGroup) {
 	{
 		tickets.GET("/:module", h.getAllEntities)
 		tickets.GET("/:module/:id", h.getEntityById)
+		tickets.POST("/:module", h.createCustomModule)
 	}
 }
 
@@ -80,4 +83,35 @@ func (h *Handler) getEntityById(c *gin.Context) {
 		Data: result,
 	}
 	c.JSON(http.StatusOK, res)
+}
+
+func (h *Handler) createCustomModule(c *gin.Context) {
+	moduleName := c.Param("module")
+	if moduleName == "" {
+		newResponse(c, http.StatusBadRequest, "module is empty")
+		return
+	}
+
+	var inp map[string]any
+	if err := c.BindJSON(&inp); err != nil {
+		for _, fieldErr := range err.(validator.ValidationErrors) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": fieldErr.Field(), "message": fieldErr.Error()})
+			return // exit on first error
+		}
+	}
+	userModel := h.getValidatedUser(c)
+	if userModel == nil {
+		return
+	}
+
+	entity, err := h.services.CustomModules.CreateEntity(c.Request.Context(), inp, *userModel, moduleName)
+	if errors.Is(service.ErrValidation, err) {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "root", "message": err.Error()})
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusCreated, entity)
 }

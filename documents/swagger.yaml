@@ -2838,6 +2838,36 @@ paths:
           required: true
           schema:
             type: string
+        - name: page
+          in: query
+          description: The page number to retrieve (default is 1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          description: The number of items per page (default is 20)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: sort
+          in: query
+          description: Field, which accepts order by algorithm. Minus sign at the beginning means desc order.
+          required: false
+          schema:
+            type: string
+            example: -pay_no
+        - name: search
+          in: query
+          description: Search with LIKE filter in fields which set in config
+          required: false
+          schema:
+            type: string
+            example: TT3
       responses:
         "200":
           description: successful operation
@@ -2859,6 +2889,41 @@ paths:
                     example: 100
         "400":
           description: Invalid ID supplied
+        "403":
+          description: Operation not permitted
+    post:
+      tags:
+        - custom-modules
+      summary: Create new entity
+      description: Create new custom module
+      operationId: createEntity
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: module
+          in: path
+          description: Module name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "201":
+          description: Ticket created
+          content:
+            application/json:
+              schema:
+                type: object
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
         "403":
           description: Operation not permitted
   "/custom-modules/{module}/{id}":

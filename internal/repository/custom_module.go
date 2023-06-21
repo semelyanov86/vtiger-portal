@@ -97,9 +97,25 @@ func (m CustomModuleCrm) Count(ctx context.Context, client string, contact strin
 		body[accountField.Name] = client
 	}
 	if contactField != nil && contact != "" {
-		body[contactField.Name] = client
+		body[contactField.Name] = contact
 	}
 	return m.vtiger.Count(ctx, custom.Name, body)
+}
+
+func (m CustomModuleCrm) Create(ctx context.Context, entity map[string]any, module vtiger.Module, user domain.User) (map[string]any, error) {
+	accountField := m.findAccountField(module)
+	contactField := m.findContactField(module)
+	if accountField != nil {
+		entity[accountField.Name] = user.AccountId
+	}
+	if contactField != nil {
+		entity[contactField.Name] = user.Crmid
+	}
+	result, err := m.vtiger.Create(ctx, module.Name, entity)
+	if err != nil {
+		return nil, e.Wrap("can not create entity", err)
+	}
+	return result.Result, nil
 }
 
 func (m CustomModuleCrm) findAccountField(module vtiger.Module) *vtiger.ModuleField {

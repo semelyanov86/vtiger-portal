@@ -61,7 +61,7 @@ func (m CustomModuleCrm) GetAll(ctx context.Context, filter vtiger.PaginationQue
 			records = append(records, data)
 			continue
 		}
-		if contactField != nil && data[contactField.Name].(ReferenceField).Id == filter.Client {
+		if contactField != nil && data[contactField.Name].(ReferenceField).Id == filter.Contact {
 			records = append(records, data)
 		}
 	}

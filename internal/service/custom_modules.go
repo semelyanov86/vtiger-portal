@@ -10,6 +10,7 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"regexp"
+	"strconv"
 	"time"
 )
 
@@ -181,8 +182,38 @@ func (c CustomModule) validateInputFields(input map[string]any, module vtiger.Mo
 			case int, int32, int64:
 				// Value is a valid integer, continue checking the next value
 				continue
+			case string:
+				if _, err := strconv.Atoi(input[field.Name].(string)); err != nil {
+					return e.Wrap("Field is not integer "+field.Label, ErrValidation)
+				}
 			default:
 				return e.Wrap("Field is not integer "+field.Label, ErrValidation)
+			}
+		}
+		if field.Type.Name == "double" && input[field.Name] != "" && input[field.Name] != nil {
+			switch input[field.Name].(type) {
+			case float32, float64:
+				// Value is a valid integer, continue checking the next value
+				continue
+			case string:
+				if _, err := strconv.ParseFloat(input[field.Name].(string), 64); err != nil {
+					return e.Wrap("Field is not double "+field.Label, ErrValidation)
+				}
+			default:
+				return e.Wrap("Field is not double "+field.Label, ErrValidation)
+			}
+		}
+		if field.Type.Name == "currency" && input[field.Name] != "" && input[field.Name] != nil {
+			switch input[field.Name].(type) {
+			case float32, float64:
+				// Value is a valid integer, continue checking the next value
+				continue
+			case string:
+				if _, err := strconv.ParseFloat(input[field.Name].(string), 64); err != nil {
+					return e.Wrap("Field is not currency "+field.Label, ErrValidation)
+				}
+			default:
+				return e.Wrap("Field is not currency "+field.Label, ErrValidation)
 			}
 		}
 	}

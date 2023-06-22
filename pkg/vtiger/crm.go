@@ -44,7 +44,7 @@ func (c VtigerConnector) GetAll(ctx context.Context, filter PaginationQueryFilte
 			query += fields.AccountField + " = " + filter.Client + " "
 		}
 		if fields.ClientField != "" {
-			query += "OR " + fields.ClientField + " = " + filter.Client + " "
+			query += "OR " + fields.ClientField + " = " + filter.Contact + " "
 		}
 	}
 	query += GenerateOrderByClause(sort)

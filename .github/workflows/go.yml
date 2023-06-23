@@ -90,7 +90,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           port: 22
           source: "./bin/portal"
-          target: "/home/easylist/portal/bin"
+          target: "/home/easylist/portal"
 
       - name: Deploy and rebuild on server
         uses: appleboy/ssh-action@master
@@ -100,5 +100,5 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           port: 22
           script:
-            chmod -R 777 /home/easylist/portal/bin
+            chmod 777 /home/easylist/portal/bin/portal
 #            systemctl status goweb

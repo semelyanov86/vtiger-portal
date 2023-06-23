@@ -100,5 +100,5 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           port: 22
           script:
-            chmod 777 /home/easylist/portal/bin/portal
+            chmod -R 777 /home/easylist/portal/bin
 #            systemctl status goweb

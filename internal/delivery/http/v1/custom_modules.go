@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
 	"github.com/semelyanov86/vtiger-portal/internal/service"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
@@ -11,13 +12,18 @@ import (
 )
 
 func (h *Handler) initCustomModulesRoutes(api *gin.RouterGroup) {
-	tickets := api.Group("/custom-modules")
+	custom := api.Group("/custom-modules")
 	{
-		tickets.GET("/:module", h.getAllEntities)
-		tickets.GET("/:module/:id", h.getEntityById)
-		tickets.POST("/:module", h.createCustomModule)
-		tickets.PUT("/:module/:id", h.updateEntity)
-		tickets.PATCH("/:module/:id", h.updatePartlyEntity)
+		custom.GET("/:module", h.getAllEntities)
+		custom.GET("/:module/:id", h.getEntityById)
+		custom.POST("/:module", h.createCustomModule)
+		custom.PUT("/:module/:id", h.updateEntity)
+		custom.PATCH("/:module/:id", h.updatePartlyEntity)
+		custom.GET("/:module/:id/comments", h.getCustomComments)
+		custom.POST("/:module/:id/comments", h.addCustomComment)
+		custom.GET("/:module/:id/documents", h.getCustomDocuments)
+		custom.POST("/:module/:id/documents", h.uploadCustomDocuments)
+		custom.GET("/:module/:id/file/:file", h.getCustomFile)
 	}
 }
 
@@ -204,4 +210,170 @@ func (h *Handler) updatePartlyEntity(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusAccepted, ticket)
+}
+
+func (h *Handler) getCustomComments(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+
+	userModel := h.getValidatedUser(c)
+
+	if id == "" || userModel == nil {
+		return
+	}
+
+	moduleName := c.Param("module")
+	if moduleName == "" {
+		newResponse(c, http.StatusBadRequest, "module is empty")
+		return
+	}
+
+	comments, err := h.services.CustomModules.GetRelatedComments(c.Request.Context(), id, moduleName, *userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, DataResponse[domain.Comment]{
+		Data:  comments,
+		Count: len(comments),
+		Page:  1,
+		Size:  100,
+	})
+}
+
+func (h *Handler) addCustomComment(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+
+	userModel := h.getValidatedUser(c)
+
+	if id == "" || userModel == nil {
+		return
+	}
+
+	moduleName := c.Param("module")
+	if moduleName == "" {
+		newResponse(c, http.StatusBadRequest, "module is empty")
+		return
+	}
+
+	var inp createCommentInput
+	if err := c.BindJSON(&inp); err != nil {
+		for _, fieldErr := range err.(validator.ValidationErrors) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": fieldErr.Field(), "message": fieldErr.Error()})
+			return // exit on first error
+		}
+	}
+	comment, err := h.services.CustomModules.AddComment(c.Request.Context(), inp.Commentcontent, id, moduleName, *userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusCreated, comment)
+}
+
+func (h *Handler) getCustomDocuments(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+
+	userModel := h.getValidatedUser(c)
+
+	if id == "" || userModel == nil {
+		return
+	}
+
+	moduleName := c.Param("module")
+	if moduleName == "" {
+		newResponse(c, http.StatusBadRequest, "module is empty")
+		return
+	}
+
+	documents, err := h.services.CustomModules.GetRelatedDocuments(c.Request.Context(), id, moduleName, *userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, DataResponse[domain.Document]{
+		Data:  documents,
+		Count: len(documents),
+		Page:  1,
+		Size:  100,
+	})
+}
+
+func (h *Handler) uploadCustomDocuments(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+	userModel := h.getValidatedUser(c)
+
+	if id == "" || userModel == nil {
+		notPermittedResponse(c)
+		return
+	}
+	moduleName := c.Param("module")
+	if moduleName == "" {
+		newResponse(c, http.StatusBadRequest, "module is empty")
+		return
+	}
+
+	_, err := h.services.CustomModules.GetById(c.Request.Context(), moduleName, id, *userModel)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
+		newResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	document, err := h.services.Documents.AttachFile(c.Request.Context(), file, id, *userModel, header)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, AloneDataResponse[domain.Document]{Data: document})
+}
+
+func (h *Handler) getCustomFile(c *gin.Context) {
+	id := h.getAndValidateId(c, "id")
+
+	userModel := h.getValidatedUser(c)
+	fileId := h.getAndValidateId(c, "file")
+
+	if id == "" || userModel == nil || fileId == "" {
+		return
+	}
+
+	moduleName := c.Param("module")
+	if moduleName == "" {
+		newResponse(c, http.StatusBadRequest, "module is empty")
+		return
+	}
+
+	file, err := h.services.Documents.GetFile(c.Request.Context(), fileId, id)
+
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	res := AloneDataResponse[vtiger.File]{
+		Data: file,
+	}
+	c.JSON(http.StatusOK, res)
 }

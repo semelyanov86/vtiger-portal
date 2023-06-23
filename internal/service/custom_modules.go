@@ -143,6 +143,33 @@ func (c CustomModule) Revise(ctx context.Context, input map[string]any, id strin
 	return ticket, err
 }
 
+func (c CustomModule) GetRelatedDocuments(ctx context.Context, id string, module string, user domain.User) ([]domain.Document, error) {
+	_, err := c.GetById(ctx, module, id, user)
+	if err != nil {
+		return []domain.Document{}, err
+	}
+
+	return c.document.GetRelated(ctx, id)
+}
+
+func (c CustomModule) GetRelatedComments(ctx context.Context, id string, module string, user domain.User) ([]domain.Comment, error) {
+	_, err := c.GetById(ctx, module, id, user)
+	if err != nil {
+		return []domain.Comment{}, err
+	}
+
+	return c.comment.GetRelated(ctx, id)
+}
+
+func (c CustomModule) AddComment(ctx context.Context, content string, related string, module string, userModel domain.User) (domain.Comment, error) {
+	_, err := c.GetById(ctx, module, related, userModel)
+	if err != nil {
+		return domain.Comment{}, err
+	}
+
+	return c.comment.Create(ctx, content, related, userModel.Crmid)
+}
+
 func (c CustomModule) validateInputFields(input map[string]any, module vtiger.Module) error {
 	var fields = module.Fields
 	for _, field := range fields {

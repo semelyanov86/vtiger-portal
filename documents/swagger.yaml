@@ -3051,6 +3051,197 @@ paths:
           description: Entity not found
         "403":
           description: Operation not permitted
+  "/custom-modules/{module}/{id}/comments":
+    get:
+      tags:
+        - custom-modules
+      summary: Related comments from custom module
+      description: Returns an array of comments from custom module
+      operationId: getCommentsFromCustomModule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: module
+          in: path
+          description: Module name
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Comment"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Custom module not found
+        "403":
+          description: Operation not permitted
+    post:
+      tags:
+        - custom-modules
+      summary: Add comment
+      description: Create new comment, attached to current custom module ID
+      operationId: addCommentToCustomModule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: module
+          in: path
+          description: Module name
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: ID of custom module record
+          required: true
+          schema:
+            type: string
+            format: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                commentcontent:
+                  description: Comment content
+                  type: string
+                  example: "Please fix problem ASAP"
+      responses:
+        "201":
+          description: comment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Entity not found
+        "403":
+          description: Operation not permitted
+  "/custom-modules/{module}/{id}/documents":
+    get:
+      tags:
+        - custom-modules
+      summary: Related documents from custom module
+      description: Returns an array of documents from related custom module
+      operationId: getDocumentsFromCustomModule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: module
+          in: path
+          description: Module name
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: ID of entity
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Document"
+                  count:
+                    type: number
+                    example: 100
+                  page:
+                    type: number
+                    example: 1
+                  size:
+                    type: number
+                    example: 100
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Entity not found
+        "403":
+          description: Operation not permitted
+  "/custom-modules/{module}/{id}/file/{fileId}":
+    get:
+      tags:
+        - custom-modules
+      summary: Get file in Custom Module
+      description: Returns a content from file attached to custom module
+      operationId: getFileFromCustomModule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: module
+          in: path
+          description: Module name
+          required: true
+          schema:
+            type: string
+        - name: fileId
+          in: path
+          description: ID of file
+          required: true
+          schema:
+            type: string
+            format: string
+        - name: id
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/File"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Entity or file not found
+        "403":
+          description: Operation not permitted
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io

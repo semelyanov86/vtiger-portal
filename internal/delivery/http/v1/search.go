@@ -16,8 +16,8 @@ func (h *Handler) initSearchRoutes(api *gin.RouterGroup) {
 func (h *Handler) globalSearch(c *gin.Context) {
 	query := c.DefaultQuery("search", "")
 
-	if len(query) < 3 {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "query", "message": "Search query should be more then 3 symbols"})
+	if len(query) < 2 {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "query", "message": "Search query should be more then 2 symbols"})
 		return
 	}
 

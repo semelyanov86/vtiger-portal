@@ -36,10 +36,13 @@ func NewProjectsService(repository repository.Project, cache cache.Cache, commen
 	}
 }
 
-func (p ProjectsService) GetProjectById(ctx context.Context, id string, calcStat bool) (domain.Project, error) {
+func (p ProjectsService) GetProjectById(ctx context.Context, id string, calcStat bool, userModel *domain.User) (domain.Project, error) {
 	project := &domain.Project{}
 	err := GetFromCache[*domain.Project](id, project, p.cache)
 	if err == nil {
+		if userModel.AccountId != project.Linktoaccountscontacts && userModel.Crmid != project.Linktoaccountscontacts {
+			return *project, ErrOperationNotPermitted
+		}
 		return *project, nil
 	}
 
@@ -47,6 +50,9 @@ func (p ProjectsService) GetProjectById(ctx context.Context, id string, calcStat
 		projectData, err := p.repository.RetrieveById(ctx, id)
 		if err != nil {
 			return projectData, e.Wrap("can not get a project", err)
+		}
+		if userModel.AccountId != projectData.Linktoaccountscontacts && userModel.Crmid != projectData.Linktoaccountscontacts {
+			return projectData, ErrOperationNotPermitted
 		}
 		if calcStat {
 			stat, err2 := p.calcProjectStatistics(ctx, id)
@@ -124,35 +130,29 @@ func (p ProjectsService) GetAll(ctx context.Context, filter vtiger.PaginationQue
 	return projects, count, err
 }
 
-func (p ProjectsService) GetRelatedComments(ctx context.Context, id string, companyId string, contactId string) ([]domain.Comment, error) {
-	project, err := p.GetProjectById(ctx, id, false)
+func (p ProjectsService) GetRelatedComments(ctx context.Context, id string, userModel *domain.User) ([]domain.Comment, error) {
+	_, err := p.GetProjectById(ctx, id, false, userModel)
 	if err != nil {
 		return []domain.Comment{}, err
 	}
-	if project.Linktoaccountscontacts != companyId && project.Linktoaccountscontacts != contactId {
-		return []domain.Comment{}, ErrOperationNotPermitted
-	}
+
 	return p.comment.GetRelated(ctx, id)
 }
 
-func (p ProjectsService) GetRelatedDocuments(ctx context.Context, id string, companyId string, contactId string) ([]domain.Document, error) {
-	project, err := p.GetProjectById(ctx, id, false)
+func (p ProjectsService) GetRelatedDocuments(ctx context.Context, id string, userModel *domain.User) ([]domain.Document, error) {
+	_, err := p.GetProjectById(ctx, id, false, userModel)
 	if err != nil {
 		return []domain.Document{}, err
 	}
-	if project.Linktoaccountscontacts != companyId && project.Linktoaccountscontacts != contactId {
-		return []domain.Document{}, ErrOperationNotPermitted
-	}
+
 	return p.document.GetRelated(ctx, id)
 }
 
-func (p ProjectsService) AddComment(ctx context.Context, content string, related string, userModel domain.User) (domain.Comment, error) {
-	project, err := p.GetProjectById(ctx, related, false)
+func (p ProjectsService) AddComment(ctx context.Context, content string, related string, userModel *domain.User) (domain.Comment, error) {
+	_, err := p.GetProjectById(ctx, related, false, userModel)
 	if err != nil {
 		return domain.Comment{}, err
 	}
-	if project.Linktoaccountscontacts != userModel.AccountId && project.Linktoaccountscontacts != userModel.Crmid {
-		return domain.Comment{}, ErrOperationNotPermitted
-	}
+
 	return p.comment.Create(ctx, content, related, userModel.Crmid)
 }

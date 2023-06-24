@@ -86,16 +86,7 @@ func TestHandler_getProjectById(t *testing.T) {
 				r.EXPECT().RetrieveById(context.Background(), "29x54").Return(project, nil)
 			},
 			mockProjectTask: func(r *mock_repository.MockProjectTask) {
-				r.EXPECT().GetFromProject(context.Background(), vtiger.PaginationQueryFilter{
-					Page:     1,
-					PageSize: 100,
-					Client:   "",
-					Contact:  "",
-					Parent:   "29x54",
-					Sort:     "",
-					Filters:  nil,
-					Search:   "",
-				}).Return([]domain.ProjectTask{domain.MockedProjectTask}, nil)
+
 			},
 			statusCode:   http.StatusForbidden,
 			responseBody: `"message":"You are not allowed to view this record"`,
@@ -477,7 +468,9 @@ func TestHandler_getFileFromProject(t *testing.T) {
 			id:     "29x54",
 			fileId: "15x42",
 			mockProject: func(r *mock_repository.MockProject) {
-
+				project := domain.MockedProject
+				project.Linktoaccountscontacts = "12x11"
+				r.EXPECT().RetrieveById(context.Background(), "29x54").Return(project, nil)
 			},
 			mockDocument: func(r *mock_repository.MockDocument) {
 				r.EXPECT().RetrieveFile(context.Background(), "15x42").Return(domain.MockedFile, nil)
@@ -515,12 +508,12 @@ func TestHandler_getFileFromProject(t *testing.T) {
 			id:     "29x54",
 			fileId: "15x42",
 			mockProject: func(r *mock_repository.MockProject) {
-
+				project := domain.MockedProject
+				project.Linktoaccountscontacts = "11x16"
+				r.EXPECT().RetrieveById(context.Background(), "29x54").Return(project, nil)
 			},
 			mockDocument: func(r *mock_repository.MockDocument) {
-				document := domain.MockedDocument
-				document.Imageattachmentids = "15x15"
-				r.EXPECT().RetrieveFromModule(context.Background(), "29x54").Return([]domain.Document{document}, nil)
+
 			},
 			statusCode:   http.StatusForbidden,
 			responseBody: `"message":"You are not allowed to view this record"`,
@@ -552,7 +545,7 @@ func TestHandler_getFileFromProject(t *testing.T) {
 			r := gin.New()
 			r.GET("/api/v1/projects/:id/file/:file", func(c *gin.Context) {
 
-			}, handler.getFile)
+			}, handler.getProjectFile)
 
 			// Create Request
 			w := httptest.NewRecorder()

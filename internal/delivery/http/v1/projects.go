@@ -40,15 +40,16 @@ func (h *Handler) getProject(c *gin.Context) {
 		return
 	}
 
-	project, err := h.services.Projects.GetProjectById(c.Request.Context(), id, true)
+	project, err := h.services.Projects.GetProjectById(c.Request.Context(), id, true, userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	if userModel.AccountId != project.Linktoaccountscontacts && userModel.Crmid != project.Linktoaccountscontacts {
-		notPermittedResponse(c)
-		return
-	}
+
 	res := AloneDataResponse[domain.Project]{
 		Data: project,
 	}
@@ -65,15 +66,16 @@ func (h *Handler) getProjectTask(c *gin.Context) {
 		return
 	}
 
-	project, err := h.services.Projects.GetProjectById(c.Request.Context(), id, true)
+	_, err := h.services.Projects.GetProjectById(c.Request.Context(), id, true, userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	if userModel.AccountId != project.Linktoaccountscontacts && userModel.Crmid != project.Linktoaccountscontacts {
-		notPermittedResponse(c)
-		return
-	}
+
 	taskModel, err := h.services.ProjectTasks.GetProjectTaskById(c.Request.Context(), taskId)
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
@@ -127,7 +129,7 @@ func (h *Handler) getProjectComments(c *gin.Context) {
 		return
 	}
 
-	comments, err := h.services.Projects.GetRelatedComments(c.Request.Context(), id, userModel.AccountId, userModel.Crmid)
+	comments, err := h.services.Projects.GetRelatedComments(c.Request.Context(), id, userModel)
 	if errors.Is(service.ErrOperationNotPermitted, err) {
 		notPermittedResponse(c)
 		return
@@ -153,7 +155,7 @@ func (h *Handler) getProjectDocuments(c *gin.Context) {
 		return
 	}
 
-	documents, err := h.services.Projects.GetRelatedDocuments(c.Request.Context(), id, userModel.AccountId, userModel.Crmid)
+	documents, err := h.services.Projects.GetRelatedDocuments(c.Request.Context(), id, userModel)
 	if errors.Is(service.ErrOperationNotPermitted, err) {
 		notPermittedResponse(c)
 		return
@@ -178,13 +180,13 @@ func (h *Handler) uploadProjectDocument(c *gin.Context) {
 		notPermittedResponse(c)
 		return
 	}
-	projectModel, err := h.services.Projects.GetProjectById(c.Request.Context(), id, false)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	_, err := h.services.Projects.GetProjectById(c.Request.Context(), id, false, userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
 		return
 	}
-	if projectModel.Linktoaccountscontacts != userModel.AccountId && projectModel.Linktoaccountscontacts != userModel.Crmid {
-		notPermittedResponse(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -212,13 +214,9 @@ func (h *Handler) uploadProjectTaskDocument(c *gin.Context) {
 		notPermittedResponse(c)
 		return
 	}
-	projectModel, err := h.services.Projects.GetProjectById(c.Request.Context(), id, false)
+	_, err := h.services.Projects.GetProjectById(c.Request.Context(), id, false, userModel)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	if projectModel.Linktoaccountscontacts != userModel.AccountId && projectModel.Linktoaccountscontacts != userModel.Crmid {
-		notPermittedResponse(c)
 		return
 	}
 
@@ -247,6 +245,16 @@ func (h *Handler) getProjectFile(c *gin.Context) {
 		return
 	}
 
+	_, err := h.services.Projects.GetProjectById(c.Request.Context(), id, false, userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	file, err := h.services.Documents.GetFile(c.Request.Context(), fileId, id)
 
 	if errors.Is(service.ErrOperationNotPermitted, err) {
@@ -272,6 +280,16 @@ func (h *Handler) getTaskFile(c *gin.Context) {
 	fileId := h.getAndValidateId(c, "file")
 
 	if id == "" || userModel == nil || fileId == "" || taskId == "" {
+		return
+	}
+
+	_, err := h.services.Projects.GetProjectById(c.Request.Context(), id, false, userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -307,7 +325,7 @@ func (h *Handler) addProjectComment(c *gin.Context) {
 			return // exit on first error
 		}
 	}
-	comment, err := h.services.Projects.AddComment(c.Request.Context(), inp.Commentcontent, id, *userModel)
+	comment, err := h.services.Projects.AddComment(c.Request.Context(), inp.Commentcontent, id, userModel)
 	if errors.Is(service.ErrOperationNotPermitted, err) {
 		notPermittedResponse(c)
 		return
@@ -338,7 +356,7 @@ func (h *Handler) getAllProjectTasks(c *gin.Context) {
 		Client:   userModel.AccountId,
 		Contact:  userModel.Crmid,
 		Parent:   id,
-	})
+	}, userModel)
 	if errors.Is(service.ErrOperationNotPermitted, err) {
 		notPermittedResponse(c)
 		return
@@ -370,14 +388,13 @@ func (h *Handler) createProjectTask(c *gin.Context) {
 		return
 	}
 
-	project, err := h.services.Projects.GetProjectById(c.Request.Context(), id, false)
-	if err != nil {
-		newResponse(c, http.StatusInternalServerError, err.Error())
+	_, err := h.services.Projects.GetProjectById(c.Request.Context(), id, false, userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
 		return
 	}
-
-	if project.Linktoaccountscontacts != userModel.AccountId && project.Linktoaccountscontacts != userModel.Crmid {
-		notPermittedResponse(c)
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -432,7 +449,7 @@ func (h *Handler) getProjectTaskComments(c *gin.Context) {
 		return
 	}
 
-	comments, err := h.services.ProjectTasks.GetRelatedComments(c.Request.Context(), taskId, userModel.AccountId, userModel.Crmid)
+	comments, err := h.services.ProjectTasks.GetRelatedComments(c.Request.Context(), taskId, userModel)
 	if errors.Is(service.ErrOperationNotPermitted, err) {
 		notPermittedResponse(c)
 		return
@@ -490,7 +507,7 @@ func (h *Handler) getProjectTaskDocuments(c *gin.Context) {
 		return
 	}
 
-	documents, err := h.services.ProjectTasks.GetRelatedDocuments(c.Request.Context(), taskId, userModel.AccountId, userModel.Crmid)
+	documents, err := h.services.ProjectTasks.GetRelatedDocuments(c.Request.Context(), taskId, userModel)
 	if errors.Is(service.ErrOperationNotPermitted, err) {
 		notPermittedResponse(c)
 		return

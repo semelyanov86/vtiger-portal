@@ -35,10 +35,13 @@ func NewHelpDeskService(repository repository.HelpDesk, cache cache.Cache, comme
 	}
 }
 
-func (h HelpDesk) GetHelpDeskById(ctx context.Context, id string) (domain.HelpDesk, error) {
+func (h HelpDesk) GetHelpDeskById(ctx context.Context, id string, userModel domain.User) (domain.HelpDesk, error) {
 	helpDesk := &domain.HelpDesk{}
 	err := GetFromCache[*domain.HelpDesk](id, helpDesk, h.cache)
 	if err == nil {
+		if userModel.AccountId != helpDesk.ParentID {
+			return *helpDesk, ErrOperationNotPermitted
+		}
 		return *helpDesk, nil
 	}
 
@@ -47,12 +50,18 @@ func (h HelpDesk) GetHelpDeskById(ctx context.Context, id string) (domain.HelpDe
 		if err != nil {
 			return helpDeskData, e.Wrap("can not get a helpDesk", err)
 		}
+		if userModel.AccountId != helpDeskData.ParentID {
+			return helpDeskData, ErrOperationNotPermitted
+		}
 		err = StoreInCache[*domain.HelpDesk](id, &helpDeskData, CacheHelpDeskTtl, h.cache)
 		if err != nil {
 			return helpDeskData, err
 		}
 		return helpDeskData, nil
 	} else {
+		if userModel.AccountId != helpDesk.ParentID {
+			return *helpDesk, ErrOperationNotPermitted
+		}
 		return *helpDesk, e.Wrap("can not convert caches data to helpDesk", err)
 	}
 }
@@ -61,36 +70,29 @@ func (h HelpDesk) retrieveHelpDesk(ctx context.Context, id string) (domain.HelpD
 	return h.repository.RetrieveById(ctx, id)
 }
 
-func (h HelpDesk) GetRelatedComments(ctx context.Context, id string, companyId string) ([]domain.Comment, error) {
-	helpDesk, err := h.GetHelpDeskById(ctx, id)
+func (h HelpDesk) GetRelatedComments(ctx context.Context, id string, userModel domain.User) ([]domain.Comment, error) {
+	_, err := h.GetHelpDeskById(ctx, id, userModel)
 	if err != nil {
 		return []domain.Comment{}, err
 	}
-	if helpDesk.ParentID != companyId {
-		return []domain.Comment{}, ErrOperationNotPermitted
-	}
+
 	return h.comment.GetRelated(ctx, id)
 }
 
 func (h HelpDesk) AddComment(ctx context.Context, content string, related string, userModel domain.User) (domain.Comment, error) {
-	helpDesk, err := h.GetHelpDeskById(ctx, related)
+	_, err := h.GetHelpDeskById(ctx, related, userModel)
 	if err != nil {
 		return domain.Comment{}, err
-	}
-	if helpDesk.ParentID != userModel.AccountId {
-		return domain.Comment{}, ErrOperationNotPermitted
 	}
 	return h.comment.Create(ctx, content, related, userModel.Crmid)
 }
 
-func (h HelpDesk) GetRelatedDocuments(ctx context.Context, id string, companyId string) ([]domain.Document, error) {
-	helpDesk, err := h.GetHelpDeskById(ctx, id)
+func (h HelpDesk) GetRelatedDocuments(ctx context.Context, id string, userModel domain.User) ([]domain.Document, error) {
+	_, err := h.GetHelpDeskById(ctx, id, userModel)
 	if err != nil {
 		return []domain.Document{}, err
 	}
-	if helpDesk.ParentID != companyId {
-		return []domain.Document{}, ErrOperationNotPermitted
-	}
+
 	return h.document.GetRelated(ctx, id)
 }
 

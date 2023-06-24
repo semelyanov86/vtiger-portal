@@ -34,15 +34,16 @@ func (h *Handler) getTicket(c *gin.Context) {
 		return
 	}
 
-	ticket, err := h.services.HelpDesk.GetHelpDeskById(c.Request.Context(), id)
+	ticket, err := h.services.HelpDesk.GetHelpDeskById(c.Request.Context(), id, *userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	if userModel.AccountId != ticket.ParentID {
-		notPermittedResponse(c)
-		return
-	}
+
 	res := AloneDataResponse[domain.HelpDesk]{
 		Data: ticket,
 	}
@@ -58,7 +59,7 @@ func (h *Handler) getComments(c *gin.Context) {
 		return
 	}
 
-	comments, err := h.services.HelpDesk.GetRelatedComments(c.Request.Context(), id, userModel.AccountId)
+	comments, err := h.services.HelpDesk.GetRelatedComments(c.Request.Context(), id, *userModel)
 	if errors.Is(service.ErrOperationNotPermitted, err) {
 		notPermittedResponse(c)
 		return
@@ -115,7 +116,7 @@ func (h *Handler) getDocuments(c *gin.Context) {
 		return
 	}
 
-	documents, err := h.services.HelpDesk.GetRelatedDocuments(c.Request.Context(), id, userModel.AccountId)
+	documents, err := h.services.HelpDesk.GetRelatedDocuments(c.Request.Context(), id, *userModel)
 	if errors.Is(service.ErrOperationNotPermitted, err) {
 		notPermittedResponse(c)
 		return
@@ -140,13 +141,13 @@ func (h *Handler) uploadTicketDocuments(c *gin.Context) {
 		notPermittedResponse(c)
 		return
 	}
-	ticketModel, err := h.services.HelpDesk.GetHelpDeskById(c.Request.Context(), id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	_, err := h.services.HelpDesk.GetHelpDeskById(c.Request.Context(), id, *userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
 		return
 	}
-	if userModel.AccountId != ticketModel.ParentID {
-		notPermittedResponse(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -172,6 +173,16 @@ func (h *Handler) getFile(c *gin.Context) {
 	fileId := h.getAndValidateId(c, "file")
 
 	if id == "" || userModel == nil || fileId == "" {
+		return
+	}
+
+	_, err := h.services.HelpDesk.GetHelpDeskById(c.Request.Context(), id, *userModel)
+	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

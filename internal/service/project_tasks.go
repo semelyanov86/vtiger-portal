@@ -64,8 +64,8 @@ func (p ProjectTasksService) GetProjectTaskById(ctx context.Context, id string) 
 	}
 }
 
-func (p ProjectTasksService) GetAllFromProject(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.ProjectTask, int, error) {
-	err := p.validateProjectPermissions(ctx, filter.Parent, filter.Client, filter.Contact)
+func (p ProjectTasksService) GetAllFromProject(ctx context.Context, filter vtiger.PaginationQueryFilter, userModel *domain.User) ([]domain.ProjectTask, int, error) {
+	err := p.validateProjectPermissions(ctx, filter.Parent, userModel)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -77,12 +77,12 @@ func (p ProjectTasksService) GetAllFromProject(ctx context.Context, filter vtige
 	return projects, count, err
 }
 
-func (p ProjectTasksService) GetRelatedComments(ctx context.Context, id string, companyId string, contactId string) ([]domain.Comment, error) {
+func (p ProjectTasksService) GetRelatedComments(ctx context.Context, id string, userModel *domain.User) ([]domain.Comment, error) {
 	projectTask, err := p.GetProjectTaskById(ctx, id)
 	if err != nil {
 		return []domain.Comment{}, err
 	}
-	err = p.validateProjectPermissions(ctx, projectTask.Projectid, companyId, contactId)
+	err = p.validateProjectPermissions(ctx, projectTask.Projectid, userModel)
 	if err != nil {
 		return []domain.Comment{}, err
 	}
@@ -90,12 +90,12 @@ func (p ProjectTasksService) GetRelatedComments(ctx context.Context, id string, 
 	return p.comment.GetRelated(ctx, id)
 }
 
-func (p ProjectTasksService) GetRelatedDocuments(ctx context.Context, id string, companyId string, contactId string) ([]domain.Document, error) {
+func (p ProjectTasksService) GetRelatedDocuments(ctx context.Context, id string, userModel *domain.User) ([]domain.Document, error) {
 	projectTask, err := p.GetProjectTaskById(ctx, id)
 	if err != nil {
 		return []domain.Document{}, err
 	}
-	err = p.validateProjectPermissions(ctx, projectTask.Projectid, companyId, contactId)
+	err = p.validateProjectPermissions(ctx, projectTask.Projectid, userModel)
 	if err != nil {
 		return []domain.Document{}, err
 	}
@@ -108,7 +108,7 @@ func (p ProjectTasksService) AddComment(ctx context.Context, content string, rel
 	if err != nil {
 		return domain.Comment{}, err
 	}
-	err = p.validateProjectPermissions(ctx, projectTask.Projectid, userModel.AccountId, userModel.Crmid)
+	err = p.validateProjectPermissions(ctx, projectTask.Projectid, &userModel)
 	if err != nil {
 		return domain.Comment{}, err
 	}
@@ -116,15 +116,9 @@ func (p ProjectTasksService) AddComment(ctx context.Context, content string, rel
 	return p.comment.Create(ctx, content, related, userModel.Crmid)
 }
 
-func (p ProjectTasksService) validateProjectPermissions(ctx context.Context, id string, client string, contact string) error {
-	project, err := p.project.GetProjectById(ctx, id, false)
-	if err != nil {
-		return err
-	}
-	if project.Linktoaccountscontacts != client && project.Linktoaccountscontacts != contact {
-		return ErrOperationNotPermitted
-	}
-	return nil
+func (p ProjectTasksService) validateProjectPermissions(ctx context.Context, id string, userModel *domain.User) error {
+	_, err := p.project.GetProjectById(ctx, id, false, userModel)
+	return err
 }
 
 func (p ProjectTasksService) CreateProjectTask(ctx context.Context, input ProjectTaskInput, projectId string) (domain.ProjectTask, error) {
@@ -148,7 +142,7 @@ func (p ProjectTasksService) CreateProjectTask(ctx context.Context, input Projec
 }
 
 func (p ProjectTasksService) Revise(ctx context.Context, input map[string]any, id string, project string, user domain.User) (domain.ProjectTask, error) {
-	err := p.validateProjectPermissions(ctx, project, user.AccountId, user.Crmid)
+	err := p.validateProjectPermissions(ctx, project, &user)
 	if err != nil {
 		return domain.ProjectTask{}, err
 	}

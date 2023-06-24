@@ -443,7 +443,7 @@ func TestHandler_getFile(t *testing.T) {
 			id:     "17x16",
 			fileId: "15x42",
 			mockTicket: func(r *mock_repository.MockHelpDesk) {
-
+				r.EXPECT().RetrieveById(context.Background(), "17x16").Return(domain.MockedHelpDesk, nil)
 			},
 			mockDocument: func(r *mock_repository.MockDocument) {
 				r.EXPECT().RetrieveFile(context.Background(), "15x42").Return(domain.MockedFile, nil)
@@ -481,7 +481,7 @@ func TestHandler_getFile(t *testing.T) {
 			id:     "17x16",
 			fileId: "15x42",
 			mockTicket: func(r *mock_repository.MockHelpDesk) {
-
+				r.EXPECT().RetrieveById(context.Background(), "17x16").Return(domain.MockedHelpDesk, nil)
 			},
 			mockDocument: func(r *mock_repository.MockDocument) {
 				document := domain.MockedDocument

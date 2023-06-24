@@ -32,6 +32,8 @@ Copy file .envrc.example to .envrc
 
 Use `make run` to build&run project, `make lint` to check code with linter.
 
+You can also download executable file and run it on server.
+
 ## Vtiger Setup
 By default you do not need to do any setup for Vtiger crm. Make sure, you have latest vtiger 7.5 version installed.
 Also make sure that you have FilesRetrieve webservice function installed, in order you want to receive files and images from vtiger. If not, do the following:
@@ -152,6 +154,12 @@ To run tests, run the following command
   make audit
 ```
 
+## Features
+- Contact registration via temporary code
+- CRUD operations for helpdesk module
+- Get all project, project tasks, invoices and sales orders. Change statuses of this modules.
+- Support for custom modules
+- Make a payment in invoice and sales order.
 
 ## Deployment
 
@@ -159,3 +167,18 @@ To deploy this project run
 
 ```bash
   production/deploy/api
+```
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+## Feedback
+If you have any feedback, please reach out to us at info@itvolga.com
+
+
+## Tech Stack
+
+**Client:** React, Zod, Zustand, Bootstrap
+
+**Server:** Golang

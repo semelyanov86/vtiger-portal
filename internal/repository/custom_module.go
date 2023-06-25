@@ -97,7 +97,11 @@ func (m CustomModuleCrm) Count(ctx context.Context, client string, contact strin
 		body[accountField.Name] = client
 	}
 	if contactField != nil && contact != "" {
-		body[contactField.Name] = contact
+		if accountField.Name == contactField.Name {
+			body["_"+contactField.Name] = contact
+		} else {
+			body[contactField.Name] = contact
+		}
 	}
 	return m.vtiger.Count(ctx, custom.Name, body)
 }

@@ -160,13 +160,23 @@ To run tests, run the following command
 - Get all project, project tasks, invoices and sales orders. Change statuses of this modules.
 - Support for custom modules
 - Make a payment in invoice and sales order.
+- Storing notifications from vtiger crm
 
 ## Deployment
 
 To deploy this project run
 
 ```bash
-  production/deploy/api
+  make production/deploy/api
+```
+
+Note, this script running as a service. So, you need to create tunnel between apache and this script in order to use https
+
+Example apache configuration you can find in remote/production/apache.conf
+
+To see the status of application run command:
+```bash
+
 ```
 
 ## License

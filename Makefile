@@ -99,11 +99,12 @@ production/connect:
 ## production/deploy/api: deploy the api to production
 .PHONY: production/deploy/api
 production/deploy/api:
-	rsync -P ./bin/linux_amd64/api easylist@${production_host_ip}:~/portal
+	rsync -P ./bin/linux_amd64/app easylist@${production_host_ip}:~/portal/bin
 	rsync -rP --delete ./migrations easylist@${production_host_ip}:~
-	rsync -P ./remote/production/api.service easylist@${production_host_ip}:~
+	rsync -P ./remote/production/portal.service easylist@${production_host_ip}:~
 	ssh -t easylist@${production_host_ip} '\
 		cd ~/portal && make migrate \
+		&& sudo mv ~/portal/bin/app ~/portal/bin/portal \
 		&& sudo mv ~/portal.service /etc/systemd/system/ \
 		&& sudo systemctl enable portal \
 		&& sudo systemctl restart portal \

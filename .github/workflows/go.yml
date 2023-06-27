@@ -79,8 +79,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           port: 22
           script:
-            rm -rf /home/easylist/portal/bin
-            systemctl status portal
+            systemctl stop portal && rm -rf /home/easylist/portal/bin
 
       - name: SCP to Ocean
         uses: appleboy/scp-action@master
@@ -100,6 +99,4 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           port: 22
           script:
-            chmod 777 /home/easylist/portal/bin/portal
-            systemctl restart portal
-            systemctl status portal
+            chmod 777 /home/easylist/portal/bin/portal && systemctl restart portal && systemctl status portal

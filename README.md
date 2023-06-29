@@ -132,6 +132,10 @@ System has a support for custom modules. For example. what can you do if you hav
 ```
 Where SPPayments is the name of module. Below module name you need to insert minimum 2 fields. First field is default sorting field. Second field and more is fields, which support live search
 
+## User Settings Route
+
+This application supports managing of user settings, which is available under `user/settings` endpoint. As a result you will get list of boolean fields and their values. These fields are dynamic, you can set them in configuration, under `userSettingsFields` part.
+
 ## Command line arguments
 
 You can run executable script with following arguments:
@@ -176,7 +180,7 @@ Example apache configuration you can find in remote/production/apache.conf
 
 To see the status of application run command:
 ```bash
-
+sudo systemctl status portal
 ```
 
 ## License
@@ -192,3 +196,6 @@ If you have any feedback, please reach out to us at info@itvolga.com
 **Client:** React, Zod, Zustand, Bootstrap
 
 **Server:** Golang
+
+## Customizing the portal
+This portal is built using Golang. You are welcome to fork and modify this repository for your own needs! Do not attempt to customize the files inside the bin folder, as they will be automatically overwritten during rebuilt. If you need help customizing this portal beyond what is currently available, we recommend Center of information Technologies (info@itvolga.com) as an experienced third party developer.

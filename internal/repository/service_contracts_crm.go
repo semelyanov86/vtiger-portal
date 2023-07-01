@@ -7,7 +7,6 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/cache"
 	"github.com/semelyanov86/vtiger-portal/pkg/e"
 	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
-	"strconv"
 )
 
 type ServiceContractCrm struct {
@@ -31,22 +30,29 @@ func (s ServiceContractCrm) RetrieveById(ctx context.Context, id string) (domain
 }
 
 func (s ServiceContractCrm) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter) ([]domain.ServiceContract, error) {
-	// Calculate the offset for the given page number and page size
-	offset := (filter.Page - 1) * filter.PageSize
-	query := "SELECT * FROM ServiceContracts WHERE sc_related_to = " + filter.Client + " OR sc_related_to = " + filter.Contact + " LIMIT " + strconv.Itoa(offset) + ", " + strconv.Itoa(filter.PageSize) + ";"
-	serviceContracts := make([]domain.ServiceContract, 0)
-	result, err := s.vtiger.Query(ctx, query)
+	items, err := s.vtiger.GetAll(ctx, filter, vtiger.QueryFieldsProps{
+		DefaultSort:  "-contract_no",
+		SearchFields: []string{"subject", "contract_no", "contract_type", "contract_status"},
+		ClientField:  "sc_related_to",
+		AccountField: "sc_related_to",
+		TableName:    "ServiceContracts",
+	})
 	if err != nil {
-		return serviceContracts, e.Wrap("can not execute query "+query+", got error", err)
+		return nil, err
 	}
-	for _, data := range result.Result {
-		serviceContract, err := domain.ConvertMapToServiceContract(data)
+
+	contracts := make([]domain.ServiceContract, 0, len(items))
+
+	for _, data := range items {
+		contract, err := domain.ConvertMapToServiceContract(data)
 		if err != nil {
-			return serviceContracts, e.Wrap("can not convert map to service contracts", err)
+			return contracts, e.Wrap("can not convert map to contract", err)
 		}
-		serviceContracts = append(serviceContracts, serviceContract)
+		if contract.ScRelatedTo == filter.Client || contract.ScRelatedTo == filter.Contact {
+			contracts = append(contracts, contract)
+		}
 	}
-	return serviceContracts, nil
+	return contracts, nil
 }
 
 func (s ServiceContractCrm) Count(ctx context.Context, client string, contact string) (int, error) {

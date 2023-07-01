@@ -48,11 +48,20 @@ func (h *Handler) getAllServiceContracts(c *gin.Context) {
 		return
 	}
 
+	sortString := c.DefaultQuery("sort", "-contract_no")
+
+	if !isSortStringValid(sortString, []string{"contract_no", "subject", "contract_type", "contract_status", "contract_priority", "start_date", "end_date"}) {
+		newResponse(c, http.StatusUnprocessableEntity, "sort value "+sortString+" is not allowed")
+		return
+	}
+
 	serviceContracts, count, err := h.services.ServiceContracts.GetAll(c.Request.Context(), vtiger.PaginationQueryFilter{
 		Page:     page,
 		PageSize: size,
 		Client:   userModel.AccountId,
 		Contact:  userModel.Crmid,
+		Sort:     sortString,
+		Search:   c.DefaultQuery("search", ""),
 	})
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())

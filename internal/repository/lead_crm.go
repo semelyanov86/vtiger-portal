@@ -10,13 +10,20 @@ import (
 )
 
 type LeadCrm struct {
-	vtiger vtiger.VtigerConnector
+	vtiger vtiger.Creator
 	config config.Config
 }
 
 func NewLeadCrm(config config.Config, cache cache.Cache) LeadCrm {
 	return LeadCrm{
 		vtiger: vtiger.NewVtigerConnector(cache, config.Vtiger.Connection, vtiger.NewWebRequest(config.Vtiger.Connection)),
+		config: config,
+	}
+}
+
+func NewLeadCrmConcrete(config config.Config, vtiger vtiger.Creator) LeadCrm {
+	return LeadCrm{
+		vtiger: vtiger,
 		config: config,
 	}
 }

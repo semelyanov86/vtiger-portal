@@ -14,7 +14,7 @@ import (
 )
 
 type CustomModuleCrm struct {
-	vtiger vtiger.VtigerConnector
+	vtiger vtiger.Connector
 	config config.Config
 }
 

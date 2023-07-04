@@ -110,11 +110,7 @@ type DocumentServiceInterface interface {
 	DeleteFile(ctx context.Context, id string, related string) error
 }
 
-type SupportedTypes interface {
-	*domain.HelpDesk | *domain.Company | *domain.Manager | *vtiger.Module | *[]domain.Document | *domain.Invoice | *domain.ServiceContract | *domain.Currency | *domain.Product | *domain.Service | *domain.Project | *domain.ProjectTask | *[]domain.User | *domain.Statistics | *domain.User | *domain.Account
-}
-
-func GetFromCache[T SupportedTypes](key string, dest T, c cache.Cache) error {
+func GetFromCache[T any](key string, dest T, c cache.Cache) error {
 	cachedData, err := c.Get(key)
 	if err != nil || cachedData == nil {
 		return cache.ErrItemNotFound
@@ -131,7 +127,7 @@ func GetFromCache[T SupportedTypes](key string, dest T, c cache.Cache) error {
 	return nil
 }
 
-func StoreInCache[T SupportedTypes](key string, value T, ttl time.Duration, c cache.Cache) error {
+func StoreInCache[T any](key string, value T, ttl time.Duration, c cache.Cache) error {
 	data, err := json.Marshal(value)
 	if err != nil {
 		return err

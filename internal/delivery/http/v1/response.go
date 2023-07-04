@@ -2,25 +2,19 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/pkg/logger"
-	"github.com/semelyanov86/vtiger-portal/pkg/vtiger"
 	"net/http"
 )
 
-type DataResponse[T DataResponseModules] struct {
+type DataResponse[T any] struct {
 	Data  []T `json:"data"`
 	Count int `json:"count"`
 	Page  int `json:"page"`
 	Size  int `json:"size"`
 }
 
-type AloneDataResponse[T DataResponseModules] struct {
+type AloneDataResponse[T any] struct {
 	Data T `json:"data"`
-}
-
-type DataResponseModules interface {
-	domain.Comment | domain.HelpDesk | domain.Document | domain.Faq | domain.Invoice | domain.Company | domain.User | domain.ServiceContract | domain.Product | domain.Manager | vtiger.Module | vtiger.File | domain.Service | domain.Project | domain.ProjectTask | domain.Statistics | domain.Account | domain.Search | domain.SalesOrder | domain.PaymentConfig | PaymentIntentResponse | domain.Payment | domain.Notification | map[string]any
 }
 
 type response struct {

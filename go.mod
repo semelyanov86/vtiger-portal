@@ -3,6 +3,7 @@ module github.com/semelyanov86/vtiger-portal
 go 1.20
 
 require (
+	github.com/flowchartsman/swaggerui v0.0.0-20221017034628-909ed4f3701b
 	github.com/gin-gonic/gin v1.9.0
 	github.com/go-mail/mail/v2 v2.3.0
 	github.com/go-playground/validator/v10 v10.11.2

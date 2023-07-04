@@ -1,6 +1,8 @@
 package http
 
 import (
+	_ "embed"
+	"github.com/flowchartsman/swaggerui"
 	"github.com/gin-gonic/gin"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
 	v1 "github.com/semelyanov86/vtiger-portal/internal/delivery/http/v1"
@@ -8,6 +10,9 @@ import (
 	"github.com/semelyanov86/vtiger-portal/pkg/limiter"
 	"net/http"
 )
+
+//go:embed swagger.yaml
+var spec []byte
 
 type Handler struct {
 	services *service.Services
@@ -30,14 +35,7 @@ func (h *Handler) Init() *gin.Engine {
 		h.authenticate,
 	)
 
-	/*	docs.SwaggerInfo.Host = fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port)
-		if cfg.Environment != config.EnvLocal {
-			docs.SwaggerInfo.Host = cfg.HTTP.Host
-		}*/
-
-	/*if h.config.Environment != "production" {
-		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	}*/
+	router.GET("/swagger/*w", gin.WrapH(http.StripPrefix("/swagger", swaggerui.Handler(spec))))
 
 	// Init router
 	router.GET("/api/v1/ping", func(c *gin.Context) {

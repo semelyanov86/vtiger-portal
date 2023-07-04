@@ -14,7 +14,19 @@ import (
 func (h Handler) corsMiddleware(c *gin.Context) {
 	c.Header("Vary", "Origin")
 	origin := c.Request.Header.Get("Origin")
-	c.Header("Content-Type", "application/json")
+	if strings.HasSuffix(c.Request.RequestURI, ".js") {
+		c.Header("Content-Type", "application/javascript; charset=utf-8")
+	} else if strings.HasSuffix(c.Request.RequestURI, ".css") {
+		c.Header("Content-Type", "text/css; charset=utf-8")
+	} else if strings.HasSuffix(c.Request.RequestURI, ".png") {
+		c.Header("Content-Type", "image/png")
+	} else if strings.HasSuffix(c.Request.RequestURI, "swagger_spec") {
+		c.Header("Content-Type", "application/x-yaml")
+	} else if strings.HasPrefix(c.Request.RequestURI, "/swagger/") {
+		c.Header("Content-Type", "text/html; charset=utf-8")
+	} else {
+		c.Header("Content-Type", "application/json")
+	}
 
 	if origin != "" {
 		for i := range h.config.Cors.TrustedOrigins {

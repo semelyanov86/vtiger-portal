@@ -34,6 +34,11 @@ Use `make run` to build&run project, `make lint` to check code with linter.
 
 You can also download executable file and run it on server.
 
+## API Documentation
+Swagger documentation is available on `/swagger/` endpoint
+Also there are yaml swagger file in `documents` folder, available for import in Insomnia.
+To import whole insomnia collection, there are Insomnia.yaml file in `documents` folder.
+
 ## Vtiger Setup
 By default you do not need to do any setup for Vtiger crm. Make sure, you have latest vtiger 7.5 version installed.
 Also make sure that you have FilesRetrieve webservice function installed, in order you want to receive files and images from vtiger. If not, do the following:

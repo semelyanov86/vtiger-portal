@@ -171,6 +171,22 @@ To run tests, run the following command
 - Make a payment in invoice and sales order.
 - Storing notifications from vtiger crm
 
+### Two-Factor Authentication
+This portal supports two-factor authentication. Every user can enable it, you need to send a request to `otp/veryfy` endpoint with `token` parameter. To get this token, you need to send a request to `otp/generate` endpoint. After that, you will get a response with token and url. This token will be valid for 5 minutes. After verification process, user can not login without OTP code. If user lost his phone, he can disable this feature in user settings.
+
+In database we have a special column in user table, which stores a secret key for OTP. This key is generated during user registration. If you want to disable otp as administrator for specific user, you can set `otp_enabled` and `otp_verified` columns to false.
+
+Note, when otp is enabled, after login in response of `user/login` endpoint, you will get a `otp_enabled` field, which indicates that user enabled otp. It means, that you need to send otp code to `otp/validate` endpoint. If user did not enable otp, you will get this field in response as false.
+
+If you did an authentication and did not pass OTP verification, you can not use portal. For example, if you want to get a list of tickets, as a result you will get a 403 response. Access management and all logic stored in `internal/delivery/middleware.go` file, in authentication function.
+
+### Notifications
+This portal supports notifications from vtiger crm. To make this feature works, you need to install special notifications module in Vtiger CRM. And setup workflow, to create different notifications. Then you need to implement functions in `internal/repository/notification_crm.go` file for importing notifications from vtiger. After that you need to setup crontab or run function ImportNotifications in `internal/service/notifications.go` file. This function will import notifications from vtiger and store them in database. After that, you can get notifications from `notifications` endpoint.
+You can also create notifications manually in database. For this purposes you need to insert a record in `notifications` table. You can find a structure of this table in `internal/domain/notification.go` file.
+
+### Payment support
+This portal supports payments. You can make a payment in invoice and sales order. To make this feature works, you need to change Stripe token in payment section of configuration file. Currently we support only Stripe provider. You do not need to setup extra configuration to accept a payments.
+
 ## Deployment
 
 To deploy this project run

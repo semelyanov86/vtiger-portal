@@ -108,6 +108,10 @@ func (h *Handler) updateUserInfo(c *gin.Context) {
 
 			return
 		}
+		if errors.Is(err, service.ErrPasswordDoesNotMatch) || errors.Is(err, service.ErrOldPasswordIsWrong) {
+			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "password", "message": err.Error()})
+			return
+		}
 
 		newResponse(c, http.StatusInternalServerError, err.Error())
 

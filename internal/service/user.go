@@ -21,6 +21,8 @@ var ErrUserNotFound = errors.New("user not found")
 
 var ErrUserIsNotActive = errors.New("user is not active")
 
+var ErrOldPasswordIsWrong = errors.New("old password is wrong")
+
 type UserSignUpInput struct {
 	Email    string `json:"email" binding:"required,email,max=64"`
 	Code     string `json:"code" binding:"required,min=3,max=10"`
@@ -38,30 +40,32 @@ type PasswordResetInput struct {
 }
 
 type UserUpdateInput struct {
-	AccountName    string `json:"account_name"`
-	Department     string `json:"department" binding:"required,min=2,max=50"`
-	Description    string `json:"description" binding:"required,min=5,max=200"`
-	Email          string `json:"email" binding:"required,email"`
-	FirstName      string `json:"firstname" binding:"required,min=2,max=50"`
-	LastName       string `json:"lastname" binding:"required,min=2,max=50"`
-	Mailingcity    string `json:"mailingcity" binding:"required,min=2,max=50"`
-	Mailingcountry string `json:"mailingcountry" binding:"required,min=2,max=50"`
-	Mailingpobox   string `json:"mailingpobox"`
-	Mailingstate   string `json:"mailingstate"`
-	Mailingstreet  string `json:"mailingstreet" binding:"required,min=2,max=100"`
-	Mailingzip     string `json:"mailingzip" binding:"required,min=2,max=10"`
-	Othercity      string `json:"othercity"`
-	Othercountry   string `json:"othercountry"`
-	Otherpobox     string `json:"otherpobox"`
-	Otherstate     string `json:"otherstate"`
-	Otherstreet    string `json:"otherstreet"`
-	Otherzip       string `json:"otherzip"`
-	Password       string `json:"password"`
-	Phone          string `json:"phone" binding:"required,min=5,max=15"`
-	Title          string `json:"title" binding:"required,min=2,max=50"`
-	Imagename      string `json:"imagename"`
-	Imagetype      string `json:"imagetype"`
-	Imagecontent   string `json:"imagecontent"`
+	AccountName     string `json:"account_name"`
+	Department      string `json:"department" binding:"omitempty,min=2,max=50"`
+	Description     string `json:"description" binding:"omitempty,min=5,max=200"`
+	Email           string `json:"email" binding:"omitempty,email"`
+	FirstName       string `json:"firstname" binding:"omitempty,min=2,max=50"`
+	LastName        string `json:"lastname" binding:"omitempty,min=2,max=50"`
+	Mailingcity     string `json:"mailingcity" binding:"omitempty,min=2,max=50"`
+	Mailingcountry  string `json:"mailingcountry" binding:"omitempty,min=2,max=50"`
+	Mailingpobox    string `json:"mailingpobox"`
+	Mailingstate    string `json:"mailingstate"`
+	Mailingstreet   string `json:"mailingstreet" binding:"omitempty,min=2,max=100"`
+	Mailingzip      string `json:"mailingzip" binding:"omitempty,min=2,max=10"`
+	Othercity       string `json:"othercity"`
+	Othercountry    string `json:"othercountry"`
+	Otherpobox      string `json:"otherpobox"`
+	Otherstate      string `json:"otherstate"`
+	Otherstreet     string `json:"otherstreet"`
+	Otherzip        string `json:"otherzip"`
+	Password        string `json:"password"`
+	OldPassword     string `json:"old_password"`
+	ConfirmPassword string `json:"confirmPassword"`
+	Phone           string `json:"phone" binding:"omitempty,min=5,max=15"`
+	Title           string `json:"title" binding:"omitempty,min=2,max=50"`
+	Imagename       string `json:"imagename"`
+	Imagetype       string `json:"imagetype"`
+	Imagecontent    string `json:"imagecontent"`
 }
 
 type UsersService struct {
@@ -227,6 +231,12 @@ func (s UsersService) Update(ctx context.Context, id int64, updateData UserUpdat
 		user.Imagecontent = updateData.Imagecontent
 	}
 	if updateData.Password != "" {
+		if updateData.Password != updateData.ConfirmPassword {
+			return user, ErrPasswordDoesNotMatch
+		}
+		if !user.Password.Matches(updateData.OldPassword) {
+			return user, ErrOldPasswordIsWrong
+		}
 		user.Password.Set(updateData.Password)
 	}
 	err = s.repo.Update(ctx, user)

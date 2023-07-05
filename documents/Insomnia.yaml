@@ -1,24 +1,32 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-19T17:51:39.836Z
+__export_date: 2023-07-05T14:33:22.388Z
 __export_source: insomnia.desktop.app:v2022.4.2
 resources:
-  - _id: req_wrk_66e74e4b495c4404841a78c723c211de13b323bc
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de3422bb56
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
-    modified: 1687197050437
-    created: 1687197050437
-    url: "{{ base_url }}/custom-modules/{{ module }}/{{ id }}"
-    name: Get Record
+    modified: 1687501249737
+    created: 1687500785070
+    url: "{{ base_url }}/custom-modules/{{ module }}/{{ id }}/comments"
+    name: Related comments from custom module
     description: ""
     method: GET
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_4dee6ced762a48e497a36c6655652015
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_4752e9fbcb93446384bf3b030db0562c
+        name: Content-Type
+        value: application/json
+        description: ""
     authentication:
       type: bearer
       token: "{{bearerToken}}"
       prefix: ""
-    metaSortKey: -1687197050437
+    metaSortKey: -1687500785070
     isPrivate: false
     settingStoreCookies: true
     settingSendCookies: true
@@ -45,9 +53,354 @@ resources:
     description: ""
     scope: design
     _type: workspace
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211decbbe5855
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
+    modified: 1687500959872
+    created: 1687500785068
+    url: "{{ base_url }}/custom-modules/{{ module }}/{{ id }}/comments"
+    name: Add comment
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "commentcontent": "Please remove this payment"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_0b7e2923589b40feb47efeedc5093d87
+      - id: pair_6d737bb8859d4743b08f2d745cbda7f7
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1687500785068
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de94b794e3
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
+    modified: 1688566672512
+    created: 1687500785067
+    url: "{{ base_url }}/custom-modules/{{ module }}/{{ id }}/documents"
+    name: Related documents from custom module
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_2541e250fb4448228fcf098295775743
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_3a307000757e48aa858508a80c778bc2
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1687500785067
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211dee4cf13e9
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
+    modified: 1687501274732
+    created: 1687500785064
+    url: "{{ base_url }}/custom-modules/{{ module }}/{{ id }}/file/{{ fileId }}"
+    name: Get file in Custom Module
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_5665f2611a7540f796cb402f1a125c1e
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_53544f7b0b4043719eed07f7c8b3b94b
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1687500785064
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de513bafd0
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
+    modified: 1687363855794
+    created: 1687361353412
+    url: "{{ base_url }}/custom-modules/{{ module }}/{{ id }}"
+    name: Update entity
+    description: |-
+      Full update of entity, need to pass json object, example request:
+      ```json
+      {
+      		"amount": 1586,
+      		"cf_944": false,
+      		"description": "Some test payment",
+      		"pay_date": "2023-06-20",
+      		"pay_details": "some details",
+      		"pay_type": "Receipt",
+      		"spstatus": "Executed"
+      	}
+      ```
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        		"amount": 1586,
+        		"cf_944": false,
+        		"description": "Some test payment",
+        		"pay_date": "2023-06-20",
+        		"pay_details": "some details",
+        		"pay_type": "Receipt",
+        		"spstatus": "Executed"
+        	}
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_e5c041811e26473ab6c68418fa8a60f4
+      - id: pair_036f0c02080341db8e85d5d25741c22f
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1687361353412
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211dedbdbf787
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
+    modified: 1687429553043
+    created: 1687361353410
+    url: "{{ base_url }}/custom-modules/{{ module }}/{{ id }}"
+    name: Partly Update entity
+    description: |-
+      Partly update of entity. Example request:
+      ```json
+      {
+      		"amount": 1586,
+      		"cf_944": false,
+      		"description": "Some test payment",
+      		"pay_date": "2023-06-20",
+      		"pay_details": "some details",
+      		"pay_type": "Receipt",
+      		"spstatus": "Executed"
+      	}
+      ```
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        		"amount": 1586,
+        		"cf_944": false,
+        		"description": "Some test payment",
+        		"pay_date": "2023-06-20",
+        		"pay_details": "some details",
+        		"pay_type": "Receipt",
+        		"spstatus": "Executed"
+        	}
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_138bdb5066e546c687f732990ba5931c
+      - id: pair_f0426e29007a4f429bf96fdf773a2dce
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1687361353410
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de5df751f0
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
+    modified: 1687457058694
+    created: 1687326902785
+    url: "{{ base_url }}/custom-modules/{{ module }}"
+    name: Create new entity
+    description: |-
+      Allows to create new entity in custom module
+
+      Example request for module SPPayments:
+      ```json
+      {
+      		"amount": 1585,
+      		"cf_944": false,
+      		"description": "Some test payment",
+      		"pay_date": "2023-06-20",
+      		"pay_details": "some details",
+      		"pay_type": "Receipt",
+      		"spstatus": "Executed"
+      	}
+      ```
+
+      As a result it returns created entity object
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        		"amount": 1585,
+        		"cf_944": false,
+        		"description": "Some test payment",
+        		"pay_date": "2023-06-20",
+        		"pay_details": "some details",
+        		"pay_type": "Receipt",
+        		"spstatus": "Executed",
+        	"doc_no": "12"
+        	}
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_fc9f1d53afb74f49b564987a733f8316
+      - id: pair_0ccff43f57614b45877c8e9c8fde08c2
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1687326902785
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_wrk_66e74e4b495c4404841a78c723c211de13b323bc
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
+    modified: 1688533736781
+    created: 1687197050437
+    url: "{{ base_url }}/custom-modules/{{ module }}/{{ id }}"
+    name: Get Record
+    description: |-
+      Allows to get custom module by ID.
+
+      Example response:
+      ```json
+      {
+      	"data": {
+      		"amount": 1212,
+      		"analytics_code": "",
+      		"assigned_user_id": "19x1",
+      		"cf_944": false,
+      		"coracc_subacc": "",
+      		"created_user_id": "19x1",
+      		"createdtime": "2023-06-19T06:04:17Z",
+      		"debit": "",
+      		"description": "",
+      		"doc_no": 0,
+      		"id": "41x120",
+      		"label": "1",
+      		"modifiedby": {
+      			"label": "",
+      			"id": "19x1"
+      		},
+      		"modifiedtime": "2023-06-19T06:04:17Z",
+      		"pay_date": "2023-06-19T00:00:00Z",
+      		"pay_details": "",
+      		"pay_no": "1",
+      		"pay_type": "Receipt",
+      		"payer": {
+      			"label": "Центр информационных технологий",
+      			"id": "11x6"
+      		},
+      		"related_to": {
+      			"label": "",
+      			"id": ""
+      		},
+      		"source": "CRM",
+      		"spstatus": "Executed",
+      		"starred": false,
+      		"tags": [
+      			""
+      		],
+      		"target_code": "",
+      		"type_payment": ""
+      	}
+      }
+      ```
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_5fdb12d5bf9d4ee18c14f0c33cd5fda4
+        name: Accept
+        value: application/json
+        description: ""
+      - id: pair_48e86263f0764a1c953a3a0e30c1b674
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1687197050437
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211decc46869f
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211decb97873d
-    modified: 1687197074069
+    modified: 1688061967471
     created: 1687195039711
     url: "{{ base_url }}/custom-modules/{{ module }}"
     name: Get All Records
@@ -123,7 +476,23 @@ resources:
       ```
     method: GET
     body: {}
-    parameters: []
+    parameters:
+      - name: page
+        disabled: true
+        value: "1"
+        id: pair_a4f5cf6e729147708e4c90b1a8107238
+      - name: size
+        disabled: true
+        value: "20"
+        id: pair_0c5a1e5453c8423cad080be2fd751db9
+      - name: sort
+        disabled: true
+        value: -pay_no
+        id: pair_322e6377b28948ba9046f969949069e9
+      - name: search
+        disabled: true
+        value: TT3
+        id: pair_84dcfaf39ef44d6fb1424e421c196a8a
     headers:
       - id: pair_4ed21a690ea64711864db2524cdec477
         name: Accept
@@ -1189,7 +1558,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de0d413d6d
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de68c16567
-    modified: 1685809397544
+    modified: 1688452344197
     created: 1685809397544
     url: "{{ base_url }}/leads"
     name: Create new lead
@@ -1207,6 +1576,7 @@ resources:
     headers:
       - name: Content-Type
         value: application/json
+        id: pair_bab3e92806ab4c419c55a7adb8247844
     authentication:
       type: bearer
       token: "{{bearerToken}}"
@@ -1439,7 +1809,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de456403d7
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1686375720905
+    modified: 1687589782134
     created: 1686374247095
     url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}/file/{{ fileId
       }}"
@@ -1482,7 +1852,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9ff0f9d2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1686066202394
+    modified: 1687589769515
     created: 1685983196614
     url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}"
     name: Get Project Task
@@ -1711,7 +2081,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deed91bbf7
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1684583594109
+    modified: 1687589220878
     created: 1684566934469
     url: "{{ base_url }}/projects/{{ projectId }}/tasks"
     name: Get Project Tasks
@@ -1929,7 +2299,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dedb7dde10
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1686374742522
+    modified: 1687589776440
     created: 1684566934447
     url: "{{ base_url }}/projects/{{ projectId }}/tasks/{{ taskId }}/documents"
     name: Project Task Documents
@@ -1997,7 +2367,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de09d91eb1
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1685770578624
+    modified: 1687589730378
     created: 1684500052656
     url: "{{ base_url }}/projects/{{ projectId }}"
     name: Find Project by ID
@@ -2070,7 +2440,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de8d9cdc46
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1686722976562
+    modified: 1687587791974
     created: 1684500052658
     url: "{{ base_url }}/projects"
     name: Get Projects
@@ -2164,7 +2534,7 @@ resources:
         id: pair_f3908a90e06b42538ae8bb9542117618
       - name: search
         disabled: true
-        value: PROJ4
+        value: PROJ1
         id: pair_8a23d75d547049b0957a8ffb6296205f
     headers:
       - id: pair_2eceff9f1a4e4ea6826f6a348aeeb387
@@ -2316,7 +2686,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9e555e50
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1684500984395
+    modified: 1687589208254
     created: 1684500052645
     url: "{{ base_url }}/projects/{{ projectId }}/documents"
     name: Related documents from project
@@ -2386,7 +2756,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de258f1317
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de98f54143
-    modified: 1684504988253
+    modified: 1687588447521
     created: 1684500052642
     url: "{{ base_url }}/projects/{{ projectId }}/file/{{ fileId }}"
     name: Get file in Project
@@ -2773,7 +3143,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dea4c3e151
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de0ca7a98c
-    modified: 1684400189657
+    modified: 1688495237926
     created: 1684330548698
     url: "{{ base_url }}/service-contracts"
     name: Get All Service contracts
@@ -2852,11 +3222,11 @@ resources:
     body: {}
     parameters:
       - name: page
-        disabled: true
+        disabled: false
         value: "1"
         id: pair_22f16a2ba6134e0faba2833f3ccac3fa
       - name: size
-        disabled: true
+        disabled: false
         value: "20"
         id: pair_248ad9504e9c4ef7a89dc5e0c67b8648
     headers:
@@ -2893,7 +3263,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211debe4cfbb3
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de0ca7a98c
-    modified: 1684477456054
+    modified: 1688492779714
     created: 1684238814920
     url: "{{ base_url }}/service-contracts/{{ scId }}"
     name: Find Service Contract by ID
@@ -2961,7 +3331,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de9127d807
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211debaeba7e7
-    modified: 1687068618989
+    modified: 1687283183197
     created: 1682659418912
     url: "{{ base_url }}/invoices"
     name: Get Invoices
@@ -2980,7 +3350,7 @@ resources:
         id: pair_7945c57b1f7549428d1c5757539fa58c
       - name: sort
         disabled: true
-        value: -invoice_no
+        value: subject
         id: pair_845a457e2c5b462eb8df75d717069d92
       - name: search
         disabled: true
@@ -3351,7 +3721,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de590cffc0
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211dee75bc045
-    modified: 1682660893388
+    modified: 1687323811964
     created: 1682529682947
     url: "{{ base_url }}/faqs"
     name: Get All Faqs
@@ -3679,7 +4049,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de793d958d
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1685039933753
+    modified: 1687710335636
     created: 1682232473771
     url: "{{ base_url }}/tickets/{{ ticketId }}/file/{{ fileId }}"
     name: Get file in Ticket
@@ -3722,7 +4092,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de46f4f7b3
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1687154588677
+    modified: 1688495245808
     created: 1682171278798
     url: "{{ base_url }}/tickets"
     name: Get Tickets
@@ -3818,7 +4188,7 @@ resources:
         id: pair_c7e0f105a0594dd4a8f06275cefa002c
       - name: search
         disabled: true
-        value: TT1
+        value: Proble
         id: pair_1f98e09450484cc5880a8ad2926b2c27
         description: ""
     headers: []
@@ -3903,7 +4273,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211dee9835bc2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211ded370d9cd
-    modified: 1685211879193
+    modified: 1688495248381
     created: 1682098348610
     url: "{{ base_url }}/tickets/{{ ticketId }}"
     name: Find HelpDesk by ID
@@ -3963,7 +4333,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de01c821a8
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211defbd34a2b
-    modified: 1687197073626
+    modified: 1688534968562
     created: 1682057273135
     url: "{{ base_url }}/modules/{{ moduleName }}"
     name: Module Info
@@ -4506,7 +4876,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deaa5108ed
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de1a8565a9
-    modified: 1687068892710
+    modified: 1688484832030
     created: 1682010335863
     url: "{{ base_url }}/managers/{{ managerId }}"
     name: Find manager by ID
@@ -4570,7 +4940,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de816b2196
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de5bdcd3c0
-    modified: 1685554970919
+    modified: 1688492667285
     created: 1682089127951
     url: "{{ base_url }}/company"
     name: Get company data
@@ -4755,7 +5125,7 @@ resources:
     _type: request_group
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de158431ae
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1687068647863
+    modified: 1688484845247
     created: 1686986105984
     url: "{{ base_url }}/users/settings"
     name: Get User Settings
@@ -5063,9 +5433,9 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211deb8d9c1dc
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1685902922971
+    modified: 1688566958777
     created: 1682426774797
-    url: "{{ base_url }}/tickets/{{ ticketId }}"
+    url: "{{ base_url }}/users/my"
     name: Update user
     description: |-
       Here you can update information about authenticated user
@@ -5135,6 +5505,44 @@ resources:
       token: "{{bearerToken}}"
       prefix: ""
     metaSortKey: -1684590648138
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_e73f3932838d445883df3292e40acdc3
+    parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
+    modified: 1688567576086
+    created: 1688566973180
+    url: "{{ base_url }}/users/my"
+    name: Update password
+    description: This is an example route for update password of authenticated user
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        		"password": "pass123123",
+        	"old_password": "oldpass",
+        	"confirmPassword": "pass123123"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_8902278f1ddf46c0b704e345b31553df
+      - id: pair_7098c1937d1b4e7da566ce8fda1b87c9
+        name: Accept
+        value: application/json
+        description: ""
+    authentication:
+      type: bearer
+      token: "{{bearerToken}}"
+      prefix: ""
+    metaSortKey: -1684590648113
     isPrivate: false
     settingStoreCookies: true
     settingSendCookies: true
@@ -5462,7 +5870,7 @@ resources:
     _type: request
   - _id: req_wrk_66e74e4b495c4404841a78c723c211de00ac9da2
     parentId: fld_wrk_66e74e4b495c4404841a78c723c211de12dea96f
-    modified: 1687068854008
+    modified: 1688567568180
     created: 1681827520782
     url: "{{ base_url }}/users/login"
     name: Login in system
@@ -5676,7 +6084,7 @@ resources:
     _type: cookie_jar
   - _id: spc_034c419a866f48258ca444d906a7a806
     parentId: wrk_66e74e4b495c4404841a78c723c211de
-    modified: 1687197073193
+    modified: 1688484496736
     created: 1681752522263
     fileName: Vtiger Customer Portal
     contents: >-
@@ -8521,6 +8929,36 @@ resources:
                 required: true
                 schema:
                   type: string
+              - name: page
+                in: query
+                description: The page number to retrieve (default is 1)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 1
+              - name: size
+                in: query
+                description: The number of items per page (default is 20)
+                required: false
+                schema:
+                  type: integer
+                  format: int32
+                  default: 20
+              - name: sort
+                in: query
+                description: Field, which accepts order by algorithm. Minus sign at the beginning means desc order.
+                required: false
+                schema:
+                  type: string
+                  example: -pay_no
+              - name: search
+                in: query
+                description: Search with LIKE filter in fields which set in config
+                required: false
+                schema:
+                  type: string
+                  example: TT3
             responses:
               "200":
                 description: successful operation
@@ -8544,6 +8982,41 @@ resources:
                 description: Invalid ID supplied
               "403":
                 description: Operation not permitted
+          post:
+              tags:
+                - custom-modules
+              summary: Create new entity
+              description: Create new custom module
+              operationId: createEntity
+              security:
+                - bearerAuth: []
+              parameters:
+                - name: module
+                  in: path
+                  description: Module name
+                  required: true
+                  schema:
+                    type: string
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+              responses:
+                "201":
+                  description: Ticket created
+                  content:
+                    application/json:
+                      schema:
+                        type: object
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "403":
+                  description: Operation not permitted
         "/custom-modules/{module}/{id}":
           get:
             tags:
@@ -8577,11 +9050,294 @@ resources:
                 description: Invalid ID supplied
               "403":
                 description: Operation not permitted
+          put:
+              tags:
+                - custom-modules
+              summary: Update entity
+              description: Allows authorized user update custom module entity.
+              operationId: updateCustomEntity
+              security:
+                - bearerAuth: []
+              parameters:
+                - name: module
+                  in: path
+                  description: Module name
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: path
+                  description: ID of entity to update
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+              responses:
+                "202":
+                  description: Ticket updated
+                  content:
+                    application/json:
+                      schema:
+                        type: object               
+                "400":
+                  description: Invalid ID supplied
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "404":
+                  description: Entity not found
+                "403":
+                  description: Operation not permitted
+          patch:
+              tags:
+                - custom-modules
+              summary: Partly Update entity
+              description: Allows update specific field in entity
+              operationId: updateEntityPartly
+              security:
+                - bearerAuth: []
+              parameters:
+                - name: module
+                  in: path
+                  description: Module name
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: path
+                  description: ID of entity to update
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+              responses:
+                "202":
+                  description: Entity updated
+                  content:
+                    application/json:
+                      schema:
+                        type: object               
+                "400":
+                  description: Invalid ID supplied
+                "422":
+                  description: Validation error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/ValidationResponse"
+                "404":
+                  description: Entity not found
+                "403":
+                  description: Operation not permitted
+        "/custom-modules/{module}/{id}/comments":
+          get:
+            tags:
+              - custom-modules
+            summary: Related comments from custom module
+            description: Returns an array of comments from custom module
+            operationId: getCommentsFromCustomModule
+            security:
+              - bearerAuth: []
+            parameters:
+                - name: module
+                  in: path
+                  description: Module name
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: path
+                  description: ID of ticket
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Comment"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100                  
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Custom module not found
+              "403":
+                description: Operation not permitted
+          post:
+            tags:
+              - custom-modules
+            summary: Add comment
+            description: Create new comment, attached to current custom module ID
+            operationId: addCommentToCustomModule
+            security:
+              - bearerAuth: []
+            parameters:
+                - name: module
+                  in: path
+                  description: Module name
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: path
+                  description: ID of custom module record
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+            requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        commentcontent:
+                          description: Comment content
+                          type: string
+                          example: "Please fix problem ASAP"
+            responses:
+              "201":
+                description: comment created
+                content:
+                  application/json:
+                      schema:
+                        $ref: "#/components/schemas/Comment"         
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Entity not found
+              "403":
+                description: Operation not permitted
+        "/custom-modules/{module}/{id}/documents":
+          get:
+            tags:
+              - custom-modules
+            summary: Related documents from custom module
+            description: Returns an array of documents from related custom module
+            operationId: getDocumentsFromCustomModule
+            security:
+              - bearerAuth: []
+            parameters:
+                - name: module
+                  in: path
+                  description: Module name
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: path
+                  description: ID of entity
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Document"
+                        count:
+                          type: number
+                          example: 100
+                        page:
+                          type: number
+                          example: 1
+                        size:
+                          type: number
+                          example: 100                  
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Entity not found
+              "403":
+                description: Operation not permitted
+        "/custom-modules/{module}/{id}/file/{fileId}":
+          get:
+            tags:
+              - custom-modules
+            summary: Get file in Custom Module
+            description: Returns a content from file attached to custom module
+            operationId: getFileFromCustomModule
+            security:
+              - bearerAuth: []
+            parameters:
+                - name: module
+                  in: path
+                  description: Module name
+                  required: true
+                  schema:
+                    type: string
+                - name: fileId
+                  in: path
+                  description: ID of file
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+                - name: id
+                  in: path
+                  description: ID of ticket
+                  required: true
+                  schema:
+                    type: string
+                    format: string
+            responses:
+              "200":
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        data:
+                          $ref: "#/components/schemas/File"                
+              "400":
+                description: Invalid ID supplied
+              "404":
+                description: Entity or file not found
+              "403":
+                description: Operation not permitted
       externalDocs:
         description: Find out more about Swagger
         url: http://swagger.io
       servers:
-        - url: http://127.0.0.1:4045/api/v1
+        - url: http://127.0.0.1:4050/api/v1
       components:
         securitySchemes:
           bearerAuth:
@@ -10883,7 +11639,7 @@ resources:
     _type: environment
   - _id: env_1bfede95dc144997a9155f6e79a3eaa5
     parentId: env_7051e4988ba662848196b333737a56823b214220
-    modified: 1686766018193
+    modified: 1687587791426
     created: 1681826841922
     name: Local
     data:
@@ -10905,6 +11661,8 @@ resources:
       taskId: 28x56
       userId: 12x11
       salesOrderId: 3x12
+      module: SPPayments
+      id: 41x120
     dataPropertyOrder:
       "&":
         - scheme
@@ -10925,6 +11683,8 @@ resources:
         - taskId
         - userId
         - salesOrderId
+        - module
+        - id
     color: null
     isPrivate: false
     metaSortKey: 1681826841922

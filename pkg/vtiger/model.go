@@ -2,6 +2,7 @@ package vtiger
 
 import (
 	"encoding/json"
+	"strings"
 	"time"
 )
 
@@ -15,6 +16,7 @@ type Model struct {
 	Tags           []string  `json:"tags"`
 	Id             string    `json:"id"`
 	Label          string    `json:"label"`
+	RelatedTo      string    `json:"related_to"`
 }
 
 func (m *Model) ConvertToMap() map[string]any {
@@ -27,6 +29,12 @@ func (m *Model) ConvertToMap() map[string]any {
 	err = json.Unmarshal(data, &result)
 	if err != nil {
 		return nil
+	}
+	result["tags"] = strings.Join(m.Tags, ",")
+	if m.Starred {
+		result["starred"] = "1"
+	} else {
+		result["starred"] = "0"
 	}
 
 	return result

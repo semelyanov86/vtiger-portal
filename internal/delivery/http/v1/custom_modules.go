@@ -87,6 +87,10 @@ func (h *Handler) getEntityById(c *gin.Context) {
 		notPermittedResponse(c)
 		return
 	}
+	if errors.Is(service.ErrModuleNotSupported, err) {
+		moduleNotSupportedResponse(c)
+		return
+	}
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -295,6 +299,14 @@ func (h *Handler) getCustomDocuments(c *gin.Context) {
 
 	documents, err := h.services.CustomModules.GetRelatedDocuments(c.Request.Context(), id, moduleName, *userModel)
 	if errors.Is(service.ErrOperationNotPermitted, err) {
+		notPermittedResponse(c)
+		return
+	}
+	if errors.Is(service.ErrModuleNotSupported, err) {
+		moduleNotSupportedResponse(c)
+		return
+	}
+	if errors.Is(repository.ErrRecordNotFound, err) {
 		notPermittedResponse(c)
 		return
 	}

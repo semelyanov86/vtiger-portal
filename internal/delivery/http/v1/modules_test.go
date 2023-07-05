@@ -35,7 +35,7 @@ func TestModule_describeOperation(t *testing.T) {
 				r.EXPECT().GetModuleInfo(context.Background(), "HelpDesk").Return(vtiger.MockedModule, nil)
 			},
 			statusCode:   http.StatusOK,
-			responseBody: `"label":"Test Module"`,
+			responseBody: `"label":"Assets"`,
 			userModel:    &repository.MockedUser,
 		},
 		{

@@ -8,13 +8,20 @@ import (
 )
 
 type ModulesCrm struct {
-	vtiger vtiger.VtigerConnector
+	vtiger vtiger.Connector
 	config config.Config
 }
 
 func NewModulesCrm(config config.Config, cache cache.Cache) ModulesCrm {
 	return ModulesCrm{
 		vtiger: vtiger.NewVtigerConnector(cache, config.Vtiger.Connection, vtiger.NewWebRequest(config.Vtiger.Connection)),
+		config: config,
+	}
+}
+
+func NewModulesCrmConcrete(config config.Config, vtiger vtiger.Connector) ModulesCrm {
+	return ModulesCrm{
+		vtiger: vtiger,
 		config: config,
 	}
 }

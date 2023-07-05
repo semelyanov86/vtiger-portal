@@ -32,6 +32,13 @@ func NewCustomModuleCrm(config config.Config, cache cache.Cache) CustomModuleCrm
 	}
 }
 
+func NewCustomModuleConcrete(config config.Config, vtiger vtiger.Connector) CustomModuleCrm {
+	return CustomModuleCrm{
+		vtiger: vtiger,
+		config: config,
+	}
+}
+
 func (m CustomModuleCrm) GetAll(ctx context.Context, filter vtiger.PaginationQueryFilter, custom vtiger.Module, fields []string) ([]map[string]any, error) {
 	fieldProps := vtiger.QueryFieldsProps{
 		DefaultSort:  "id",

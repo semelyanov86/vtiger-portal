@@ -18,6 +18,7 @@ var MockedEntity = Model{
 	Tags:           []string{"tag1", "tag2"},
 	Id:             "23x42343",
 	Label:          "This is test label",
+	RelatedTo:      "12x11",
 }
 
 func (m MockedConnector) GetAll(ctx context.Context, filter PaginationQueryFilter, fields QueryFieldsProps) ([]map[string]any, error) {

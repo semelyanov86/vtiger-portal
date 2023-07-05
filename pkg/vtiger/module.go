@@ -51,8 +51,8 @@ func (f FieldType) IsPicklistExist(value string) bool {
 }
 
 var MockedModule = Module{
-	Label:           "Test Module",
-	Name:            "TestModule",
+	Label:           "Assets",
+	Name:            "Assets",
 	Createable:      true,
 	Updateable:      true,
 	Deleteable:      true,
@@ -79,6 +79,19 @@ var MockedModule = Module{
 			Nullable:  true,
 			Editable:  true,
 			Default:   "default2",
+		},
+		{
+			Name:      "related_to",
+			Label:     "Related To",
+			Mandatory: false,
+			Isunique:  false,
+			Nullable:  true,
+			Editable:  true,
+			Default:   "",
+			Type: FieldType{
+				Name:     "reference",
+				RefersTo: []string{"Contacts"},
+			},
 		},
 	},
 }

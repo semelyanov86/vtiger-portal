@@ -49,3 +49,12 @@ func notPermittedResponse(c *gin.Context) {
 	}
 	c.AbortWithStatusJSON(http.StatusForbidden, message)
 }
+
+func moduleNotSupportedResponse(c *gin.Context) {
+	message := validationResponse{
+		Error:   "module not supported",
+		Field:   "module",
+		Message: "Module you selected is not supported",
+	}
+	c.AbortWithStatusJSON(http.StatusBadRequest, message)
+}

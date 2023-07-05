@@ -10,13 +10,20 @@ import (
 )
 
 type DocumentCrm struct {
-	vtiger vtiger.VtigerConnector
+	vtiger vtiger.Connector
 	config config.Config
 }
 
 func NewDocumentCrm(config config.Config, cache cache.Cache) DocumentCrm {
 	return DocumentCrm{
 		vtiger: vtiger.NewVtigerConnector(cache, config.Vtiger.Connection, vtiger.NewWebRequest(config.Vtiger.Connection)),
+		config: config,
+	}
+}
+
+func NewDocumentConcrete(config config.Config, vtiger vtiger.Connector) DocumentCrm {
+	return DocumentCrm{
+		vtiger: vtiger,
 		config: config,
 	}
 }

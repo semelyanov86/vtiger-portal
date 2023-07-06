@@ -90,7 +90,7 @@ var MockedModule = Module{
 			Default:   "",
 			Type: FieldType{
 				Name:     "reference",
-				RefersTo: []string{"Contacts"},
+				RefersTo: []string{"Contacts", "Accounts"},
 			},
 		},
 	},

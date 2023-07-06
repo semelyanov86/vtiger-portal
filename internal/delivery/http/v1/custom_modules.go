@@ -51,7 +51,7 @@ func (h *Handler) getAllEntities(c *gin.Context) {
 		Search:   c.DefaultQuery("search", ""),
 	}, moduleName)
 	if errors.Is(service.ErrModuleNotSupported, err) {
-		notPermittedResponse(c)
+		moduleNotSupportedResponse(c)
 		return
 	}
 	if err != nil {

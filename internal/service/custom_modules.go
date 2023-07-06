@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/semelyanov86/vtiger-portal/internal/config"
 	"github.com/semelyanov86/vtiger-portal/internal/domain"
 	"github.com/semelyanov86/vtiger-portal/internal/repository"
@@ -25,6 +26,16 @@ type CustomModule struct {
 	document   DocumentServiceInterface
 	module     ModulesService
 	config     config.Config
+}
+
+type ValidationError struct {
+	Field   string
+	Message string
+}
+
+// Implement the error interface
+func (v ValidationError) Error() string {
+	return fmt.Sprintf("validation failed on field '%s': %s", v.Field, v.Message)
 }
 
 func NewCustomModuleService(repository repository.CustomModuleCrm, cache cache.Cache, comments CommentServiceInterface, document DocumentServiceInterface, module ModulesService, config config.Config) CustomModule {
@@ -174,23 +185,35 @@ func (c CustomModule) validateInputFields(input map[string]any, module vtiger.Mo
 	var fields = module.Fields
 	for _, field := range fields {
 		if field.Mandatory && (input[field.Name] == "" || input[field.Name] == nil) {
-			return e.Wrap("Field "+field.Label+" can not be empty", ErrValidation)
+			return ValidationError{
+				Field:   field.Label,
+				Message: "input cannot be empty",
+			}
 		}
 		if field.Type.Name == "date" && input[field.Name] != "" && input[field.Name] != nil {
 			dateFormat := "2006-01-02"
 			_, err := time.Parse(dateFormat, input[field.Name].(string))
 			if err != nil {
-				return e.Wrap("Field "+field.Label+" has wrong date format", ErrValidation)
+				return ValidationError{
+					Field:   field.Label,
+					Message: "field has wrong date format",
+				}
 			}
 		}
 		if field.Type.Name == "picklist" && input[field.Name] != "" && input[field.Name] != nil {
 			if !field.Type.IsPicklistExist(input[field.Name].(string)) {
-				return e.Wrap("Wrong value for field "+field.Label, ErrValidation)
+				return ValidationError{
+					Field:   field.Label,
+					Message: "field has wrong value",
+				}
 			}
 		}
 		if field.Type.Name == "boolean" && input[field.Name] != nil {
 			if input[field.Name] != true && input[field.Name] != false && input[field.Name] != "1" && input[field.Name] != "0" && input[field.Name] != 0 && input[field.Name] != 1 {
-				return e.Wrap("Wrong boolean value for field "+field.Label, ErrValidation)
+				return ValidationError{
+					Field:   field.Label,
+					Message: "field has wrong boolean value",
+				}
 			}
 		}
 		if field.Type.Name == "reference" && input[field.Name] != "" && input[field.Name] != nil {
@@ -201,7 +224,10 @@ func (c CustomModule) validateInputFields(input map[string]any, module vtiger.Mo
 			}
 
 			if input[field.Name].(repository.ReferenceField).Id != "" && !re.MatchString(input[field.Name].(repository.ReferenceField).Id) {
-				return e.Wrap("Wrong reference value for field "+field.Label, ErrValidation)
+				return ValidationError{
+					Field:   field.Label,
+					Message: "wrong reference value",
+				}
 			}
 		}
 		if field.Type.Name == "integer" && input[field.Name] != "" && input[field.Name] != nil {
@@ -211,10 +237,16 @@ func (c CustomModule) validateInputFields(input map[string]any, module vtiger.Mo
 				continue
 			case string:
 				if _, err := strconv.Atoi(input[field.Name].(string)); err != nil {
-					return e.Wrap("Field is not integer "+field.Label, ErrValidation)
+					return ValidationError{
+						Field:   field.Label,
+						Message: "field is not integer",
+					}
 				}
 			default:
-				return e.Wrap("Field is not integer "+field.Label, ErrValidation)
+				return ValidationError{
+					Field:   field.Label,
+					Message: "field is not integer",
+				}
 			}
 		}
 		if field.Type.Name == "double" && input[field.Name] != "" && input[field.Name] != nil {
@@ -224,10 +256,16 @@ func (c CustomModule) validateInputFields(input map[string]any, module vtiger.Mo
 				continue
 			case string:
 				if _, err := strconv.ParseFloat(input[field.Name].(string), 64); err != nil {
-					return e.Wrap("Field is not double "+field.Label, ErrValidation)
+					return ValidationError{
+						Field:   field.Label,
+						Message: "field is not double",
+					}
 				}
 			default:
-				return e.Wrap("Field is not double "+field.Label, ErrValidation)
+				return ValidationError{
+					Field:   field.Label,
+					Message: "field is not double",
+				}
 			}
 		}
 		if field.Type.Name == "currency" && input[field.Name] != "" && input[field.Name] != nil {
@@ -237,10 +275,16 @@ func (c CustomModule) validateInputFields(input map[string]any, module vtiger.Mo
 				continue
 			case string:
 				if _, err := strconv.ParseFloat(input[field.Name].(string), 64); err != nil {
-					return e.Wrap("Field is not currency "+field.Label, ErrValidation)
+					return ValidationError{
+						Field:   field.Label,
+						Message: "field is not currency",
+					}
 				}
 			default:
-				return e.Wrap("Field is not currency "+field.Label, ErrValidation)
+				return ValidationError{
+					Field:   field.Label,
+					Message: "field is not currency",
+				}
 			}
 		}
 	}

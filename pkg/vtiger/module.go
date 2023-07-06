@@ -63,22 +63,24 @@ var MockedModule = Module{
 	LabelFields:     "name",
 	Fields: []ModuleField{
 		{
-			Name:      "field1",
-			Label:     "Field 1",
+			Name:      "title",
+			Label:     "Title",
 			Mandatory: true,
 			Isunique:  true,
 			Nullable:  false,
 			Editable:  true,
 			Default:   "default1",
+			Type:      FieldType{Name: "string"},
 		},
 		{
-			Name:      "field2",
-			Label:     "Field 2",
+			Name:      "description",
+			Label:     "Description",
 			Mandatory: false,
 			Isunique:  false,
 			Nullable:  true,
 			Editable:  true,
-			Default:   "default2",
+			Default:   "",
+			Type:      FieldType{Name: "text"},
 		},
 		{
 			Name:      "related_to",
@@ -91,6 +93,53 @@ var MockedModule = Module{
 			Type: FieldType{
 				Name:     "reference",
 				RefersTo: []string{"Contacts", "Accounts"},
+			},
+		},
+		{
+			Name:      "status",
+			Label:     "Status",
+			Mandatory: true,
+			Isunique:  false,
+			Nullable:  false,
+			Editable:  true,
+			Default:   "",
+			Type: FieldType{
+				Name: "picklist",
+				PicklistValues: []PicklistValues{
+					{
+						Label: "New",
+						Value: "New",
+					},
+					{
+						Label: "Used",
+						Value: "Used",
+					},
+				},
+			},
+		},
+		{
+			Name:      "hours",
+			Label:     "Hours",
+			Mandatory: false,
+			Isunique:  false,
+			Nullable:  true,
+			Editable:  true,
+			Default:   "",
+			Type: FieldType{
+				Name: "double",
+			},
+		},
+		{
+			Name:      "date",
+			Label:     "Date",
+			Mandatory: false,
+			Isunique:  false,
+			Nullable:  true,
+			Editable:  true,
+			Default:   "",
+			Type: FieldType{
+				Name:   "date",
+				Format: "yyyy-mm-dd",
 			},
 		},
 	},

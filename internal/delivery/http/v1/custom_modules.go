@@ -125,15 +125,14 @@ func (h *Handler) createCustomModule(c *gin.Context) {
 	}
 
 	entity, err := h.services.CustomModules.CreateEntity(c.Request.Context(), inp, *userModel, moduleName)
-	if errors.Is(service.ErrValidation, err) {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "root", "message": err.Error()})
-		return
-	}
 	if errors.Is(service.ErrModuleNotSupported, err) {
-		notPermittedResponse(c)
+		moduleNotSupportedResponse(c)
 		return
 	}
-	if err != nil {
+	if validationErr, ok := err.(service.ValidationError); ok {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": validationErr.Field, "message": validationErr.Error()})
+		return
+	} else if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -160,10 +159,7 @@ func (h *Handler) updateEntity(c *gin.Context) {
 	}
 
 	ticket, err := h.services.CustomModules.UpdateEntity(c.Request.Context(), inp, id, *userModel, moduleName)
-	if errors.Is(service.ErrValidation, err) {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "ticketcategories", "message": err.Error()})
-		return
-	}
+
 	if errors.Is(service.ErrOperationNotPermitted, err) {
 		notPermittedResponse(c)
 		return
@@ -172,7 +168,10 @@ func (h *Handler) updateEntity(c *gin.Context) {
 		notPermittedResponse(c)
 		return
 	}
-	if err != nil {
+	if validationErr, ok := err.(service.ValidationError); ok {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": validationErr.Field, "message": validationErr.Error()})
+		return
+	} else if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -197,10 +196,7 @@ func (h *Handler) updatePartlyEntity(c *gin.Context) {
 	}
 
 	ticket, err := h.services.CustomModules.Revise(c.Request.Context(), inp, id, *userModel, moduleName)
-	if errors.Is(service.ErrValidation, err) {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": "root", "message": err.Error()})
-		return
-	}
+
 	if errors.Is(service.ErrOperationNotPermitted, err) {
 		notPermittedResponse(c)
 		return
@@ -209,7 +205,10 @@ func (h *Handler) updatePartlyEntity(c *gin.Context) {
 		notPermittedResponse(c)
 		return
 	}
-	if err != nil {
+	if validationErr, ok := err.(service.ValidationError); ok {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "Validation Error", "field": validationErr.Field, "message": validationErr.Error()})
+		return
+	} else if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}

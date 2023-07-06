@@ -78,7 +78,7 @@ func (m MockedConnector) RetrieveFiles(ctx context.Context, id string) (*VtigerR
 }
 
 func (m MockedConnector) Update(ctx context.Context, data map[string]any) (*VtigerResponse[map[string]any], error) {
-	return nil, nil
+	return &VtigerResponse[map[string]any]{Result: MockedEntity.ConvertToMap()}, nil
 }
 
 func (m MockedConnector) Revise(ctx context.Context, data map[string]any) (*VtigerResponse[map[string]any], error) {

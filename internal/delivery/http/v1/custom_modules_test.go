@@ -447,3 +447,158 @@ func TestHandler_createCustomModule(t *testing.T) {
 		})
 	}
 }
+
+func TestHandler_updateCustomModule(t *testing.T) {
+	tests := []struct {
+		name         string
+		userModel    *domain.User
+		statusCode   int
+		responseBody string
+		requestBody  string
+		module       string
+	}{
+		{
+			name:         "Entity updated",
+			statusCode:   http.StatusAccepted,
+			responseBody: `"description":"Some description for mocked entity"`,
+			userModel:    &repository.MockedUser,
+			module:       "Assets",
+			requestBody: `{
+  "title": "Some test problem",
+  "description": "This is some description",
+  "status": "New",
+  "hours": 4,
+  "date": "2023-05-06"
+}`,
+		},
+		{
+			name:         "Module not supported",
+			statusCode:   http.StatusBadRequest,
+			responseBody: `module not supported`,
+			userModel:    &repository.MockedUser,
+			module:       "TestModule",
+			requestBody: `{
+  "title": "Some test problem",
+  "description": "This is some description",
+  "status": "New",
+  "hours": 4,
+  "date": "2023-05-06"
+}`,
+		},
+		{
+			name:         "Anonymous Access",
+			statusCode:   http.StatusUnauthorized,
+			responseBody: `"error":"Anonymous Access",`,
+			userModel:    domain.AnonymousUser,
+			module:       "Assets",
+			requestBody: `{
+  "title": "Some test problem",
+  "description": "This is some description",
+  "status": "New",
+  "hours": 4,
+  "date": "2023-05-06"
+}`,
+		},
+		{
+			name:         "Empty Body",
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `"error":"Validation Error"`,
+			userModel:    &repository.MockedUser,
+			module:       "Assets",
+			requestBody:  `{}`,
+		},
+		{
+			name:         "Entity with no title",
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `"field":"Title"`,
+			userModel:    &repository.MockedUser,
+			module:       "Assets",
+			requestBody: `{
+  "title": "",
+  "description": "This is some description",
+  "status": "New",
+  "hours": 4,
+  "date": "2023-05-06"
+}`,
+		},
+		{
+			name:         "Entity with wrong status",
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `"field":"Status"`,
+			userModel:    &repository.MockedUser,
+			module:       "Assets",
+			requestBody: `{
+  "title": "Some correct title",
+  "description": "This is some description",
+  "status": "some wrong value",
+  "hours": 4,
+  "date": "2023-05-06"
+}`,
+		},
+		{
+			name:         "Entity with number as string",
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `"field":"Hours"`,
+			userModel:    &repository.MockedUser,
+			module:       "Assets",
+			requestBody: `{
+  "title": "Some correct title",
+  "description": "This is some description",
+  "status": "New",
+  "hours": "hours",
+  "date": "2023-05-06"
+}`,
+		},
+		{
+			name:         "Entity with wrong date",
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `"field":"Date"`,
+			userModel:    &repository.MockedUser,
+			module:       "Assets",
+			requestBody: `{
+  "title": "Some correct title",
+  "description": "This is some description",
+  "status": "New",
+  "hours": 2,
+  "date": "4324234"
+}`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rm := repository.NewCustomModuleConcrete(config.Config{}, vtiger.NewMockedVtigerConnector())
+			rt := repository.NewModulesCrmConcrete(config.Config{}, vtiger.NewMockedVtigerConnector())
+
+			moduleService := service.NewModulesService(rt, cache.NewMemoryCache())
+			customModuleService := service.NewCustomModuleService(rm, cache.NewMemoryCache(), &mock_service.MockCommentServiceInterface{}, mock_service.NewMockDocumentServiceInterface(c), moduleService, config.Config{
+				Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{CustomModules: map[string][]string{tt.module: {"Documents"}}}},
+			})
+
+			services := &service.Services{CustomModules: customModuleService, Context: service.MockedContextService{MockedUser: tt.userModel}}
+			handler := Handler{services: services}
+
+			// Init Endpoint
+			r := gin.New()
+			r.PUT("/api/v1/custom-modules/:module/:id", func(c *gin.Context) {
+
+			}, handler.updateEntity)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("PUT", "/api/v1/custom-modules/Assets/22x45",
+				bytes.NewBufferString(tt.requestBody))
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}

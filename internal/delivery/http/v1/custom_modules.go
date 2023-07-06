@@ -165,7 +165,7 @@ func (h *Handler) updateEntity(c *gin.Context) {
 		return
 	}
 	if errors.Is(service.ErrModuleNotSupported, err) {
-		notPermittedResponse(c)
+		moduleNotSupportedResponse(c)
 		return
 	}
 	if validationErr, ok := err.(service.ValidationError); ok {
@@ -202,7 +202,7 @@ func (h *Handler) updatePartlyEntity(c *gin.Context) {
 		return
 	}
 	if errors.Is(service.ErrModuleNotSupported, err) {
-		notPermittedResponse(c)
+		moduleNotSupportedResponse(c)
 		return
 	}
 	if validationErr, ok := err.(service.ValidationError); ok {

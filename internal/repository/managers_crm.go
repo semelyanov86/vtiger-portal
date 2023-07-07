@@ -10,13 +10,20 @@ import (
 )
 
 type ManagersCrm struct {
-	vtiger vtiger.VtigerConnector
+	vtiger vtiger.Connector
 	config config.Config
 }
 
 func NewManagersCrm(config config.Config, cache cache.Cache) ManagersCrm {
 	return ManagersCrm{
 		vtiger: vtiger.NewVtigerConnector(cache, config.Vtiger.Connection, vtiger.NewWebRequest(config.Vtiger.Connection)),
+		config: config,
+	}
+}
+
+func NewManagersConcrete(config config.Config, vtiger vtiger.Connector) ManagersCrm {
+	return ManagersCrm{
+		vtiger: vtiger,
 		config: config,
 	}
 }

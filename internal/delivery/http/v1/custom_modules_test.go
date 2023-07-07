@@ -602,3 +602,100 @@ func TestHandler_updateCustomModule(t *testing.T) {
 		})
 	}
 }
+
+func TestHandler_getRelatedCommentsFromCustomModule(t *testing.T) {
+	var notOwnedUser = repository.MockedUser
+	notOwnedUser.Crmid = "22x44"
+
+	tests := []struct {
+		name         string
+		id           string
+		userModel    *domain.User
+		statusCode   int
+		responseBody string
+		module       string
+	}{
+		{
+			name:         "Related comments received",
+			id:           "23x42343",
+			userModel:    &repository.MockedUser,
+			statusCode:   http.StatusOK,
+			responseBody: `"id":"12x11","commentcontent":""`,
+			module:       "Assets",
+		},
+		{
+			name:         "Module Not Supported",
+			id:           "23x42343",
+			userModel:    &repository.MockedUser,
+			statusCode:   http.StatusBadRequest,
+			responseBody: `module not supported`,
+			module:       "TestModule",
+		},
+		{
+			name:         "Anonymous Access",
+			id:           "17x1",
+			statusCode:   http.StatusUnauthorized,
+			responseBody: `"error":"Anonymous Access",`,
+			userModel:    domain.AnonymousUser,
+			module:       "Assets",
+		},
+		{
+			name:         "Wrong ID",
+			id:           "17",
+			statusCode:   http.StatusUnprocessableEntity,
+			responseBody: `wrong id`,
+			userModel:    &repository.MockedUser,
+			module:       "Assets",
+		},
+		{
+			name:         "Not owned module",
+			id:           "17x16",
+			statusCode:   http.StatusForbidden,
+			responseBody: `"message":"You are not allowed to view this record"`,
+			userModel:    &notOwnedUser,
+			module:       "Assets",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Init Dependencies
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			rm := repository.NewCustomModuleConcrete(config.Config{}, vtiger.NewMockedVtigerConnector())
+			rd := repository.NewCommentConcrete(config.Config{}, vtiger.NewMockedVtigerConnector())
+			rt := repository.NewModulesCrmConcrete(config.Config{}, vtiger.NewMockedVtigerConnector())
+			rman := repository.NewManagersConcrete(config.Config{}, vtiger.NewMockedVtigerConnector())
+
+			moduleService := service.NewModulesService(rt, cache.NewMemoryCache())
+			managerService := service.NewManagerService(rman, cache.NewMemoryCache())
+
+			commentService := service.NewComments(rd, cache.NewMemoryCache(), config.Config{}, service.UsersService{}, managerService)
+
+			customModuleService := service.NewCustomModuleService(rm, cache.NewMemoryCache(), commentService, service.Documents{}, moduleService, config.Config{
+				Vtiger: config.VtigerConfig{Business: config.VtigerBusinessConfig{CustomModules: map[string][]string{tt.module: {"Comments"}}}},
+			})
+
+			services := &service.Services{CustomModules: customModuleService, Comments: commentService, Context: service.MockedContextService{MockedUser: tt.userModel}, Modules: moduleService}
+			handler := Handler{services: services}
+
+			// Init Endpoint
+			r := gin.New()
+			r.GET("/api/v1/custom-modules/:module/:id/comments", func(c *gin.Context) {
+
+			}, handler.getCustomComments)
+
+			// Create Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("GET", "/api/v1/custom-modules/Assets/"+tt.id+"/comments",
+				nil)
+
+			// Make Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, tt.statusCode, w.Code)
+			assert.True(t, strings.Contains(w.Body.String(), tt.responseBody), "response body does not match, expected "+w.Body.String()+" has a string "+tt.responseBody)
+		})
+	}
+}

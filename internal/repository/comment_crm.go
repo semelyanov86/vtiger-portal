@@ -10,13 +10,20 @@ import (
 )
 
 type CommentCrm struct {
-	vtiger vtiger.VtigerConnector
+	vtiger vtiger.Connector
 	config config.Config
 }
 
 func NewCommentCrm(config config.Config, cache cache.Cache) CommentCrm {
 	return CommentCrm{
 		vtiger: vtiger.NewVtigerConnector(cache, config.Vtiger.Connection, vtiger.NewWebRequest(config.Vtiger.Connection)),
+		config: config,
+	}
+}
+
+func NewCommentConcrete(config config.Config, vtiger vtiger.Connector) CommentCrm {
+	return CommentCrm{
+		vtiger: vtiger,
 		config: config,
 	}
 }

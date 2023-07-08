@@ -282,6 +282,10 @@ func (h *Handler) addCustomComment(c *gin.Context) {
 		notPermittedResponse(c)
 		return
 	}
+	if errors.Is(service.ErrModuleNotSupported, err) {
+		moduleNotSupportedResponse(c)
+		return
+	}
 	if err != nil {
 		newResponse(c, http.StatusInternalServerError, err.Error())
 		return

@@ -112,6 +112,18 @@ If vtiger does not provide file contents in response, fix file `include/Webservi
 
 Currently for delete operation in vtiger we support GET request. To change REST api in Vtiger for this operation, change `vtiger_ws_operation` table, for delete operation name type from POST to GET.
 
+Vtiger by default dow not support getting image details from users module. It returns image name, but not file itself. You can add this functionality manually. For this purposes you need to add following code in `include/Webservices/Retrieve.php` file, after line `$entity = $handler->retrieve($element);`:
+```php
+		if ($entityName === 'Users' && $entity['imagename']) {
+			$recordIds = explode('x', $id);
+			$userModel = Users_Record_Model::getInstanceById($recordIds[1], $entityName);
+			$images = $userModel->getImageDetails();
+			if (isset($images[0])) {
+				$entity['image_details'] = $images[0];
+			}
+		}
+```
+
 ## Adding new custom field to module
 What if you created new custom field in Vtiger module and want to add it in Portal? Because we using golang type system in portal, you need to register it in our domain system.
 For example, you created field 'cf_543' in HelpDesk module. Here is three steps, how you can register this field in portal:
